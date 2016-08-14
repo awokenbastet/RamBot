@@ -26,7 +26,14 @@ class Brain {
      * Init the brain from our last known backup
      */
     private static void init() {
-        Scanner data = new Scanner(new File(filename))
+        File file = new File(filename)
+
+        // Write an empty JSON file if it doesnt exist
+        if(!file.exists()) {
+            sync()
+        }
+
+        Scanner data = new Scanner(file)
         String json = ""
 
         while (data.hasNextLine()) {
@@ -39,6 +46,8 @@ class Brain {
 
         data.close()
         storage = (LinkedHashMap) JSONParser.parseJSON(json)
+
+        initialized = true
     }
 
     /**
@@ -56,6 +65,8 @@ class Brain {
      * @return
      */
     static def get(String key) {
+        initialized ?: init()
+
         return storage[key]
     }
 
@@ -66,6 +77,8 @@ class Brain {
      * @param value
      */
     static void set(String key, def value) {
+        initialized ?: init()
+
         storage[key] = value
         sync()
     }
