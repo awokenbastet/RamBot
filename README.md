@@ -1,4 +1,5 @@
-# Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
+![](https://i.imgur.com/CxYRxt0.png)
+# Shiro (Discord-Bot)
 
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
