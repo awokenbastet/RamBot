@@ -32,11 +32,11 @@ interface IModule {
      * The commands to listen for (Map<String>)
      *
      * Use this format:
-     * [command: "usage information", command2: "usage information", ...]
+     * [command: "argument information", command2: "argument information", ...]
      *
-     * If you don't want to set usage informations pass null or emptystring
+     * If you don't want to set arguments pass null or emptystring
      */
-    static String[] commands = ["hello", "world"]
+    static LinkedHashMap commands = [hello: "<name>"]
 
     /**
      * The author of this module
