@@ -21,7 +21,7 @@ class ShiroMetaParser {
      * @return
      */
     static def parse(Class<?> c) {
-        if(annotationPresent(c)) {
+        if (annotationPresent(c)) {
             def meta = []
 
             c.getAnnotations().each { Annotation a ->
@@ -29,7 +29,8 @@ class ShiroMetaParser {
                     meta << [
                             enabled    : a.enabled(),
                             author     : a.author(),
-                            description: a.description()
+                            description: a.description(),
+                            commands   : a.commands()
                     ]
                 }
             }

@@ -8,6 +8,8 @@ import org.reflections.Reflections
  * Reflection > all ;)
  */
 class ModuleLoader {
+    private static LinkedHashMap instances = []
+
     /**
      * Returns all present modules
      * @return
@@ -17,11 +19,24 @@ class ModuleLoader {
         return reflections.getSubTypesOf(IModule)
     }
 
+    /**
+     * Load all modules into $instances
+     */
     static void load() {
         getModules().each { Class<? extends IModule> c ->
-            def meta = ShiroMetaParser.parse(c)
-            println "Name: ${c.name}"
-            println "Properties: ${meta.join("|")}"
+            instances << [
+                    name      : c.name,
+                    properties: ShiroMetaParser.parse(c),
+                    instance  : c.newInstance()
+            ]
         }
+    }
+
+    /**
+     * Loop through $instances
+     * @param callback
+     */
+    static void each(Closure callback) {
+        instances.each(callback)
     }
 }

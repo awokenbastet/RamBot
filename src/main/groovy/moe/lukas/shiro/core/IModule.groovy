@@ -29,7 +29,5 @@ abstract class IModule {
      * @param e The IMessage object containing everything about your message
      * @param client Access to the discord client
      */
-    void action(IMessage e, IDiscordClient client) {
-
-    }
+    void action(IMessage e, IDiscordClient client) {}
 }
