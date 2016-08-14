@@ -6,10 +6,10 @@ package moe.lukas.shiro.util
  */
 class Logger {
     /**
-     * Private logger abstraction
+     * Abstraction of println() with formatting
      *
-     * @todo logrotation
-     * @param any loggable
+     * @param tag The tag to use
+     * @param loggable A string to log
      */
     private static void log(String tag, String loggable) {
         println("[${new Date().format('dd/MM/yy - HH:MM:SS')}] (${tag.toUpperCase()}) $loggable");
