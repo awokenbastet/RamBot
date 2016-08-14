@@ -12,22 +12,7 @@ import sx.blah.discord.handle.obj.IMessage
  * All Shiro-Modules are instance-free to avoid flooding the stack with useless objects
  * Thus you need to define everything as static
  */
-interface IModule {
-    /**
-     * Whether this plugin is enabled or not
-     */
-    static boolean enabled = false
-
-    /**
-     * The name of your plugin
-     */
-    static String name = "example plugin"
-
-    /**
-     * A short but meaningful description
-     */
-    static String description = "Empty example plugin"
-
+abstract class IModule {
     /**
      * The commands to listen for (Map<String>)
      *
@@ -36,12 +21,7 @@ interface IModule {
      *
      * If you don't want to set arguments pass null or emptystring
      */
-    static LinkedHashMap commands = [hello: "<name>"]
-
-    /**
-     * The author of this module
-     */
-    static String author = "Your name here <you@email.com> (yourwebsite.tld)"
+    def commands
 
     /**
      * Closure that gets executed after your command was triggered
@@ -49,5 +29,7 @@ interface IModule {
      * @param e The IMessage object containing everything about your message
      * @param client Access to the discord client
      */
-    static Closure action = { IMessage e, IDiscordClient client = null -> };
+    void action(IMessage e, IDiscordClient client) {
+
+    }
 }
