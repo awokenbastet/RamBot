@@ -1,5 +1,7 @@
 # Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
 
+Shiro is a multipurpose Discord bot written in Groovy.
+
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
 |:-:|:-:|:-:|:-:|
