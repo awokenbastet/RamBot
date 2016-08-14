@@ -1,9 +1,9 @@
 apply plugin: "groovy"
 
 repositories {
-    mavenCentral()
-
     jcenter()
+
+    mavenCentral()
 
     maven {
         url  "https://jitpack.io"
@@ -13,4 +13,5 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.3'
     compile "com.github.austinv11:Discord4j:2.5.2"
+    compile "org.kopitubruk.util:JSONUtil:1.8"
 }
