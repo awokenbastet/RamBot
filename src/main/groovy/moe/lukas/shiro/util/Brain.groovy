@@ -1,36 +1,45 @@
 package moe.lukas.shiro.util
 
-import org.kopitubruk.util.json.JSONParser
-import org.kopitubruk.util.json.JSONUtil
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 /**
  * Brain to store/read values of any type
  */
+@Singleton(strict = false)
 class Brain {
     /**
-     * Whether this brain is already initialized
+     * JsonSlurper instance to parse json
      */
-    private static initialized = false
+    private JsonSlurper slurper
+
+    /**
+     * Constructor
+     */
+    private Brain() {
+        this.slurper = new JsonSlurper()
+        this.init()
+    }
 
     /**
      * The filename for brain backups
      */
-    private static filename = "brain.json"
+    private filename = "brain.json"
 
     /**
      * The actual brain
      */
-    private static LinkedHashMap storage = []
+    private LinkedHashMap storage = []
 
     /**
      * Init the brain from our last known backup
      */
-    private static void init() {
-        File file = new File(filename)
+    private void init() {
+        File file = new File(this.filename)
 
         // Write an empty JSON file if it doesnt exist
-        if(!file.exists()) {
-            sync()
+        if (!file.exists()) {
+            this.sync()
         }
 
         Scanner data = new Scanner(file)
@@ -45,17 +54,15 @@ class Brain {
         }
 
         data.close()
-        storage = (LinkedHashMap) JSONParser.parseJSON(json)
-
-        initialized = true
+        this.storage = (LinkedHashMap) this.slurper.parseText(json)
     }
 
     /**
      * Backup the current brain
      */
-    private static void sync() {
-        PrintWriter file = new PrintWriter(filename)
-        file.println(JSONUtil.toJSON(storage))
+    private void sync() {
+        PrintWriter file = new PrintWriter(this.filename)
+        file.println(JsonOutput.toJson(this.storage))
         file.close()
     }
 
@@ -64,10 +71,8 @@ class Brain {
      * @param key
      * @return
      */
-    static def get(String key) {
-        initialized ?: init()
-
-        return storage[key]
+    def get(String key) {
+        return this.storage[key]
     }
 
     /**
@@ -76,10 +81,8 @@ class Brain {
      * @param key
      * @param value
      */
-    static void set(String key, def value) {
-        initialized ?: init()
-
-        storage[key] = value
-        sync()
+    void set(String key, def value) {
+        this.storage[key] = value
+        this.sync()
     }
 }

@@ -1,5 +1,6 @@
 package moe.lukas.shiro.core
 
+import moe.lukas.shiro.util.Logger
 import sx.blah.discord.api.ClientBuilder
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
@@ -19,6 +20,8 @@ class Core {
      * @param login
      */
     private static void connect(String token, boolean login = true) {
+        Logger.info("Connecting to Discord...")
+
         ClientBuilder clientBuilder = new ClientBuilder()
         clientBuilder.withToken(token)
 
@@ -34,7 +37,7 @@ class Core {
      */
     private static void registerListeners() {
         EventDispatcher eventDispatcher = client.getDispatcher()
-        eventDispatcher.registerListener(EventHandler)
+        eventDispatcher.registerListener(new EventHandler())
     }
 
     /**
