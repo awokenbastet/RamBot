@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Shiro.iml" filepath="$PROJECT_DIR$/Shiro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Shiro.iml" filepath="$PROJECT_DIR$/.idea/modules/Shiro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Shiro_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Shiro_main.iml" group="Shiro" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Shiro_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Shiro_test.iml" group="Shiro" />
     </modules>
   </component>
 </project>
