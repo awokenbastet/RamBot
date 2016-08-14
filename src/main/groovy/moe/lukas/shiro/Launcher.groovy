@@ -1,6 +1,7 @@
 package moe.lukas.shiro
 
 import moe.lukas.shiro.core.Core
+import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 
 class Launcher {
@@ -8,6 +9,13 @@ class Launcher {
         Logger.info("Running from ${System.getProperty("user.dir")}")
         Logger.info("If this path is incorrect kill the program now and check your setup!")
 
-        Core.boot()
+        String token = Brain.get("api.token")
+        if(token == null) {
+            Brain.set("api.token", "YOUR_TOKEN_HERE")
+            Logger.err("Please open 'brain.json' and enter your Discord-API-Token!")
+            System.exit(1)
+        } else {
+            Core.boot(token)
+        }
     }
 }
