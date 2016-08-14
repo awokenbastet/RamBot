@@ -1,5 +1,6 @@
 package moe.lukas.shiro.core
 
+import moe.lukas.shiro.annotations.ShiroMetaParser
 import org.reflections.Reflections
 
 /**
@@ -11,14 +12,16 @@ class ModuleLoader {
      * Returns all present modules
      * @return
      */
-    static Set<Class<? extends Object>> getModules() {
-        Reflections reflections = new Reflections("moe.lukas.shiro.modules")
-        return reflections.getSubTypesOf(Object)
+    static Set<Class<? extends IModule>> getModules() {
+        Reflections reflections = new Reflections("shiro_modules")
+        return reflections.getSubTypesOf(IModule)
     }
 
     static void load() {
-        getModules().each { Class<? extends Object> c ->
-
+        getModules().each { Class<? extends IModule> c ->
+            def meta = ShiroMetaParser.parse(c)
+            println "Name: ${c.name}"
+            println "Properties: ${meta.join("|")}"
         }
     }
 }

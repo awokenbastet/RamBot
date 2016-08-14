@@ -21,7 +21,7 @@ abstract class IModule {
      *
      * If you don't want to set arguments pass null or emptystring
      */
-    def commands
+    LinkedHashMap commands
 
     /**
      * Closure that gets executed after your command was triggered

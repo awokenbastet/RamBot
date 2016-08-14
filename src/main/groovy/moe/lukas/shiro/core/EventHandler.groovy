@@ -11,6 +11,7 @@ class EventHandler {
     @SuppressWarnings("GrMethodMayBeStatic")
     void onReadyEvent(ReadyEvent e) {
         Logger.info("Discord connection established!")
+        ModuleLoader.load()
     }
 
     @EventSubscriber
