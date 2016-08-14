@@ -1,4 +1,4 @@
-# Shiro
+# Shiro &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
 
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
