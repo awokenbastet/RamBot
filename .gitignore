@@ -1,6 +1,8 @@
 
 # Created by https://www.gitignore.io/api/windows,linux,osx,gradle,java,intellij
 
+brain.json
+
 ### Windows ###
 # Windows image file caches
 Thumbs.db
