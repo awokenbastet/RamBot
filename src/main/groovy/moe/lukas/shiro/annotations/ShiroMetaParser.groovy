@@ -12,7 +12,7 @@ class ShiroMetaParser {
      * @return
      */
     static def annotationPresent(Class<?> c) {
-        return c.isAnnotationPresent(ShiroMeta);
+        return c.isAnnotationPresent(ShiroMeta)
     }
 
     /**
@@ -22,7 +22,7 @@ class ShiroMetaParser {
      */
     static def parse(Class<?> c) {
         if(annotationPresent(c)) {
-            def meta = [];
+            def meta = []
 
             c.getAnnotations().each { Annotation a ->
                 if (a instanceof ShiroMeta) {
@@ -30,13 +30,13 @@ class ShiroMetaParser {
                             enabled    : a.enabled(),
                             author     : a.author(),
                             description: a.description()
-                    ];
+                    ]
                 }
             }
 
-            return meta;
+            return meta
         } else {
-            return null;
+            return null
         }
     }
 }

@@ -11,7 +11,7 @@ class Core {
     /**
      * The current discord client
      */
-    private static IDiscordClient client;
+    private static IDiscordClient client
 
     /**
      * Connect to the discord api
