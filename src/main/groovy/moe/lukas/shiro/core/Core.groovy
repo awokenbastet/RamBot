@@ -65,9 +65,9 @@ class Core {
 
         if (prefix == null) {
             e.getMessage().getChannel().sendMessage('''
-Warning :warning:
-There is no configured prefix for your guild!
-I will fallback to `+#+` (very uncommon)
+Warning :warning:\n
+There is no configured prefix for your guild!\n
+I will fallback to `+#+` (very uncommon)\n
 Please tell your server owner to set a new command prefix using `+#+PREFIX <your prefix>`
 ''')
             Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", "+#+")

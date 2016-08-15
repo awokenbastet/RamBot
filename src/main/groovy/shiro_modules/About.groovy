@@ -3,8 +3,7 @@ package shiro_modules
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
-import sx.blah.discord.api.IDiscordClient
-import sx.blah.discord.handle.obj.IMessage
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(
     enabled = true,
@@ -16,10 +15,10 @@ import sx.blah.discord.handle.obj.IMessage
     ]
 )
 class About extends IModule {
-    static void action(IMessage e, IDiscordClient client) {
-        client.getOrCreatePMChannel(e.getAuthor()).sendMessage('''
-Oh you want to know more about me? :3
+    static void action(MessageReceivedEvent e) {
+        e.getMessage().getChannel().sendMessage('''
+Oh you want to know more about me? :3\n
 Click here -> http://no-game-no-life.wikia.com/wiki/Shiro
-        ''')
+''')
     }
 }

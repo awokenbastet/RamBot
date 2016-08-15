@@ -19,12 +19,13 @@ class EventHandler {
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
         if (!e.getMessage().getAuthor().isBot()) {
-            ModuleLoader.each { LinkedHashMap module ->
+            ModuleLoader.modules.each { LinkedHashMap module ->
                 if (module.properties.enabled == true) {
                     ShiroCommand[] commands = module.properties.commands
                     commands.any { ShiroCommand it ->
-                        if (e.getMessage() ==~ /^${Core.getPrefixForServer(e)}${it.command()}.*/) {
-                            module.instance.action(e)
+                        if (e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}${it.command()}.*/)) {
+                            IModule mod = module.instance
+                            mod.action(e)
                             return true
                         }
                     }

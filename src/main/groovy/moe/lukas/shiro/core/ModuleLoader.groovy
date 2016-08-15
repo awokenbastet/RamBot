@@ -2,7 +2,6 @@ package moe.lukas.shiro.core
 
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMetaParser
-import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 import org.reflections.Reflections
 
@@ -11,13 +10,13 @@ import org.reflections.Reflections
  * Reflection > all ;)
  */
 class ModuleLoader {
-    private static LinkedHashMap modules = []
+    static List<LinkedHashMap> modules = []
 
     /**
      * Returns all present modules
      * @return
      */
-    static Set<Class<? extends IModule>> getModules() {
+    static Set<Class<? extends IModule>> loadModules() {
         Reflections reflections = new Reflections("shiro_modules")
         return reflections.getSubTypesOf(IModule)
     }
@@ -27,7 +26,8 @@ class ModuleLoader {
      */
     static void load() {
         Logger.info("Loading modules...")
-        getModules().each { Class<? extends IModule> c ->
+
+        loadModules().each { Class<? extends IModule> c ->
             def m = [
                 name      : c.name,
                 properties: ShiroMetaParser.parse(c),
@@ -36,19 +36,13 @@ class ModuleLoader {
 
             print("${m.name} reacts to [|")
             m.properties.commands.each { ShiroCommand it ->
-                print(Brain.instance.get() + it.command() + "|")
+                print(it.command() + "|")
             }
-            print("]")
+            print("]\n")
 
             modules << m
         }
-    }
 
-    /**
-     * Loop through $instances
-     * @param callback
-     */
-    static void each(Closure callback) {
-        modules.each(callback)
+        Logger.info("Done!")
     }
 }
