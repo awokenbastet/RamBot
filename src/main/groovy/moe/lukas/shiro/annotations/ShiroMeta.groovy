@@ -12,7 +12,10 @@ import java.lang.annotation.Target
 @Retention(RetentionPolicy.RUNTIME)
 @interface ShiroMeta {
     boolean enabled() default false
+
     String description() default ""
+
     String author() default "anonymous"
+
     ShiroCommand[] commands()
 }

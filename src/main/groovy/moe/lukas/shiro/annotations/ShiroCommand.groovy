@@ -9,5 +9,6 @@ import java.lang.annotation.Target
 @Retention(RetentionPolicy.RUNTIME)
 @interface ShiroCommand {
     public String command()
-    public String usage() default null
+
+    public String usage() default ""
 }
