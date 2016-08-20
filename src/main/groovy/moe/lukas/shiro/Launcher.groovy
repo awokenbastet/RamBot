@@ -4,10 +4,18 @@ import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 
+import java.nio.file.Files
+
+import static java.util.concurrent.TimeUnit.SECONDS
+
 class Launcher {
     public static void main(String[] args) {
         Logger.info("Running from ${System.getProperty("user.dir")}")
         Logger.info("If this path is incorrect kill the program now and check your setup!")
+        Logger.info(" --- waiting 5 seconds ---");
+        System.out.println()
+
+        SECONDS.sleep(5)
 
         String token = Brain.instance.get("api.token")
         if (token == null) {

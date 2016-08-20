@@ -1,14 +1,11 @@
 package moe.lukas.shiro.core
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message
-import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 import sx.blah.discord.api.ClientBuilder
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
-import sx.blah.discord.handle.obj.IMessage
 
 /**
  * Shiro's core

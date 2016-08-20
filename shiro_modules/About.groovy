@@ -1,5 +1,3 @@
-package shiro_modules
-
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
@@ -14,8 +12,8 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
         @ShiroCommand(command = "a")
     ]
 )
-class About extends IModule {
-    static void action(MessageReceivedEvent e) {
+class About implements IModule {
+    void action(MessageReceivedEvent e) {
         e.getMessage().getChannel().sendMessage('''
 Oh you want to know more about me? :3\n
 Click here -> http://no-game-no-life.wikia.com/wiki/Shiro
