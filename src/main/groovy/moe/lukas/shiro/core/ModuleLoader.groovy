@@ -15,8 +15,8 @@ class ModuleLoader {
      * Returns all present modules
      * @return
      */
-    static List<Class<? extends Object>> loadModules() {
-        List<Class<? extends Object>> classes = []
+    static ArrayList<Class> loadModules() {
+        ArrayList<Class> mods = []
 
         File shiroModules = new File("shiro_modules")
         if (!shiroModules.exists()) {
@@ -26,13 +26,12 @@ class ModuleLoader {
             shiroModules.mkdir()
         }
 
-        new GroovyScriptEngine("shiro_modules").with {
-            shiroModules.listFiles().each { File file ->
-                classes << loadScriptByName(file.getName())
-            }
+        GroovyClassLoader classLoader = new GroovyClassLoader()
+        shiroModules.listFiles().each {
+            mods << classLoader.parseClass(new File(it.getPath()))
         }
 
-        return classes
+        return mods
     }
 
     /**
@@ -41,11 +40,11 @@ class ModuleLoader {
     static void load() {
         Logger.info("Loading modules...")
 
-        loadModules().each { Class<? extends Object> c ->
+        loadModules().each { Class c ->
             def m = [
-                name      : c.name,
+                name      : c.getName(),
                 properties: ShiroMetaParser.parse(c),
-                instance  : c.newInstance()
+                class     : c
             ]
 
             print("${m.name} reacts to [|")

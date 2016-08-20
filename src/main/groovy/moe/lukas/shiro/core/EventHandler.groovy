@@ -21,11 +21,12 @@ class EventHandler {
         if (!e.getMessage().getAuthor().isBot()) {
             ModuleLoader.modules.each { LinkedHashMap module ->
                 if (module.properties.enabled == true) {
-                    ShiroCommand[] commands = module.properties.commands
-                    commands.any { ShiroCommand it ->
+                    module.properties.commands.any { ShiroCommand it ->
                         if (e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}${it.command()}.*/)) {
-                            IModule mod = module.instance
-                            mod.action(e)
+                            GroovyObject object = module["class"].newInstance()
+                            object.invokeMethod("action", e)
+
+                            // break loop
                             return true
                         }
                     }
