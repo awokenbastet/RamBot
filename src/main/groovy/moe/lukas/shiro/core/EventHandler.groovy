@@ -13,21 +13,57 @@ class EventHandler {
     void onReadyEvent(ReadyEvent e) {
         Logger.info("Discord connection established!")
         ModuleLoader.load()
+        Logger.info("To add me to your server visit https://discordapp.com/oauth2/authorize?client_id=${e.client.getApplicationClientID()}&scope=bot&permissions=")
     }
 
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
+        /**
+         * Ignore other bots.
+         * Shiro no likey :c
+         */
         if (!e.getMessage().getAuthor().isBot()) {
-            ModuleLoader.modules.each { LinkedHashMap module ->
-                if (module.properties.enabled == true) {
-                    module.properties.commands.any { ShiroCommand it ->
-                        if (e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}${it.command()}.*/)) {
-                            GroovyObject object = module["class"].newInstance()
-                            object.invokeMethod("action", e)
+            /**
+             * Show help on [prefix]h / [prefix]help
+             */
+            if (e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}(help|h)/)) {
+                String message = ""
 
-                            // break loop
-                            return true
+                message += "Hi :3 \n"
+                message += "These Plugins are currently loaded:\n"
+
+                ModuleLoader.modules.each { LinkedHashMap module ->
+                    LinkedHashMap properties = module.properties
+                    if (properties.enabled) {
+                        message += "\t **${module.name}** by ${properties.author}\n"
+                        properties.commands.any { ShiroCommand it ->
+                            message += "\t \t **${Core.getPrefixForServer(e)}${it.command()}**"
+
+                            if (it.usage() != "") {
+                                message += " - ${it.usage()}"
+                            }
+
+                            message += " [${properties.description}]\n"
+                        }
+                    }
+                }
+
+                e.getMessage().getChannel().sendMessage(message)
+            } else {
+                /**
+                 * Catch all other commands
+                 */
+                ModuleLoader.modules.each { LinkedHashMap module ->
+                    if (module.properties.enabled == true) {
+                        module.properties.commands.any { ShiroCommand it ->
+                            if (e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}${it.command()}.*/)) {
+                                GroovyObject object = module["class"].newInstance()
+                                object.invokeMethod("action", e)
+
+                                // break loop
+                                return true
+                            }
                         }
                     }
                 }
