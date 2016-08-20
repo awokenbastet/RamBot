@@ -4,8 +4,6 @@ import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 
-import java.nio.file.Files
-
 import static java.util.concurrent.TimeUnit.SECONDS
 
 class Launcher {
