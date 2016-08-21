@@ -2,7 +2,7 @@
 Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).
 
 ### Testimonials! (OMG OMG OMG \o/)
-![](http://i.imgur.com/5rPB8iM.png)
+[![](http://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)
 
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
