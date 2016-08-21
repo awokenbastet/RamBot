@@ -4,15 +4,15 @@ Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groov
 ### Testimonials! (OMG OMG OMG \o/)
 ![](http://i.imgur.com/5rPB8iM.png)
 
-### Project state:
-Currently early indev.<br>
-Do not use until further notice.<br>
-<br>
-Docs will be extended soon.
-
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
 |:-:|:-:|:-:|:-:|
 |![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot)
 |![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
+
+### Project state:
+Currently early indev.<br>
+Do not use until further notice.<br>
+<br>
+Docs will be extended soon.
