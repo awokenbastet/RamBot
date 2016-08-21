@@ -53,14 +53,12 @@ class ModuleLoader {
             m.properties.commands.each { ShiroCommand it ->
                 print(it.command() + "|")
             }
-            print("] | ")
+            print("]")
 
             try {
-                print("Initializing... ")
                 c.newInstance().invokeMethod("init", client)
-                print(" | Done")
+                print(" | Module initialized!")
             } catch (MissingMethodException e) {
-                print(" | Failed | init() is undefined")
             } finally {
                 print("\n")
             }
