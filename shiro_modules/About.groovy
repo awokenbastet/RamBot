@@ -1,6 +1,6 @@
-import moe.lukas.shiro.annotations.ShiroCommand
-import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
+import moe.lukas.shiro.annotations.ShiroMeta
+import moe.lukas.shiro.annotations.ShiroCommand
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(

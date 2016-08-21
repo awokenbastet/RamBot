@@ -1,8 +1,8 @@
 package moe.lukas.shiro.core
 
+import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMetaParser
-import moe.lukas.shiro.util.Logger
 
 /**
  * Class to help loading/finding modules
