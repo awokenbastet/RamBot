@@ -31,7 +31,6 @@ class RandomGame implements IAdvancedModule {
         "with Ako-Chan",
         "with Nadeko",
         "with Miku",
-        "with @Devsome",
         "with @Serraniel",
         "with you O_o",
         "with cats",
