@@ -16,3 +16,6 @@ Currently early indev.<br>
 Do not use until further notice.<br>
 <br>
 Docs will be extended soon.
+
+### How can I write new commands?
+See [MODULES.md](/MODULE.md)
