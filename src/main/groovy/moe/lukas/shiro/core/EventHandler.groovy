@@ -120,7 +120,7 @@ class EventHandler {
                                 }
 
 
-                                channel.sendMessage(":robot: " + response)
+                                channel.sendMessage(response)
                                 return true
                             }
                         }
