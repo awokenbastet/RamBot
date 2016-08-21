@@ -43,5 +43,6 @@
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: com.github.austinv11:Discord4j:2.5.2" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
+    <orderEntry type="library" name="Gradle: ca.pjer:chatter-bot-api:1.4.2" level="project" />
   </component>
 </module>
