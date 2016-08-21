@@ -31,24 +31,31 @@ class EventHandler {
                 String message = ""
 
                 message += "Hi :3 \n"
-                message += "These Plugins are currently loaded:\n"
+                message += "These Plugins are currently loaded:\n\n"
 
                 ModuleLoader.modules.each { LinkedHashMap module ->
                     LinkedHashMap properties = module.properties
 
                     if (properties.enabled && properties.commands.size() > 0) {
-                        message += "\t **${module.name}** by ${properties.author}\n"
-                        message += "\t [${properties.description}]\n"
+                        message += "**${module.name}** by ${properties.author} "
 
-                        properties.commands.any { ShiroCommand it ->
-                            message += "\t \t **${Core.getPrefixForServer(e)}${it.command()}**"
+                        if (properties.description == "") {
+                            message += "[no description]\n"
+                        } else {
+                            message += "[${properties.description}]\n"
+                        }
+
+                        properties.commands.each { ShiroCommand it ->
+                            message += "\t **${Core.getPrefixForServer(e)}${it.command()}**"
 
                             if (it.usage() != "") {
                                 message += " - ${it.usage()}"
                             }
 
-
+                            message += "\n"
                         }
+
+                        message += "\n"
                     }
                 }
 
