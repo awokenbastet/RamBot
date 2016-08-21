@@ -23,7 +23,7 @@ class MyModuleName implements IModule {
     }
 }
 ```
-All properties of the `@ShiroMeta()` annotation are optional.<br>
+All arguments of the `@ShiroMeta()` annotation are optional but you **must** provide it or Shiro won't recognize your module.<br>
 The default values are:
 ```
 enabled     => false
@@ -32,10 +32,8 @@ author      => "anonymous"
 commands    => []
 ```
 
-You are free to do add **any** methods and properties you want to your class, but you **must** implement `void action(e)`.
-
-As Shiro is a genius you don't need to tell her how you named your plugin.<br>
-She will guess it from your class name using reflection magic.
+You are free to do add **any** methods and properties you want to your class, but you **must** implement `void action(e)`.<br>
+The name of your plugin will be guessed using some dark reflection magic.
 
 ## Advanced Modules
 Advanced modules work exactly like normal modules but provide a constructor-like method that runs once after Shiro starts
