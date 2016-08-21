@@ -1,7 +1,8 @@
-
-# Created by https://www.gitignore.io/api/windows,linux,osx,gradle,java,intellij
-
+build/
+.idea/
 brain.json
+
+#Created by https://www.gitignore.io/api/windows,linux,osx,gradle,java,intellij
 
 ### Windows ###
 # Windows image file caches
