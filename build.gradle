@@ -16,3 +16,15 @@ dependencies {
     compile "com.github.austinv11:Discord4j:2.5.2"
     compile "ca.pjer:chatter-bot-api:1.4.2"
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "moe.lukas.shiro.Launcher"
+    }
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
