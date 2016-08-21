@@ -35,8 +35,11 @@ class EventHandler {
 
                 ModuleLoader.modules.each { LinkedHashMap module ->
                     LinkedHashMap properties = module.properties
-                    if (properties.enabled) {
+
+                    if (properties.enabled && properties.commands.size() > 0) {
                         message += "\t **${module.name}** by ${properties.author}\n"
+                        message += "\t [${properties.description}]\n"
+
                         properties.commands.any { ShiroCommand it ->
                             message += "\t \t **${Core.getPrefixForServer(e)}${it.command()}**"
 
@@ -44,7 +47,7 @@ class EventHandler {
                                 message += " - ${it.usage()}"
                             }
 
-                            message += " [${properties.description}]\n"
+
                         }
                     }
                 }
