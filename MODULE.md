@@ -38,7 +38,7 @@ As Shiro is a genius you don't need to tell her how you named your plugin.<br>
 She will guess it from your class name using reflection magic.
 
 ## Advanced Modules
-Advanced modules work exactly like normal modules but provide a fake-constructor
+Advanced modules work exactly like normal modules but provide a constructor-like method that runs once after Shiro starts
 
 ```groovy
 import sx.blah.discord.api.IDiscordClient
