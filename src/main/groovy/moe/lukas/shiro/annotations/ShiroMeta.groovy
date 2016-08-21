@@ -17,5 +17,5 @@ import java.lang.annotation.RetentionPolicy
 
     String author() default "anonymous"
 
-    ShiroCommand[] commands()
+    ShiroCommand[] commands() default []
 }
