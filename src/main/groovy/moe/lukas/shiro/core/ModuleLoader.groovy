@@ -3,6 +3,7 @@ package moe.lukas.shiro.core
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMetaParser
+import sx.blah.discord.api.IDiscordClient
 
 /**
  * Class to help loading/finding modules
@@ -37,8 +38,9 @@ class ModuleLoader {
     /**
      * Load all modules into $instances
      */
-    static void load() {
+    static void load(IDiscordClient client) {
         Logger.info("Loading modules...")
+        println()
 
         loadModules().each { Class c ->
             def m = [
@@ -51,11 +53,22 @@ class ModuleLoader {
             m.properties.commands.each { ShiroCommand it ->
                 print(it.command() + "|")
             }
-            print("]\n")
+            print("] | ")
+
+            try {
+                print("Initializing... ")
+                c.newInstance().invokeMethod("init", client)
+                print(" | Done")
+            } catch (MissingMethodException e) {
+                print(" | Failed | Class does not define 'void init()'")
+            } finally {
+                print("\n")
+            }
 
             modules << m
         }
 
+        println()
         Logger.info("Done!")
     }
 }
