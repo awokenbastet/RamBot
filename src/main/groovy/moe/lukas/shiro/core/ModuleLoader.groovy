@@ -60,7 +60,7 @@ class ModuleLoader {
                 c.newInstance().invokeMethod("init", client)
                 print(" | Done")
             } catch (MissingMethodException e) {
-                print(" | Failed | Class does not define 'void init()'")
+                print(" | Failed | init() is undefined")
             } finally {
                 print("\n")
             }
