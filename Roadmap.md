@@ -2,7 +2,6 @@
 
 - [ ] !status - Show the bot's status
 - [ ] !rip <@mention> - Kill a user
-- [ ] !gif/!giphy/!riffsy <query> - Search a gif
 - [ ] !sauce <url> - Reverse image search
 - [ ] !avatar <@mention> - Show a users avatar
 - [ ] !userinfo <@mention> - More info about a user
