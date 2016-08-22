@@ -1,6 +1,9 @@
 # Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
 Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).
 
+### Roadmap
+[Click here!](/Roadmap.md)
+
 ### Testimonials! (OMG OMG OMG \o/)
 [![](http://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)
 
