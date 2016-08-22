@@ -1,22 +1,23 @@
 # Roadmap
 
 - [ ] !status - Show the bot's status
-- [ ] !rip - Kill a user
-- [ ] !gif/!giphy/!riffsy
-- [ ] !sauce - Reverse image search
-- [ ] !avatar - Show a users avatar
-- [ ] !userinfo
-- [ ] !hardmention
-- [ ] !serverinfo
+- [ ] !rip <@mention> - Kill a user
+- [ ] !gif/!giphy/!riffsy <query> - Search a gif
+- [ ] !sauce <url> - Reverse image search
+- [ ] !avatar <@mention> - Show a users avatar
+- [ ] !userinfo <@mention> - More info about a user
+- [ ] !hardmention - List users that are hardly mentionable
+- [ ] !serverinfo - More info about this server
 - [ ] !rev - Revision of the bot
-- [ ] !stats
-- [ ] !uptime
+- [ ] !stats - Bot stats
+- [ ] !uptime - Bot uptime
 - [ ] !ramoji - Random emoji
 - [ ] !minecraft <user> - Show the minecraft avatar
 - [ ] !roll - Random number
-- [ ] !bigmoji
-- [ ] !setosu <link> / !osu <@mention>
-- [ ] !setbattletag <tag> / !battlenet <@mention>
-- [ ] !overwatch <tag> / <@mention>
+- [ ] !bigmoji <emoji> - Show this emoji in big
+- [ ] !setosu <link> / !osu <@mention> - get/set osu profile
+- [ ] !setbattletag <tag> / !battlenet <@mention> get/set battle.net profile
+- [ ] !overwatch <tag> / <@mention> get overwatch stats
+- [ ] !epvp <name> - Search for a EPVP profile
 
 MOAR TO COME (ﾉ◕ヮ◕)ﾉ
