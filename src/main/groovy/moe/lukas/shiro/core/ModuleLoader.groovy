@@ -1,9 +1,11 @@
 package moe.lukas.shiro.core
 
+import org.reflections.Reflections
 import moe.lukas.shiro.util.Logger
+import sx.blah.discord.api.IDiscordClient
+import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMetaParser
-import sx.blah.discord.api.IDiscordClient
 
 /**
  * Class to help loading/finding modules
@@ -16,23 +18,8 @@ class ModuleLoader {
      * Returns all present modules
      * @return
      */
-    static ArrayList<Class> loadModules() {
-        ArrayList<Class> mods = []
-
-        File shiroModules = new File("shiro_modules")
-        if (!shiroModules.exists()) {
-            shiroModules.mkdir()
-        } else if (shiroModules.isFile()) {
-            shiroModules.delete()
-            shiroModules.mkdir()
-        }
-
-        GroovyClassLoader classLoader = new GroovyClassLoader()
-        shiroModules.listFiles().each {
-            mods << classLoader.parseClass(new File(it.getPath()))
-        }
-
-        return mods
+    static Set<Class<?>> loadModules() {
+        return new Reflections("moe.lukas.shiro.commands").getTypesAnnotatedWith(ShiroMeta.class);
     }
 
     /**
@@ -42,7 +29,7 @@ class ModuleLoader {
         Logger.info("Loading modules...")
         println()
 
-        loadModules().each { Class c ->
+        loadModules().each { Class<?> c ->
             def m = [
                 name      : c.getName(),
                 properties: ShiroMetaParser.parse(c),

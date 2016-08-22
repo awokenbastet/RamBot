@@ -1,3 +1,5 @@
+package moe.lukas.shiro.commands
+
 import sx.blah.discord.handle.obj.Status
 import sx.blah.discord.api.IDiscordClient
 import moe.lukas.shiro.core.IAdvancedModule

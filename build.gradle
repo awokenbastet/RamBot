@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:2.4.3"
+    compile "org.reflections:reflections:0.9.10"
     compile "ch.qos.logback:logback-classic:1.1.7"
     compile "com.github.austinv11:Discord4j:2.5.2"
     compile "ca.pjer:chatter-bot-api:1.4.2"
