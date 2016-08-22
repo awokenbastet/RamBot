@@ -64,13 +64,22 @@ class Core {
             e.getMessage().getChannel().sendMessage('''
 Warning :warning:\n
 There is no configured prefix for your guild!\n
-I will fallback to `+#+` (very uncommon)\n
-Please tell your server owner to set a new command prefix using `+#+PREFIX <your prefix>`
+I will fallback to `%`
+Please tell your server owner to set a new command prefix using `SET PREFIX <your prefix>`
 ''')
-            Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", "+#+")
-            return "+#+"
+            Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", "%")
+            return "%"
         } else {
             return prefix
         }
+    }
+
+    /**
+     * Set prefix for server
+     * @param e
+     * @param prefix
+     */
+    static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
+        Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", prefix)
     }
 }

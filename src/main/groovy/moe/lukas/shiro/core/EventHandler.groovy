@@ -1,5 +1,6 @@
 package moe.lukas.shiro.core
 
+import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 import sx.blah.discord.handle.obj.IChannel
 import moe.lukas.shiro.annotations.ShiroCommand
@@ -32,10 +33,22 @@ class EventHandler {
          * Shiro no likey :c
          */
         if (!e.getMessage().getAuthor().isBot()) {
+
+            /**
+             * Check if the Owner requests a CMD change
+             */
+            if (e.getMessage().getContent().matches(/^SET PREFIX (.){0,5}$/)) {
+                if (e.getMessage()?.getGuild()?.getOwnerID() == e.getMessage().getAuthor().getID()) {
+                    Core.setPrefixForServer(e, e.getMessage().getContent().replace("SET PREFIX ", ""))
+                    e.getMessage().getChannel().sendMessage("Saved :smiley:")
+                } else {
+                    e.getMessage().getChannel().sendMessage("Only the owner of this Guild is allowed to do this :wink:")
+                }
+            }
             /**
              * Show help on [prefix]h / [prefix]help
              */
-            if (
+            else if (
             e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
                 e.getMessage().getContent().matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
             ) {
@@ -71,10 +84,12 @@ class EventHandler {
                 }
 
                 e.getMessage().getChannel().sendMessage(message)
-            } else {
-                /**
-                 * Catch all other commands
-                 */
+            }
+            /**
+             * Catch all other commands
+             */
+            else {
+
                 boolean answered = false
 
                 ModuleLoader.modules.each { LinkedHashMap module ->
@@ -97,13 +112,14 @@ class EventHandler {
                     }
                 }
 
+                /**
+                 * Forward anything else to cleverbot
+                 */
                 if (!answered) {
                     if (e.getMessage().getMentions().size() > 0) {
                         e.getMessage().getMentions().any {
                             if (it.getID() == e.getClient().getOurUser().getID()) {
-                                /**
-                                 * Forward anything else to cleverbot
-                                 */
+
                                 IChannel channel = e.getMessage().getChannel()
 
                                 try {
@@ -118,7 +134,6 @@ class EventHandler {
                                     !channel.getTypingStatus() ?: channel.toggleTypingStatus()
                                 } catch (Exception ex) {
                                 }
-
 
                                 channel.sendMessage(response)
                                 return true
