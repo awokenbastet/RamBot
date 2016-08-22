@@ -6,6 +6,7 @@ import sx.blah.discord.api.ClientBuilder
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
+import sx.blah.discord.handle.obj.IChannel
 
 /**
  * Shiro's core
@@ -81,5 +82,29 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      */
     static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
         Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", prefix)
+    }
+
+    /**
+     * Enable typing in channel c
+     * @param c
+     */
+    static void enableTyping(IChannel c) {
+        try {
+            c.toggleTypingStatus()
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /**
+     * Disable typing in channel c
+     * @param c
+     */
+    static void disableTyping(IChannel c) {
+        try {
+            !c.getTypingStatus() ?: c.toggleTypingStatus()
+        } catch (Exception ex) {
+
+        }
     }
 }

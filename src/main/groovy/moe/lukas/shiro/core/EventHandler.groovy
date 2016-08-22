@@ -122,18 +122,12 @@ class EventHandler {
 
                                 IChannel channel = e.getMessage().getChannel()
 
-                                try {
-                                    channel.toggleTypingStatus()
-                                } catch (Exception ex) {
-                                }
+                                Core.enableTyping(channel)
 
                                 cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
                                 String response = cleverbotSessions[channel.getID()].think(e.getMessage().getContent())
 
-                                try {
-                                    !channel.getTypingStatus() ?: channel.toggleTypingStatus()
-                                } catch (Exception ex) {
-                                }
+                                Core.disableTyping(channel)
 
                                 channel.sendMessage(response)
                                 return true
