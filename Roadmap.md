@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] ~~!gif/!giphy~~
+- [ ] !weather <plz|city|country|...>
 - [ ] !status - Show the bot's status
 - [ ] !rip <@mention> - Kill a user
 - [ ] !sauce <url> - Reverse image search
