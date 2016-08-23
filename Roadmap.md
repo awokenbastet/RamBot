@@ -5,7 +5,6 @@
 - [x] ~~!weather <plz|city|country|...>~~
 - [ ] !status - Show the bot's status
 - [ ] !rip <@mention> - Kill a user
-- [ ] !sauce <url> - Reverse image search
 - [ ] !avatar <@mention> - Show a users avatar
 - [ ] !userinfo <@mention> - More info about a user
 - [ ] !hardmention - List users that are hardly mentionable
