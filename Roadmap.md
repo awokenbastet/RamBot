@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] ~~!shorten <url>~~
 - [x] ~~!gif/!giphy~~
 - [x] ~~!weather <plz|city|country|...>~~
 - [ ] !status - Show the bot's status
