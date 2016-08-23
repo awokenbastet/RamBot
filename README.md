@@ -4,8 +4,8 @@
 
 Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).
 
-### Roadmap
-[Click here!](/Roadmap.md)
+### Documentation and FAQ
+Go to [meetshiro.xyz](http://meetshiro.xyz)
 
 ### Testimonials! (OMG OMG OMG \o/)
 [![](http://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)
@@ -17,12 +17,3 @@ Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groov
 |![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
 |?|EliteBot|JavaScript|[Desvome/EliteBot](https://github.com/Devsome/EliteBot)
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
-
-### Project state:
-Currently early indev.<br>
-Do not use until further notice.<br>
-<br>
-Docs will be extended soon.
-
-### How can I write new commands?
-See [MODULES.md](/MODULE.md)
