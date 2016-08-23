@@ -27,24 +27,23 @@ class Giphy implements IModule {
     private static int LIMIT = 5
 
     void action(MessageReceivedEvent e) {
+        HttpResponse<JsonNode> jsonResponse = null;
         IChannel channel = e.getMessage().getChannel()
         String query = e.getMessage().getContent().split(" ").drop(1).join("+")
 
-        Core.enableTyping(channel)
+        Core.whileTyping(channel, {
+            jsonResponse = Unirest.get(
+                "${ENDPOINT}q=${query}&api_key=${API_KEY}&rating=${RATING}&limit=${LIMIT}"
+            ).asJson()
+        })
 
-        HttpResponse<JsonNode> jsonResponse = Unirest.get(
-            "${ENDPOINT}q=${query}&api_key=${API_KEY}&rating=${RATING}&limit=${LIMIT}"
-        ).asJson()
-
-        Core.disableTyping(channel)
-
-        if(jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getStatus() != 200) {
             channel.sendMessage("Search failed (Error ${jsonResponse.getStatus()}) :frowning:")
         } else {
             JsonNode body = jsonResponse.getBody()
             JSONArray data = body.getObject().getJSONArray("data")
 
-            if(data.size() > 0) {
+            if (data.size() > 0) {
                 channel.sendMessage(data.getJSONObject(new Random().nextInt(data.size())).getString("bitly_url"))
             } else {
                 channel.sendMessage("No gifs found :frowning:")

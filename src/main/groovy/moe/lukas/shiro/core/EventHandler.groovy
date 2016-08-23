@@ -117,15 +117,13 @@ class EventHandler {
                     if (e.getMessage().getMentions().size() > 0) {
                         e.getMessage().getMentions().any {
                             if (it.getID() == e.getClient().getOurUser().getID()) {
-
+                                String response = null
                                 IChannel channel = e.getMessage().getChannel()
 
-                                Core.enableTyping(channel)
-
-                                cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
-                                String response = cleverbotSessions[channel.getID()].think(e.getMessage().getContent())
-
-                                Core.disableTyping(channel)
+                                Core.whileTyping(channel, {
+                                    cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
+                                    response = cleverbotSessions[channel.getID()].think(e.getMessage().getContent())
+                                })
 
                                 channel.sendMessage(response)
                                 return true

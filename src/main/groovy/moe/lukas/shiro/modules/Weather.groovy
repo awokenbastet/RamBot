@@ -22,17 +22,16 @@ class Weather implements IModule {
     private static String ENDPOINT = "http://wttr.in/"
 
     void action(MessageReceivedEvent e) {
+        HttpResponse<String> stringResponse = null
         IChannel channel = e.getMessage().getChannel()
         String city = e.getMessage().getContent().split(" ").drop(1).join("+")
 
-        Core.enableTyping(channel)
-
-        HttpResponse<String> stringResponse = Unirest
-            .get(ENDPOINT + city)
-            .headers(["User-Agent": "Curl"])
-            .asString()
-
-        Core.disableTyping(channel)
+        Core.whileTyping(channel, {
+            stringResponse = Unirest
+                .get(ENDPOINT + city)
+                .headers(["User-Agent": "Curl"])
+                .asString()
+        })
 
         if (stringResponse.getStatus() == 200 && stringResponse.getBody() != "ERROR") {
             if (city.toLowerCase() == "moon") {
