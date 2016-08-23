@@ -107,4 +107,15 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
 
         }
     }
+
+    /**
+     * Type while the closure runs
+     * @param c
+     * @param closure
+     */
+    static void whileTyping(IChannel c, Closure closure) {
+        enableTyping(c)
+        closure.call()
+        disableTyping(c)
+    }
 }
