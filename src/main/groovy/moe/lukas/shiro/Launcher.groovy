@@ -1,10 +1,10 @@
 package moe.lukas.shiro
 
+import static java.util.concurrent.TimeUnit.SECONDS
+
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
-
-import static java.util.concurrent.TimeUnit.SECONDS
 
 class Launcher {
     public static void main(String[] args) {

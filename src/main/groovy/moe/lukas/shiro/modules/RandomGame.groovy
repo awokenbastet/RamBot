@@ -1,12 +1,12 @@
 package moe.lukas.shiro.modules
 
-import sx.blah.discord.handle.obj.Status
-import sx.blah.discord.api.IDiscordClient
-import moe.lukas.shiro.core.IAdvancedModule
-import moe.lukas.shiro.annotations.ShiroMeta
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent
-
 import static java.util.concurrent.TimeUnit.SECONDS
+
+import moe.lukas.shiro.annotations.ShiroMeta
+import moe.lukas.shiro.core.IAdvancedModule
+import sx.blah.discord.api.IDiscordClient
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent
+import sx.blah.discord.handle.obj.Status
 
 @ShiroMeta(enabled = true, author = "sn0w")
 class RandomGame implements IAdvancedModule {

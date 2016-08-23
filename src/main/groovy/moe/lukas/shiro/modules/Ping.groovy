@@ -1,8 +1,8 @@
 package moe.lukas.shiro.modules
 
 import moe.lukas.shiro.annotations.ShiroCommand
-import moe.lukas.shiro.core.IModule
 import moe.lukas.shiro.annotations.ShiroMeta
+import moe.lukas.shiro.core.IModule
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IMessage
 

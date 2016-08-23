@@ -1,17 +1,16 @@
 package moe.lukas.shiro.core
 
-import moe.lukas.shiro.util.Brain
-import moe.lukas.shiro.util.Logger
-import sx.blah.discord.handle.obj.IChannel
-import moe.lukas.shiro.annotations.ShiroCommand
 import com.google.code.chatterbotapi.ChatterBot
-import sx.blah.discord.api.events.EventSubscriber
-import com.google.code.chatterbotapi.ChatterBotType
-import sx.blah.discord.handle.impl.events.ReadyEvent
 import com.google.code.chatterbotapi.ChatterBotFactory
 import com.google.code.chatterbotapi.ChatterBotSession
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent
+import com.google.code.chatterbotapi.ChatterBotType
+import moe.lukas.shiro.annotations.ShiroCommand
+import moe.lukas.shiro.util.Logger
+import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent
+import sx.blah.discord.handle.impl.events.ReadyEvent
+import sx.blah.discord.handle.obj.IChannel
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
@@ -33,7 +32,6 @@ class EventHandler {
          * Shiro no likey :c
          */
         if (!e.getMessage().getAuthor().isBot() && !e.getMessage().mentionsEveryone()) {
-
             /**
              * Check if the Owner requests a CMD change
              */

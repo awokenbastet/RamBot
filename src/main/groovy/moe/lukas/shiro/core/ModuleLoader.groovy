@@ -1,11 +1,11 @@
 package moe.lukas.shiro.core
 
-import org.reflections.Reflections
-import moe.lukas.shiro.util.Logger
-import sx.blah.discord.api.IDiscordClient
-import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.annotations.ShiroCommand
+import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.annotations.ShiroMetaParser
+import moe.lukas.shiro.util.Logger
+import org.reflections.Reflections
+import sx.blah.discord.api.IDiscordClient
 
 /**
  * Class to help loading/finding modules
