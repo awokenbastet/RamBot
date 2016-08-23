@@ -1,4 +1,4 @@
-package moe.lukas.shiro.commands
+package moe.lukas.shiro.modules
 
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.JsonNode

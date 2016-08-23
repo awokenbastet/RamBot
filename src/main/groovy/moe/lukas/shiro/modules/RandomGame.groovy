@@ -1,4 +1,4 @@
-package moe.lukas.shiro.commands
+package moe.lukas.shiro.modules
 
 import sx.blah.discord.handle.obj.Status
 import sx.blah.discord.api.IDiscordClient

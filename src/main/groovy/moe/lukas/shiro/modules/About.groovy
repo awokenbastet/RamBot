@@ -1,4 +1,4 @@
-package moe.lukas.shiro.commands
+package moe.lukas.shiro.modules
 
 import moe.lukas.shiro.core.IModule
 import moe.lukas.shiro.annotations.ShiroMeta

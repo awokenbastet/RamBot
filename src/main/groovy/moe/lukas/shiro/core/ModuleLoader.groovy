@@ -19,7 +19,7 @@ class ModuleLoader {
      * @return
      */
     static Set<Class<?>> loadModules() {
-        return new Reflections("moe.lukas.shiro.commands").getTypesAnnotatedWith(ShiroMeta.class);
+        return new Reflections("moe.lukas.shiro.modules").getTypesAnnotatedWith(ShiroMeta.class);
     }
 
     /**
