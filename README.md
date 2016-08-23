@@ -17,6 +17,7 @@ Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groov
 |![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
 |?|EliteBot|JavaScript|[Desvome/EliteBot](https://github.com/Devsome/EliteBot)
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
+
 ### Project state:
 Currently early indev.<br>
 Do not use until further notice.<br>
