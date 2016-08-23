@@ -2,6 +2,10 @@ build/
 .idea/
 brain.json
 
+gradlew
+gradlew.bat
+gradle/
+
 #Created by https://www.gitignore.io/api/windows,linux,osx,gradle,java,intellij
 
 ### Windows ###
