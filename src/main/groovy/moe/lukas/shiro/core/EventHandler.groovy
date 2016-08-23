@@ -32,7 +32,7 @@ class EventHandler {
          * Ignore other bots.
          * Shiro no likey :c
          */
-        if (!e.getMessage().getAuthor().isBot()) {
+        if (!e.getMessage().getAuthor().isBot() && !e.getMessage().mentionsEveryone()) {
 
             /**
              * Check if the Owner requests a CMD change
