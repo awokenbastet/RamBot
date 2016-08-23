@@ -13,7 +13,7 @@
 - [ ] !stats - Bot stats
 - [ ] !uptime - Bot uptime
 - [ ] !ramoji - Random emoji
-- [ ] !minecraft <user> - Show the minecraft avatar
+- [x] ~~!minecraft <user> - Show the minecraft avatar~~
 - [ ] !roll - Random number
 - [ ] !bigmoji <emoji> - Show this emoji in big
 - [ ] !setosu <link> / !osu <@mention> - get/set osu profile
