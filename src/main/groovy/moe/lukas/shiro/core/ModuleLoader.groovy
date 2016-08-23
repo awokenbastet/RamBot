@@ -31,7 +31,7 @@ class ModuleLoader {
 
         loadModules().each { Class<?> c ->
             def m = [
-                name      : c.getName().replace("moe.lukas.shiro.commands.", ""),
+                name      : c.getName().replace("moe.lukas.shiro.modules.", ""),
                 properties: ShiroMetaParser.parse(c),
                 class     : c
             ]
