@@ -15,7 +15,9 @@ https://trello.com/b/GifbZ43Q/shiro-discord-bot
 Go to [meetshiro.xyz](http://meetshiro.xyz)
 
 ### Testimonials! (OMG OMG OMG \o/)
-[![](http://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)
+[![](http://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)<br>
+![](https://i.imgur.com/6m0MhFX.png)<br>
+![](https://i.imgur.com/gMciLmO.png)
 
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
