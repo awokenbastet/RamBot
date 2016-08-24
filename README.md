@@ -1,6 +1,7 @@
 # Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
-[![Build Status](https://travis-ci.org/sn0w/Shiro.svg?branch=master)](https://travis-ci.org/sn0w/Shiro)
-![](https://img.shields.io/badge/license-AGPLv3-blue.svg)
+[![Build Status](https://travis-ci.org/sn0w/Shiro.svg?branch=master)](https://travis-ci.org/sn0w/Shiro) ![](https://img.shields.io/github/license/sn0w/shiro.svg?maxAge=32000) [![](https://img.shields.io/badge/Project%20Management-waffle.io-blue.svg)](https://waffle.io/sn0w/Shiro)
+[![](https://img.shields.io/badge/Language-Groovy-yellowgreen.svg)](http://groovy-lang.org/)
+
 
 Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).
 
