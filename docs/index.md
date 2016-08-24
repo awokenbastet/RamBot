@@ -17,6 +17,11 @@ You **don't** need to provide a name for your modules.<br>
 Shiro will guess it at runtime using reflection-magic.
 
 ### Simple Modules (`IModule`)
+Simple modules are the most common ones.<br>
+They define commands and react to them in a `void action(e)`
+
+`e` is a simple `IMessageReceivedEvent` from Discord4J.
+
 ```groovy
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import moe.lukas.shiro.annotations.ShiroCommand
@@ -29,7 +34,7 @@ import moe.lukas.shiro.core.IModule
     author = "sn0w",
     commands = [
         //would result in "!hello <world>" on !help
-        @ShiroCommand(command = "hello", usage = "world")
+        @ShiroCommand(command = "hello", usage = "world"),
         // a command without usage information
         @ShiroCommand(command = "hw")
     ]
@@ -41,10 +46,12 @@ class MyModuleName implements IModule {
 }
 ```
 
-Simple modules are the most common ones.<br>
-They define commands and react to them in a `void action(e)`
-
 ### Advanced Modules (`IAdvancedModule`)
+Advanced modules provide a way to execute code **before** any command is triggered.<br>
+This may be useful if you want to extend Shiro's Core or don't need to listen to commands at all.<br>
+
+You need to define a `void init()` that takes a `IDiscordClient` instance.
+
 ```groovy
 import sx.blah.discord.api.IDiscordClient
 import moe.lukas.shiro.core.IAdvancedModule
@@ -64,15 +71,16 @@ class Something implements IAdvancedModule {
 
 ```
 
-Advanced modules provide a way to execute code **before** any command is triggered.<br>
-This may be useful if you want to extend Shiro's Core or don't need to listen to commands at all.<br>
-
-You need to define a `void init()` that takes a `IDiscordClient` instance.
-
 # Annotations
 Shiro uses annotations instead of class properties to store meta information.
 
-### `@ShiroMeta()`
+## `@ShiroMeta()`
+The ShiroMeta annotation is used to store literal meta-information.<br>
+All properties are listed on the right.
+
+Note that even though all properties are optional you need to provide **at least** an empty annotation.
+Shiro rejects modules without `@ShiroMeta()` annotation.
+
 ```groovy
 @ShiroMeta(
     enabled = true/false,
@@ -84,19 +92,13 @@ Shiro uses annotations instead of class properties to store meta information.
 )
 ```
 
-The ShiroMeta annotation is used to store literal meta-information.<br>
-All properties are listed on the right.
+## `@ShiroCommand()`
+This annotation is used to register command listeners.<br>
+As you can see you **have to** provide the `command` property but `usage` is optional.
 
-Note that even though all properties are optional you need to provide **at least** an empty annotation.
-Shiro rejects modules without `@ShiroMeta()` annotation.
-
-### `@ShiroCommand()`
 ```groovy
 [
     @ShiroCommand(command = "hello", usage = "<name>"),
     @ShiroCommand(command = "world")
 ]
 ```
-
-This annotation is used to register command listeners.<br>
-As you can see you **have to** provide the `command` property but `usage` is optional.
