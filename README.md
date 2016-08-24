@@ -7,9 +7,9 @@ Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groov
 ### Can I see/suggest features/commands/...?
 YES!<br>
 Please do it!<br>
-Go to our Trello board and add/vote whatever you want :)
-
-https://trello.com/b/GifbZ43Q/shiro-discord-bot
+I decided to organize everything in GitHub issues.<br>
+For a better overview visit our Waffle board:<br>
+https://waffle.io/sn0w/Shiro
 
 ### Documentation and FAQ
 Go to [meetshiro.xyz](http://meetshiro.xyz)
