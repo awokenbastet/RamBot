@@ -24,5 +24,5 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 |:-:|:-:|:-:|:-:|
 |![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot)
 |![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
-|?|EliteBot|JavaScript|[Desvome/EliteBot](https://github.com/Devsome/EliteBot)
+|![](https://i.imgur.com/VZRi9zJ.png)|EliteBot|JavaScript|[Desvome/EliteBot](https://github.com/Devsome/EliteBot)
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
