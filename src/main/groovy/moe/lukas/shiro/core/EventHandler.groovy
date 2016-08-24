@@ -84,12 +84,7 @@ class EventHandler {
                     }
                 }
 
-                new Thread({
-                    message += ":bomb: This message terminates in 20 seconds!"
-                    IMessage sentMessage = e.getMessage().getChannel().sendMessage(message)
-                    SECONDS.sleep(20)
-                    sentMessage.delete()
-                }).start()
+                e.getMessage().getChannel().sendMessage(message)
             }
             /**
              * Catch all other commands
