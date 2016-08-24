@@ -1,5 +1,7 @@
 package moe.lukas.shiro.core
 
+import static java.util.concurrent.TimeUnit.SECONDS
+
 import com.google.code.chatterbotapi.ChatterBot
 import com.google.code.chatterbotapi.ChatterBotFactory
 import com.google.code.chatterbotapi.ChatterBotSession
@@ -11,6 +13,7 @@ import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.ReadyEvent
 import sx.blah.discord.handle.obj.IChannel
+import sx.blah.discord.handle.obj.IMessage
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
@@ -59,7 +62,7 @@ class EventHandler {
                     LinkedHashMap properties = module.properties
 
                     if (properties.enabled && properties.commands.size() > 0) {
-                        message += "**${module.name}** by ${properties.author} "
+                        message += "**${module.name}** "
 
                         if (properties.description == "") {
                             message += "[no description]\n"
@@ -71,7 +74,7 @@ class EventHandler {
                             message += "\t **${Core.getPrefixForServer(e)}${it.command()}**"
 
                             if (it.usage() != "") {
-                                message += " | Usage: `${Core.getPrefixForServer(e)}${it.command()} ${it.usage()}`"
+                                message += " `${it.usage()}`"
                             }
 
                             message += "\n"
@@ -81,7 +84,12 @@ class EventHandler {
                     }
                 }
 
-                e.getMessage().getChannel().sendMessage(message)
+                new Thread({
+                    message += ":bomb: This message terminates in 20 seconds!"
+                    IMessage sentMessage = e.getMessage().getChannel().sendMessage(message)
+                    SECONDS.sleep(20)
+                    sentMessage.delete()
+                }).start()
             }
             /**
              * Catch all other commands
