@@ -4,6 +4,13 @@
 
 Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).
 
+### Can I see/suggest features/commands/...?
+YES!<br>
+Please do it!<br>
+Go to our Trello board and add/vote whatever you want :)
+
+https://trello.com/b/GifbZ43Q/shiro
+
 ### Documentation and FAQ
 Go to [meetshiro.xyz](http://meetshiro.xyz)
 
