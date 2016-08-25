@@ -27,3 +27,9 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 |![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
 |![](https://i.imgur.com/VZRi9zJ.png)|EliteBot|JavaScript|[Desvome/EliteBot](https://github.com/Devsome/EliteBot) <br> **Warning:** Author likes and writes messy code!
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
+
+### Requirements
+- Any OS and CPU that runs Java 8
+- About 64mb of free RAM
+- About 20mb of free HDD space
+- Internet connection, duh
