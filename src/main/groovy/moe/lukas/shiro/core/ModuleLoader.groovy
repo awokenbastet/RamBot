@@ -35,22 +35,25 @@ class ModuleLoader {
                 properties: ShiroMetaParser.parse(c),
                 class     : c
             ]
+            if(m.properties.enabled) {
+                print("${m.name} reacts to [|")
+                m.properties.commands.each { ShiroCommand it ->
+                    print(it.command() + "|")
+                }
+                print("]")
 
-            print("${m.name} reacts to [|")
-            m.properties.commands.each { ShiroCommand it ->
-                print(it.command() + "|")
+                try {
+                    c.newInstance().invokeMethod("init", client)
+                    print(" | Module initialized!")
+                } catch (MissingMethodException e) {
+                } finally {
+                    print("\n")
+                }
+
+                modules << m
+            } else {
+                println("${m.name} is disabled!")
             }
-            print("]")
-
-            try {
-                c.newInstance().invokeMethod("init", client)
-                print(" | Module initialized!")
-            } catch (MissingMethodException e) {
-            } finally {
-                print("\n")
-            }
-
-            modules << m
         }
 
         println()
