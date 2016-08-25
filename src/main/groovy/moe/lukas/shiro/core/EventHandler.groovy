@@ -1,7 +1,5 @@
 package moe.lukas.shiro.core
 
-import static java.util.concurrent.TimeUnit.SECONDS
-
 import com.google.code.chatterbotapi.ChatterBot
 import com.google.code.chatterbotapi.ChatterBotFactory
 import com.google.code.chatterbotapi.ChatterBotSession
@@ -13,7 +11,6 @@ import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.ReadyEvent
 import sx.blah.discord.handle.obj.IChannel
-import sx.blah.discord.handle.obj.IMessage
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)

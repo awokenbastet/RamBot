@@ -1,9 +1,8 @@
 package moe.lukas.shiro.modules
 
-import static java.util.concurrent.TimeUnit.SECONDS
-
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IAdvancedModule
+import moe.lukas.shiro.util.Timer
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.Status
@@ -40,13 +39,10 @@ class RandomGame implements IAdvancedModule {
     ]
 
     void init(IDiscordClient client) {
-        new Thread({
-            while (true) {
-                client.changeStatus(Status.game(games[new Random().nextInt(games.size())]))
-                System.gc()
-                SECONDS.sleep(10)
-            }
-        }).start()
+        Timer.setInterval(10 * 1000, {
+            client.changeStatus(Status.game(games[new Random().nextInt(games.size())]))
+            System.gc()
+        })
     }
 
     void action(MessageReceivedEvent e) {}

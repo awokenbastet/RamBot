@@ -1,10 +1,9 @@
 package moe.lukas.shiro
 
-import static java.util.concurrent.TimeUnit.SECONDS
-
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
+import moe.lukas.shiro.util.Timer
 
 class Launcher {
     public static void main(String[] args) {
@@ -13,15 +12,16 @@ class Launcher {
         Logger.info(" --- waiting 5 seconds ---");
         System.out.println()
 
-        SECONDS.sleep(5)
+        Timer.setTimeout(5 * 1000, {
+            String token = Brain.instance.get("api.token")
 
-        String token = Brain.instance.get("api.token")
-        if (token == null) {
-            Brain.instance.set("api.token", "YOUR_TOKEN_HERE")
-            Logger.err("Please open 'brain.json' and enter your Discord-API-Token!")
-            System.exit(1)
-        } else {
-            Core.boot(token)
-        }
+            if (token == null) {
+                Brain.instance.set("api.token", "YOUR_TOKEN_HERE")
+                Logger.err("Please open 'brain.json' and enter your Discord-API-Token!")
+                System.exit(1)
+            } else {
+                Core.boot(token)
+            }
+        })
     }
 }
