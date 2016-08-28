@@ -99,12 +99,12 @@ class EventHandler {
 
                     boolean answered = false
 
+                    // Check for command matches
                     ModuleLoader.modules.each { LinkedHashMap module ->
                         if (module.properties.enabled == true) {
-                            // Check for matches
                             module.properties.commands.any { ShiroCommand it ->
                                 if (e.message.content.matches(
-                                    /^${Core.getPrefixForServer(e)}${it.command()}.*/
+                                    /^${Core.getPrefixForServer(e)}${it.command()}\s.*/
                                 )) {
                                     GroovyObject object = module["class"].newInstance()
                                     object.invokeMethod("action", e)
