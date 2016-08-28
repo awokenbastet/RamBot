@@ -31,24 +31,24 @@ class EventHandler {
          * Ignore other bots.
          * Shiro no likey :c
          */
-        if (!e.getMessage().getAuthor().isBot() && !e.getMessage().mentionsEveryone()) {
+        if (!e.message.author.bot && !e.message.mentionsEveryone()) {
             /**
              * Check if the Owner requests a CMD change
              */
-            if (e.getMessage().getContent().matches(/^SET PREFIX (.){0,5}$/)) {
-                if (e.getMessage()?.getGuild()?.getOwnerID() == e.getMessage().getAuthor().getID()) {
-                    Core.setPrefixForServer(e, e.getMessage().getContent().replace("SET PREFIX ", ""))
-                    e.getMessage().getChannel().sendMessage("Saved :smiley:")
+            if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
+                if (e.message?.guild?.ownerID == e.message.author.getID()) {
+                    Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
+                    e.message.channel.sendMessage("Saved :smiley:")
                 } else {
-                    e.getMessage().getChannel().sendMessage("Only the owner of this Guild is allowed to do this :wink:")
+                    e.message.channel.sendMessage("Only the owner of this Guild is allowed to do this :wink:")
                 }
             }
             /**
              * Show help on [prefix]h / [prefix]help
              */
             else if (
-            e.getMessage().getContent().matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                e.getMessage().getContent().matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
+            e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
+                e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
             ) {
                 String message = ""
 
@@ -81,7 +81,7 @@ class EventHandler {
                     }
                 }
 
-                e.getMessage().getChannel().sendMessage(message)
+                e.message.channel.sendMessage(message)
             }
             /**
              * Catch all other commands
@@ -94,7 +94,7 @@ class EventHandler {
                     if (module.properties.enabled == true) {
                         // Check for matches
                         module.properties.commands.any { ShiroCommand it ->
-                            if (e.getMessage().getContent().matches(
+                            if (e.message.content.matches(
                                 /^${Core.getPrefixForServer(e)}${it.command()}.*/
                             )) {
                                 GroovyObject object = module["class"].newInstance()
@@ -114,15 +114,22 @@ class EventHandler {
                  * Forward anything else to cleverbot
                  */
                 if (!answered) {
-                    if (e.getMessage().getMentions().size() > 0) {
-                        e.getMessage().getMentions().any {
-                            if (it.getID() == e.getClient().getOurUser().getID()) {
+                    if (e.message.content == "REFRESH CHAT SESSION") {
+                        if (e.message?.guild?.ownerID == e.message.author.getID()) {
+                            cleverbotSessions[e.message.channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
+                            e.message.channel.sendMessage("Done :smiley:")
+                        } else {
+                            e.message.channel.sendMessage("Only the owner of this Guild is allowed to do this :wink:")
+                        }
+                    } else if (e.message.mentions.size() > 0) {
+                        e.message.mentions.any {
+                            if (it.getID() == e.client.ourUser.getID()) {
                                 String response = null
-                                IChannel channel = e.getMessage().getChannel()
+                                IChannel channel = e.message.channel
 
                                 Core.whileTyping(channel, {
                                     cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
-                                    response = cleverbotSessions[channel.getID()].think(e.getMessage().getContent())
+                                    response = cleverbotSessions[channel.getID()].think(e.message.getContent())
                                 })
 
                                 channel.sendMessage(response)
