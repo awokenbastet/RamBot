@@ -20,12 +20,11 @@ class RandomGame implements IAdvancedModule {
         "✧ﾟ･: *ヽ(◕ヮ◕ヽ)",
 
         // actual games
+        "Overwatch",
         "HuniePop",
         "Candy Crush",
         "Hyperdimension Neptunia",
-        "Yu-Gi-Oh!",
-        "Pokémon",
-        "Final Fantasy",
+        "Final Fantasy MCMX",
 
         // names
         "with Shinobu-Chan",
@@ -39,8 +38,8 @@ class RandomGame implements IAdvancedModule {
     ]
 
     void init(IDiscordClient client) {
-        Timer.setInterval(10 * 1000, {
-            client.changeStatus(Status.game(games[new Random().nextInt(games.size())]))
+        Timer.setInterval(20 * 1000, {
+            client.changeStatus(Status.game(games[new Random(System.nanoTime()).nextInt(games.size())]))
             System.gc()
         })
     }
