@@ -59,28 +59,27 @@ class EventHandler {
                 e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
                     e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
                 ) {
-                    String message = ""
-
-                    message += "Hi :3 \n"
-                    message += "These Plugins are currently loaded:\n\n"
+                    String message = "```\n"
 
                     ModuleLoader.modules.each { LinkedHashMap module ->
                         LinkedHashMap properties = module.properties
 
                         if (properties.enabled && properties.commands.size() > 0) {
-                            message += "**${module.name}** "
+                            message += "${module.name} "
 
                             if (properties.description == "") {
-                                message += "[no description]\n"
+                                message += "[no description]"
                             } else {
-                                message += "[${properties.description}]\n"
+                                message += "[${properties.description}]"
                             }
 
+                            message += "\n"
+
                             properties.commands.each { ShiroCommand it ->
-                                message += "\t **${Core.getPrefixForServer(e)}${it.command()}**"
+                                message += "\t ${Core.getPrefixForServer(e)}${it.command()} "
 
                                 if (it.usage() != "") {
-                                    message += " `${it.usage()}`"
+                                    message += "${it.usage()}"
                                 }
 
                                 message += "\n"
@@ -89,6 +88,8 @@ class EventHandler {
                             message += "\n"
                         }
                     }
+
+                    message += "```"
 
                     e.message.channel.sendMessage(message)
                 }
