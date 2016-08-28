@@ -20,6 +20,12 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 ![](https://i.imgur.com/6m0MhFX.png)<br>
 ![](https://i.imgur.com/gMciLmO.png)
 
+### Requirements
+- Any OS and CPU that runs Java 8
+- About 64mb of free RAM
+- About 20mb of free HDD space
+- Internet connection, duh
+
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
 |:-:|:-:|:-:|:-:|
@@ -27,9 +33,3 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 |![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot) <br> **Warning:** Shiro (anime character) hater
 |![](https://i.imgur.com/VZRi9zJ.png)|EliteBot|JavaScript|[Desvome/EliteBot](https://github.com/Devsome/EliteBot) <br> **Warning:** Author likes and writes messy code!
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
-
-### Requirements
-- Any OS and CPU that runs Java 8
-- About 64mb of free RAM
-- About 20mb of free HDD space
-- Internet connection, duh
