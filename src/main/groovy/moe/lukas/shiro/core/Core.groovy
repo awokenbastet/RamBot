@@ -118,4 +118,17 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
         closure.call()
         disableTyping(c)
     }
+
+    /**
+     * Only call c if the author of e is a guild owner
+     * @param e
+     * @param c
+     */
+    static void ownerAction(MessageReceivedEvent e, Closure c) {
+        if(e.message?.guild?.ownerID == e.message.author.getID()) {
+            c.call()
+        } else {
+            e.message.channel.sendMessage("Only the owner of the Guild is allowed to do this :wink:")
+        }
+    }
 }
