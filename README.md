@@ -19,7 +19,8 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 [![](https://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)<br>
 ![](https://i.imgur.com/6m0MhFX.png)<br>
 ![](https://i.imgur.com/gMciLmO.png)<br>
-![](https://i.imgur.com/HTO4AYP.png)
+![](https://i.imgur.com/HTO4AYP.png)<br>
+![](https://i.imgur.com/5CzH1yW.png)
 
 ### Requirements
 - Any OS and CPU that runs Java 8
