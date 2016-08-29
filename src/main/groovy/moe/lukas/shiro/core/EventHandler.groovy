@@ -57,7 +57,7 @@ class EventHandler {
                  */
                 else if (
                 e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                    e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
+                        e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
                 ) {
                     String message = "```\n"
 
@@ -106,7 +106,7 @@ class EventHandler {
                             module.properties.commands.any { ShiroCommand it ->
                                 if (
                                 e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
-                                    e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
+                                        e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
                                 ) {
                                     GroovyObject object = module["class"].newInstance()
                                     object.invokeMethod("action", e)
@@ -139,21 +139,25 @@ class EventHandler {
                                     e.message.channel.sendMessage("Done :smiley:")
                                 })
                                 break
-                        }
-                    } else if (e.message.mentions.size() > 0) {
-                        e.message.mentions.any {
-                            if (it.getID() == e.client.ourUser.getID()) {
-                                String response = null
-                                IChannel channel = e.message.channel
 
-                                Core.whileTyping(channel, {
-                                    cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
-                                    response = cleverbotSessions[channel.getID()].think(e.message.getContent())
-                                })
+                            default:
+                                if (e.message.mentions.size() > 0) {
+                                    e.message.mentions.any {
+                                        if (it.getID() == e.client.ourUser.getID()) {
+                                            String response = null
+                                            IChannel channel = e.message.channel
 
-                                channel.sendMessage(response)
-                                return true
-                            }
+                                            Core.whileTyping(channel, {
+                                                cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
+                                                response = cleverbotSessions[channel.getID()].think(e.message.getContent())
+                                            })
+
+                                            channel.sendMessage(response)
+                                            return true
+                                        }
+                                    }
+                                }
+                                break
                         }
                     }
                 }
