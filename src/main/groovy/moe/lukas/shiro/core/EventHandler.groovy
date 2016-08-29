@@ -20,7 +20,17 @@ class EventHandler {
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onReadyEvent(ReadyEvent e) {
+        int servers = e.client.guilds.size()
+        int channels = 0
+
+        e.client.guilds.each {
+            it.channels.each {
+                channels++
+            }
+        }
+
         Logger.info("Discord connection established!")
+        Logger.info("I'm connected to ${servers} servers and listening on ${channels} channels :) \n")
         ModuleLoader.load(e.client)
         Logger.info("To add me to your server visit https://discordapp.com/oauth2/authorize?client_id=${e.client.getApplicationClientID()}&scope=bot&permissions=")
     }
