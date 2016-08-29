@@ -16,9 +16,10 @@ https://waffle.io/sn0w/Shiro
 Go to [meetshiro.xyz](http://meetshiro.xyz)
 
 ### Testimonials! (OMG OMG OMG \o/)
-[![](http://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)<br>
+[![](https://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)<br>
 ![](https://i.imgur.com/6m0MhFX.png)<br>
-![](https://i.imgur.com/gMciLmO.png)
+![](https://i.imgur.com/gMciLmO.png)<br>
+![](https://i.imgur.com/HTO4AYP.png)
 
 ### Requirements
 - Any OS and CPU that runs Java 8
