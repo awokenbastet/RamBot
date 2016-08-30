@@ -20,7 +20,8 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 ![](https://i.imgur.com/6m0MhFX.png)<br>
 ![](https://i.imgur.com/gMciLmO.png)<br>
 ![](https://i.imgur.com/HTO4AYP.png)<br>
-![](https://i.imgur.com/5CzH1yW.png)
+![](https://i.imgur.com/5CzH1yW.png)<br>
+![](https://i.imgur.com/Xtu1uNF.png)
 
 ### Requirements
 - Any OS and CPU that runs Java 8
