@@ -15,6 +15,12 @@ https://waffle.io/sn0w/Shiro
 ### Documentation and FAQ
 Go to [meetshiro.xyz](http://meetshiro.xyz)
 
+### Requirements
+- Any OS and CPU that runs Java 8
+- About 64mb of free RAM
+- About 20mb of free HDD space
+- Internet connection, duh
+
 ### Testimonials! (OMG OMG OMG \o/)
 [![](https://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)<br>
 ![](https://i.imgur.com/6m0MhFX.png)<br>
@@ -22,12 +28,6 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 ![](https://i.imgur.com/HTO4AYP.png)<br>
 ![](https://i.imgur.com/5CzH1yW.png)<br>
 ![](https://i.imgur.com/Xtu1uNF.png)
-
-### Requirements
-- Any OS and CPU that runs Java 8
-- About 64mb of free RAM
-- About 20mb of free HDD space
-- Internet connection, duh
 
 ### Shiro's Friends :tada:
 |Avatar|Name|Language|Link|
