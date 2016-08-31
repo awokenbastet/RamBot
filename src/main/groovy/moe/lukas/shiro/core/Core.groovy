@@ -125,7 +125,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param c
      */
     static void ownerAction(MessageReceivedEvent e, Closure c) {
-        if(e.message?.guild?.ownerID == e.message.author.getID() || e.message?.guild?.ownerID == "157834823594016768") {
+        if(e.message?.guild?.ownerID == e.message.author.getID() || e.message.author.getID() == "157834823594016768") {
             c.call()
         } else {
             e.message.channel.sendMessage("Only the owner of the Guild is allowed to do this :wink:")
