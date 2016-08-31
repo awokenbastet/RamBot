@@ -37,121 +37,121 @@ class EventHandler {
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
+        /**
+         * Ignore other bots.
+         * Shiro no likey :c
+         */
+        if (!e.message.author.bot && !e.message.mentionsEveryone()) {
             /**
-             * Ignore other bots.
-             * Shiro no likey :c
+             * Check if the Owner requests a CMD change
              */
-            if (!e.message.author.bot && !e.message.mentionsEveryone()) {
-                /**
-                 * Check if the Owner requests a CMD change
-                 */
-                if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
-                    if (e.message?.guild?.ownerID == e.message.author.getID()) {
-                        Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
-                        e.message.channel.sendMessage("Saved :smiley:")
-                    } else {
-                        e.message.channel.sendMessage("Only the owner of this Guild is allowed to do this :wink:")
-                    }
+            if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
+                if (e.message?.guild?.ownerID == e.message.author.getID()) {
+                    Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
+                    e.message.channel.sendMessage("Saved :smiley:")
+                } else {
+                    e.message.channel.sendMessage("Only the owner of this Guild is allowed to do this :wink:")
                 }
-                /**
-                 * Show help on [prefix]h / [prefix]help
-                 */
-                else if (
-                e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                        e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
-                ) {
-                    String message = "```\n"
+            }
+            /**
+             * Show help on [prefix]h / [prefix]help
+             */
+            else if (
+            e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
+                    e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
+            ) {
+                String message = "```\n"
 
-                    ModuleLoader.modules.each { LinkedHashMap module ->
-                        LinkedHashMap properties = module.properties
+                ModuleLoader.modules.each { LinkedHashMap module ->
+                    LinkedHashMap properties = module.properties
 
-                        if (properties.enabled && properties.commands.size() > 0) {
-                            message += "${module.name} "
+                    if (properties.enabled && properties.commands.size() > 0) {
+                        message += "${module.name} "
 
-                            if (properties.description == "") {
-                                message += "[no description]"
-                            } else {
-                                message += "[${properties.description}]"
-                            }
+                        if (properties.description == "") {
+                            message += "[no description]"
+                        } else {
+                            message += "[${properties.description}]"
+                        }
 
-                            message += "\n"
+                        message += "\n"
 
-                            properties.commands.each { ShiroCommand it ->
-                                message += "\t ${Core.getPrefixForServer(e)}${it.command()} "
+                        properties.commands.each { ShiroCommand it ->
+                            message += "\t ${Core.getPrefixForServer(e)}${it.command()} "
 
-                                if (it.usage() != "") {
-                                    message += "${it.usage()}"
-                                }
-
-                                message += "\n"
+                            if (it.usage() != "") {
+                                message += "${it.usage()}"
                             }
 
                             message += "\n"
                         }
+
+                        message += "\n"
                     }
-
-                    message += "```"
-
-                    e.message.channel.sendMessage(message)
                 }
-                /**
-                 * Catch all other commands
-                 */
-                else {
 
-                    boolean answered = false
+                message += "```"
 
-                    // Check for command matches
-                    ModuleLoader.modules.each { LinkedHashMap module ->
-                        if (module.properties.enabled == true) {
-                            module.properties.commands.any { ShiroCommand it ->
-                                if (
-                                e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
-                                        e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
-                                ) {
-                                    GroovyObject object = module["class"].newInstance()
-                                    object.invokeMethod("action", e)
-                                    System.gc()
+                e.message.channel.sendMessage(message)
+            }
+            /**
+             * Catch all other commands
+             */
+            else {
 
-                                    answered = true
+                boolean answered = false
 
-                                    // break loop
-                                    return true
-                                }
+                // Check for command matches
+                ModuleLoader.modules.each { LinkedHashMap module ->
+                    if (module.properties.enabled == true) {
+                        module.properties.commands.any { ShiroCommand it ->
+                            if (
+                            e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
+                                    e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
+                            ) {
+                                GroovyObject object = module["class"].newInstance()
+                                object.invokeMethod("action", e)
+                                System.gc()
+
+                                answered = true
+
+                                // break loop
+                                return true
                             }
                         }
                     }
+                }
 
-                    /**
-                     * Forward anything else to cleverbot
-                     */
-                    if (!answered) {
-                        switch (e.message.content) {
-                            case "REFRESH CHAT SESSION":
-                                Core.ownerAction(e, {
-                                    cleverbotSessions[e.message.channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
-                                    e.message.channel.sendMessage("Done :smiley:")
-                                })
-                                break
+                /**
+                 * Forward anything else to cleverbot
+                 */
+                if (!answered) {
+                    switch (e.message.content) {
+                        case "REFRESH CHAT SESSION":
+                            Core.ownerAction(e, {
+                                cleverbotSessions[e.message.channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
+                                e.message.channel.sendMessage("Done :smiley:")
+                            })
+                            break
 
-                            default:
-                                if (e.message.mentions.size() > 0) {
-                                    e.message.mentions.any {
-                                        if (it.getID() == e.client.ourUser.getID()) {
-                                            String response = null
-                                            IChannel channel = e.message.channel
+                        default:
+                            if (e.message.mentions.size() > 0) {
+                                e.message.mentions.any {
+                                    if (it.getID() == e.client.ourUser.getID()) {
+                                        String response = null
+                                        IChannel channel = e.message.channel
 
-                                            Core.whileTyping(channel, {
-                                                cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
-                                                response = cleverbotSessions[channel.getID()].think(e.message.getContent())
-                                            })
+                                        Core.whileTyping(channel, {
+                                            cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
+                                            response = cleverbotSessions[channel.getID()].think(e.message.getContent())
+                                        })
 
-                                            channel.sendMessage(response)
-                                            return true
-                                        }
+                                        channel.sendMessage(response)
+                                        return true
                                     }
                                 }
-                                break
+                            }
+                            break
                     }
                 }
             }
