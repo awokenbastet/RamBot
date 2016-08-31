@@ -15,7 +15,6 @@ import sx.blah.discord.handle.obj.IChannel
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
     private LinkedHashMap<String, ChatterBotSession> cleverbotSessions = []
-    private List<IChannel> ignoredSources = []
 
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
@@ -38,14 +37,6 @@ class EventHandler {
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
-        if (ignoredSources.any { return it.getID() == e.message.channel.getID() }) {
-            if (e.message.content == "UNIGNORE THIS CHANNEL") {
-                Core.ownerAction(e, {
-                    ignoredSources.remove(e.message.channel)
-                    e.message.channel.sendMessage(":speaker: Ok I will watch this channel again!")
-                })
-            }
-        } else {
             /**
              * Ignore other bots.
              * Shiro no likey :c
@@ -136,13 +127,6 @@ class EventHandler {
                      */
                     if (!answered) {
                         switch (e.message.content) {
-                            case "IGNORE THIS CHANNEL":
-                                Core.ownerAction(e, {
-                                    e.message.channel.sendMessage(":mute: Ok I will ignore this channel now!")
-                                    ignoredSources.push(e.message.channel)
-                                })
-                                break
-
                             case "REFRESH CHAT SESSION":
                                 Core.ownerAction(e, {
                                     cleverbotSessions[e.message.channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
@@ -168,7 +152,6 @@ class EventHandler {
                                     }
                                 }
                                 break
-                        }
                     }
                 }
             }
