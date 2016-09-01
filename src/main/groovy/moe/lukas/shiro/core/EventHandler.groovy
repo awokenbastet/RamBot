@@ -37,6 +37,10 @@ class EventHandler {
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
+        if (e.message.channel.private) {
+            Core.setPrefixForServer(e, "%")
+        }
+
         /**
          * Ignore other bots.
          * Shiro no likey :c
@@ -58,7 +62,7 @@ class EventHandler {
              */
             else if (
             e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                    e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
+                e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
             ) {
                 String message = "```\n"
 
@@ -107,7 +111,7 @@ class EventHandler {
                         module.properties.commands.any { ShiroCommand it ->
                             if (
                             e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
-                                    e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
+                                e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
                             ) {
                                 GroovyObject object = module["class"].newInstance()
                                 object.invokeMethod("action", e)
@@ -138,18 +142,12 @@ class EventHandler {
                             if (e.message.mentions.size() > 0) {
                                 e.message.mentions.any {
                                     if (it.getID() == e.client.ourUser.getID()) {
-                                        String response = null
-                                        IChannel channel = e.message.channel
-
-                                        Core.whileTyping(channel, {
-                                            cleverbotSessions[channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
-                                            response = cleverbotSessions[channel.getID()].think(e.message.getContent())
-                                        })
-
-                                        channel.sendMessage(response)
+                                        sendToCleverbot(e)
                                         return true
                                     }
                                 }
+                            } else if (e.message.channel.private) {
+                                sendToCleverbot(e)
                             }
                             break
                     }
@@ -163,5 +161,22 @@ class EventHandler {
     void onOffline(DiscordDisconnectedEvent e) {
         Logger.warn("Discord gateway disconnected!")
         Logger.warn("")
+    }
+
+    /**
+     * Helper that sends e to cleverbot
+     * @param e
+     */
+    private void sendToCleverbot(MessageReceivedEvent e) {
+        String response = null
+        IChannel channel = e.message.channel
+        def id = channel.private ? e.message.author.getID() : e.message.channel.getID()
+
+        Core.whileTyping(channel, {
+            cleverbotSessions[id] = cleverbot.createSession(Locale.ENGLISH)
+            response = cleverbotSessions[id].think(e.message.getContent())
+        })
+
+        channel.sendMessage(response == "" ? ":grey_question:" : response)
     }
 }

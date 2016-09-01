@@ -58,17 +58,25 @@ class Core {
      * @param callback
      * @return
      */
-    static String getPrefixForServer(MessageReceivedEvent e) {
-        String prefix = Brain.instance.get("prefixes.${e.getMessage().getGuild().getID()}")
+    static String getPrefixForServer(MessageReceivedEvent e, fallback = true) {
+        def id
 
-        if (prefix == null) {
+        if (e.message.channel.private) {
+            id = "PRIVATE." + e.message.author.getID()
+        } else {
+            id = e.message.guild.getID()
+        }
+
+        String prefix = Brain.instance.get("prefixes.${id}")
+
+        if (prefix == null && fallback) {
             e.getMessage().getChannel().sendMessage('''
 Warning :warning:\n
 There is no configured prefix for your guild!\n
 I will fallback to `%`
 Please tell your server owner to set a new command prefix using `SET PREFIX <your prefix>`
 ''')
-            Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", "%")
+            Brain.instance.set("prefixes.${id}", "%")
             return "%"
         } else {
             return prefix
@@ -81,7 +89,15 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param prefix
      */
     static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
-        Brain.instance.set("prefixes.${e.getMessage().getGuild().getID()}", prefix)
+        def id
+
+        if (e.message.channel.private) {
+            id = "PRIVATE." + e.message.author.getID()
+        } else {
+            id = e.message.guild.getID()
+        }
+
+        Brain.instance.set("prefixes.${id}", prefix)
     }
 
     /**
@@ -125,7 +141,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param c
      */
     static void ownerAction(MessageReceivedEvent e, Closure c) {
-        if(e.message?.guild?.ownerID == e.message.author.getID() || e.message.author.getID() == Brain.instance.get("owner")) {
+        if (e.message?.guild?.ownerID == e.message.author.getID() || e.message.author.getID() == Brain.instance.get("owner")) {
             c.call()
         } else {
             e.message.channel.sendMessage("Only the owner of the Guild is allowed to do this :wink:")
