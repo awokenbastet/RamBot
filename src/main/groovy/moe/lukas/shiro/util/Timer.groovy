@@ -2,17 +2,20 @@ package moe.lukas.shiro.util
 
 class Timer {
     static void setTimeout(long ms, Closure callback) {
-        new Thread({
+        Thread t = new Thread({
             String name = Thread.currentThread().getName()
             Thread.currentThread().setName("Timer#Timeout - " + name)
 
             Thread.sleep(ms)
             callback.call()
-        }).start()
+        })
+
+        t.setName("TIMEOUT#${t.id}")
+        t.start()
     }
 
     static Thread setInterval(long ms, Closure callback) {
-        return new Thread({
+        Thread t = new Thread({
             String name = Thread.currentThread().getName()
             Thread.currentThread().setName("Timer#Interval - " + name)
 
@@ -20,6 +23,11 @@ class Timer {
                 callback.call()
                 Thread.sleep(ms)
             }
-        }).start()
+        })
+
+        t.setName("INTERVAL#${t.id}")
+        t.start()
+
+        return t
     }
 }

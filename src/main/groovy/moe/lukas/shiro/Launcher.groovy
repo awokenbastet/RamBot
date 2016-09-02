@@ -13,10 +13,9 @@ class Launcher {
         System.out.println()
 
         Timer.setTimeout(5 * 1000, {
-            String token = Brain.instance.get("api.token")
+            String token = Brain.instance.get("api.token", "YOUR_TOKEN_HERE")
 
-            if (token == null) {
-                Brain.instance.set("api.token", "YOUR_TOKEN_HERE")
+            if (token == null || token == "YOUR_TOKEN_HERE") {
                 Logger.err("Please open 'brain.json' and enter your Discord-API-Token!")
                 System.exit(1)
             } else {
