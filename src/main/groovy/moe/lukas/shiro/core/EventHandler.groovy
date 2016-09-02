@@ -25,11 +25,7 @@ class EventHandler {
         int servers = e.client.guilds.size()
         int channels = 0
 
-        e.client.guilds.each {
-            it.channels.each {
-                channels++
-            }
-        }
+        e.client.guilds.each { it.channels.each { channels++ } }
 
         Logger.info("Discord connection established!")
         Logger.info("I'm connected to ${servers} servers and listening on ${channels} channels :) \n")
