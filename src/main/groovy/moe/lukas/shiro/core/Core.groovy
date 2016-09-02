@@ -59,13 +59,7 @@ class Core {
      * @return
      */
     static String getPrefixForServer(MessageReceivedEvent e, fallback = true) {
-        def id
-
-        if (e.message.channel.private) {
-            id = "PRIVATE." + e.message.author.getID()
-        } else {
-            id = e.message.guild.getID()
-        }
+        def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
 
         String prefix = Brain.instance.get("prefixes.${id}")
 
@@ -89,14 +83,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param prefix
      */
     static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
-        def id
-
-        if (e.message.channel.private) {
-            id = "PRIVATE." + e.message.author.getID()
-        } else {
-            id = e.message.guild.getID()
-        }
-
+        def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
         Brain.instance.set("prefixes.${id}", prefix)
     }
 
@@ -108,7 +95,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
         try {
             c.toggleTypingStatus()
         } catch (Exception ex) {
-
+            ex.printStackTrace()
         }
     }
 
@@ -120,7 +107,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
         try {
             !c.getTypingStatus() ?: c.toggleTypingStatus()
         } catch (Exception ex) {
-
+            ex.printStackTrace()
         }
     }
 
@@ -141,7 +128,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param c
      */
     static void ownerAction(MessageReceivedEvent e, Closure c) {
-        if (e.message?.guild?.ownerID == e.message.author.getID() || e.message.author.getID() == Brain.instance.get("owner")) {
+        if (e.message?.guild?.ownerID == e.message.author.ID || e.message.author.ID == Brain.instance.get("owner")) {
             c.call()
         } else {
             e.message.channel.sendMessage("Only the owner of the Guild is allowed to do this :wink:")

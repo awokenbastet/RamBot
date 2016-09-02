@@ -5,12 +5,15 @@ import com.google.code.chatterbotapi.ChatterBotFactory
 import com.google.code.chatterbotapi.ChatterBotSession
 import com.google.code.chatterbotapi.ChatterBotType
 import moe.lukas.shiro.annotations.ShiroCommand
+import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
+import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.ReadyEvent
 import sx.blah.discord.handle.obj.IChannel
+import sx.blah.discord.handle.obj.IMessage
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
@@ -46,11 +49,15 @@ class EventHandler {
          * Shiro no likey :c
          */
         if (!e.message.author.bot && !e.message.mentionsEveryone()) {
+            if (Brain.instance.get("cctv.enabled", true) as boolean) {
+                this.cctv(e.message)
+            }
+
             /**
              * Check if the Owner requests a CMD change
              */
             if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
-                if (e.message?.guild?.ownerID == e.message.author.getID()) {
+                if (e.message?.guild?.ownerID == e.message.author.ID) {
                     Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
                     e.message.channel.sendMessage("Saved :smiley:")
                 } else {
@@ -62,7 +69,7 @@ class EventHandler {
              */
             else if (
             e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                e.message.content.matches(/^<@${e.getClient().getOurUser().getID()}>\s(help|h)$/)
+                    e.message.content.matches(/^<@${e.getClient().getOurUser().ID}>\s(help|h)$/)
             ) {
                 String message = "```\n"
 
@@ -111,7 +118,7 @@ class EventHandler {
                         module.properties.commands.any { ShiroCommand it ->
                             if (
                             e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
-                                e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
+                                    e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
                             ) {
                                 GroovyObject object = module["class"].newInstance()
                                 object.invokeMethod("action", e)
@@ -133,7 +140,7 @@ class EventHandler {
                     switch (e.message.content) {
                         case "REFRESH CHAT SESSION":
                             Core.ownerAction(e, {
-                                cleverbotSessions[e.message.channel.getID()] = cleverbot.createSession(Locale.ENGLISH)
+                                cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
                                 e.message.channel.sendMessage("Done :smiley:")
                             })
                             break
@@ -141,7 +148,7 @@ class EventHandler {
                         default:
                             if (e.message.mentions.size() > 0) {
                                 e.message.mentions.any {
-                                    if (it.getID() == e.client.ourUser.getID()) {
+                                    if (it.ID == e.client.ourUser.ID) {
                                         sendToCleverbot(e)
                                         return true
                                     }
@@ -170,7 +177,7 @@ class EventHandler {
     private void sendToCleverbot(MessageReceivedEvent e) {
         String response = null
         IChannel channel = e.message.channel
-        def id = channel.private ? e.message.author.getID() : e.message.channel.getID()
+        def id = channel.private ? e.message.author.ID : e.message.channel.ID
 
         Core.whileTyping(channel, {
             cleverbotSessions[id] = cleverbot.createSession(Locale.ENGLISH)
@@ -178,5 +185,23 @@ class EventHandler {
         })
 
         channel.sendMessage(response == "" ? ":grey_question:" : response)
+    }
+
+    private void cctv(IDiscordClient c, IMessage m) {
+        IChannel channel = c?.
+                getGuildByID(Brain.instance.get("cctv.server", "") as String)?.
+                getChannelByID(Brain.instance.get("cctv.channel", "221215096842485760") as String)
+
+        if (channel != null) {
+            channel.sendMessage(
+                    ":cool: A new message! \n" +
+                            "```\n" +
+                            "Origin: #${m.channel.name} in ${m.channel.guild.name} " +
+                            "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
+                            "Author: ${m.author}\n" +
+                            "Content: ${m.content}\n" +
+                            "```"
+            )
+        }
     }
 }

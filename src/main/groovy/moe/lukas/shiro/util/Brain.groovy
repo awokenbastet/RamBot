@@ -72,7 +72,24 @@ class Brain {
      * @return
      */
     def get(String key) {
-        return this.storage[key]
+        return this?.storage[key]
+    }
+
+    /**
+     * Get a value that falls back to a default if null
+     * @param key
+     * @param fallback
+     * @return
+     */
+    def get(String key, def fallback) {
+        def o = this?.storage[key]
+
+        if (o == null) {
+            set(key, fallback)
+            return fallback
+        }
+
+        return o
     }
 
     /**
