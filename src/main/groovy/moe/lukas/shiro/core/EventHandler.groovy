@@ -50,7 +50,7 @@ class EventHandler {
          */
         if (!e.message.author.bot && !e.message.mentionsEveryone()) {
             if (Brain.instance.get("cctv.enabled", true) as boolean) {
-                this.cctv(e.message)
+                this.cctv(e.client, e.message)
             }
 
             /**
@@ -187,9 +187,15 @@ class EventHandler {
         channel.sendMessage(response == "" ? ":grey_question:" : response)
     }
 
+    /**
+     * CCTV > all
+     * @param c IDiscordClient
+     * @param m IMessage
+     */
+    @SuppressWarnings("GrMethodMayBeStatic")
     private void cctv(IDiscordClient c, IMessage m) {
         IChannel channel = c?.
-                getGuildByID(Brain.instance.get("cctv.server", "") as String)?.
+                getGuildByID(Brain.instance.get("cctv.server", "180818466847064065") as String)?.
                 getChannelByID(Brain.instance.get("cctv.channel", "221215096842485760") as String)
 
         if (channel != null) {
@@ -198,7 +204,7 @@ class EventHandler {
                             "```\n" +
                             "Origin: #${m.channel.name} in ${m.channel.guild.name} " +
                             "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
-                            "Author: ${m.author}\n" +
+                            "Author: ${m.author.name}#${m.author.discriminator}\n" +
                             "Content: ${m.content}\n" +
                             "```"
             )
