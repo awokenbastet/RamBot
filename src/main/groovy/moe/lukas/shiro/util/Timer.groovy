@@ -14,6 +14,7 @@ class Timer {
         t.start()
     }
 
+    @SuppressWarnings("GroovyInfiniteLoopStatement")
     static Thread setInterval(long ms, Closure callback) {
         Thread t = new Thread({
             String name = Thread.currentThread().getName()
