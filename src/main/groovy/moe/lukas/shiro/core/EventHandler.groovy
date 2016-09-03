@@ -45,14 +45,12 @@ class EventHandler {
          * Shiro no likey :c
          */
         if (!e.message.author.bot && !e.message.mentionsEveryone()) {
-            if (Brain.instance.get("cctv.enabled", true) as boolean) {
-                this.cctv(e.client, e.message)
-            }
-
             /**
              * Check if the Owner requests a CMD change
              */
             if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
+                this.cctv(e.client, e.message)
+
                 if (e.message?.guild?.ownerID == e.message.author.ID) {
                     Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
                     e.message.channel.sendMessage("Saved :smiley:")
@@ -65,8 +63,10 @@ class EventHandler {
              */
             else if (
             e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                    e.message.content.matches(/^<@${e.getClient().getOurUser().ID}>\s(help|h)$/)
+                e.message.content.matches(/^<@${e.getClient().getOurUser().ID}>\s(help|h)$/)
             ) {
+                this.cctv(e.client, e.message)
+
                 String message = "```\n"
 
                 ModuleLoader.modules.each { LinkedHashMap module ->
@@ -114,8 +114,10 @@ class EventHandler {
                         module.properties.commands.any { ShiroCommand it ->
                             if (
                             e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
-                                    e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
+                                e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
                             ) {
+                                this.cctv(e.client, e.message)
+
                                 GroovyObject object = module["class"].newInstance()
                                 object.invokeMethod("action", e)
                                 System.gc()
@@ -135,6 +137,8 @@ class EventHandler {
                 if (!answered) {
                     switch (e.message.content) {
                         case "REFRESH CHAT SESSION":
+                            this.cctv(e.client, e.message)
+
                             Core.ownerAction(e, {
                                 cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
                                 e.message.channel.sendMessage("Done :smiley:")
@@ -145,11 +149,13 @@ class EventHandler {
                             if (e.message.mentions.size() > 0) {
                                 e.message.mentions.any {
                                     if (it.ID == e.client.ourUser.ID) {
+                                        this.cctv(e.client, e.message)
                                         sendToCleverbot(e)
                                         return true
                                     }
                                 }
                             } else if (e.message.channel.private) {
+                                this.cctv(e.client, e.message)
                                 sendToCleverbot(e)
                             }
                             break
@@ -190,20 +196,24 @@ class EventHandler {
      */
     @SuppressWarnings("GrMethodMayBeStatic")
     private void cctv(IDiscordClient c, IMessage m) {
-        IChannel channel = c?.
+        if (Brain.instance.get("cctv.enabled", true) as boolean) {
+            IChannel channel = c?.
                 getGuildByID(Brain.instance.get("cctv.server", "180818466847064065") as String)?.
                 getChannelByID(Brain.instance.get("cctv.channel", "221215096842485760") as String)
 
-        if (channel != null) {
-            channel.sendMessage(
+            if (channel != null) {
+                channel.sendMessage(
                     ":cool: A new message! \n" +
-                            "```\n" +
-                            "Origin: #${m.channel.name} in ${m.channel.guild.name} " +
-                            "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
-                            "Author: ${m.author.name}#${m.author.discriminator}\n" +
-                            "Content: ${m.content}\n" +
-                            "```"
-            )
+                        "```\n" +
+                        "At: ${m.timestamp}\n" +
+                        "Origin: #${m.channel.name} in ${m.channel.guild.name} " +
+                        "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
+                        "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
+                        "Roles: ${m.author.getRolesForGuild(m.channel.guild).join(",")} \n" +
+                        "Message:\n ${m.content}\n" +
+                        "```"
+                )
+            }
         }
     }
 }
