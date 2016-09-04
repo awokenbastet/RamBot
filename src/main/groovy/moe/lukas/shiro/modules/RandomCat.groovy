@@ -10,7 +10,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(
     enabled = true,
-    author = "sn0w",
     description = "Random cat images",
     commands = [
         @ShiroCommand(command = "cat")

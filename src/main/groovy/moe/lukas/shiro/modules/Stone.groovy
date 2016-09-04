@@ -7,7 +7,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(
     enabled = true,
-    author = "sn0w",
     description = "Stone someone to death!!!1!11!",
     commands = [
         @ShiroCommand(command = "stone", usage = "<@mention>")

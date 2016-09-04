@@ -8,7 +8,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 @ShiroMeta(
     enabled = true,
     description = "Get a user's avatar in big",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "avatar", usage = "<@mention>")
     ]

@@ -7,7 +7,7 @@ import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.Status
 
-@ShiroMeta(enabled = true, author = "sn0w")
+@ShiroMeta(enabled = true)
 class RandomGame implements IAdvancedModule {
     List<String> games = [
         // phrases

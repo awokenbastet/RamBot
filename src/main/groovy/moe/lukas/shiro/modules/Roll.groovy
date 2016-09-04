@@ -10,7 +10,6 @@ import sx.blah.discord.handle.obj.IChannel
 @ShiroMeta(
     enabled = true,
     description = "Roll a random number",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "roll", usage = "<min> <max>")
     ]

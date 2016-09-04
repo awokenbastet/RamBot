@@ -8,7 +8,6 @@ import sx.blah.discord.handle.obj.IMessage
 
 @ShiroMeta(
     enabled = true,
-    author = "sn0w",
     description = "Test my reflexes c:",
     commands = [@ShiroCommand(command = "ping")]
 )

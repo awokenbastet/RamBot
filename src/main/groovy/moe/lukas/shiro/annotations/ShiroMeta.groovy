@@ -15,7 +15,5 @@ import java.lang.annotation.Target
 
     String description() default ""
 
-    String author() default "anonymous"
-
     ShiroCommand[] commands() default []
 }

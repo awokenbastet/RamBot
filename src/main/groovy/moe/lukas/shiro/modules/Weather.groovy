@@ -12,7 +12,6 @@ import sx.blah.discord.handle.obj.IChannel
 @ShiroMeta(
     enabled = true,
     description = "Displays the weather from wttr.in",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "wttr", usage = "<city|moon>"),
         @ShiroCommand(command = "weather", usage = "<city|moon>")

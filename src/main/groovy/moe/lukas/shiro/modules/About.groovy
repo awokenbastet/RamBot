@@ -8,7 +8,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 @ShiroMeta(
     enabled = true,
     description = "More information about Shiro",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "about"),
         @ShiroCommand(command = "a")

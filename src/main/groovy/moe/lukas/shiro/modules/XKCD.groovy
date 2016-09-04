@@ -13,7 +13,6 @@ import sx.blah.discord.handle.obj.IChannel
 @ShiroMeta(
     enabled = true,
     description = "Get the latest XKCD comic",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "xkcd")
     ]

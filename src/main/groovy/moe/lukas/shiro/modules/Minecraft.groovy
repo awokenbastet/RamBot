@@ -10,7 +10,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 @ShiroMeta(
     enabled = true,
     description = "Get a minecraft avatar",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "mc", usage = "<user>"),
         @ShiroCommand(command = "minecraft", usage = "<user>")

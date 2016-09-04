@@ -10,7 +10,6 @@ import sx.blah.discord.handle.obj.IChannel
 
 @ShiroMeta(
     enabled = true,
-    author = "sn0w",
     description = "Shorten a URL",
     commands = [
         @ShiroCommand(command = "shorten", usage = "<url>"),

@@ -14,7 +14,6 @@ import sx.blah.discord.handle.obj.IChannel
 @ShiroMeta(
     enabled = true,
     description = "Search for gifs",
-    author = "sn0w",
     commands = [
         @ShiroCommand(command = "gif", usage = "<query>"),
         @ShiroCommand(command = "giphy", usage = "<query>")
