@@ -30,8 +30,7 @@ import moe.lukas.shiro.core.IModule
 
 @ShiroMeta(
     enabled = true, 
-    description = "", 
-    author = "sn0w",
+    description = "",
     commands = [
         //would result in "!hello <world>" on !help
         @ShiroCommand(command = "hello", usage = "world"),
@@ -58,7 +57,7 @@ import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.annotations.ShiroMeta
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
-@ShiroMeta(enabled = true, author = "sn0w", ...)
+@ShiroMeta(enabled = true, ...)
 class Something implements IAdvancedModule {
     void init(IDiscordClient client) {
         // initialize your module (runs once at load)
@@ -85,7 +84,6 @@ Shiro rejects modules without `@ShiroMeta()` annotation.
 @ShiroMeta(
     enabled = true/false,
     description = "My awesome module",
-    author = "John Doe"
     commands = [
         @ShiroCommand(...)
     ]
