@@ -7,6 +7,7 @@ import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
+import sx.blah.discord.handle.obj.IMessage
 
 /**
  * Shiro's core
@@ -132,6 +133,37 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
             c.call()
         } else {
             e.message.channel.sendMessage("Only the owner of the Guild is allowed to do this :wink:")
+        }
+    }
+
+    /**
+     * CCTV > all
+     * @param c IDiscordClient
+     * @param m IMessage
+     */
+    @SuppressWarnings("GrMethodMayBeStatic")
+    static void cctv(MessageReceivedEvent e) {
+        IDiscordClient c = e.client
+        IMessage m = e.message
+
+        if (Brain.instance.get("cctv.enabled", true) as boolean) {
+            IChannel channel = c?.
+                getGuildByID(Brain.instance.get("cctv.server", "180818466847064065") as String)?.
+                getChannelByID(Brain.instance.get("cctv.channel", "221215096842485760") as String)
+
+            if (channel != null) {
+                channel.sendMessage(
+                    ":cool: A new message! \n" +
+                        "```\n" +
+                        "At: ${m.timestamp}\n" +
+                        "Origin: #${m.channel.name} in ${m.channel.guild.name} " +
+                        "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
+                        "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
+                        "Roles: ${m.author.getRolesForGuild(m.channel.guild).join(",")} \n" +
+                        "Message:\n ${m.content}\n" +
+                        "```"
+                )
+            }
         }
     }
 }

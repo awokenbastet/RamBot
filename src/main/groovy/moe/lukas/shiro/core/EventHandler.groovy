@@ -49,7 +49,7 @@ class EventHandler {
              * Check if the Owner requests a CMD change
              */
             if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
-                this.cctv(e.client, e.message)
+                Core.cctv(e)
 
                 if (e.message?.guild?.ownerID == e.message.author.ID) {
                     Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
@@ -57,49 +57,6 @@ class EventHandler {
                 } else {
                     e.message.channel.sendMessage("Only the owner of this Guild is allowed to do this :wink:")
                 }
-            }
-            /**
-             * Show help on [prefix]h / [prefix]help
-             */
-            else if (
-            e.message.content.matches(/^${Core.getPrefixForServer(e)}(help|h)/) ||
-                e.message.content.matches(/^<@${e.getClient().getOurUser().ID}>\s(help|h)$/)
-            ) {
-                this.cctv(e.client, e.message)
-
-                String message = "```\n"
-
-                ModuleLoader.modules.each { LinkedHashMap module ->
-                    LinkedHashMap properties = module.properties
-
-                    if (properties.enabled && properties.commands.size() > 0) {
-                        message += "${module.name} "
-
-                        if (properties.description == "") {
-                            message += "[no description]"
-                        } else {
-                            message += "[${properties.description}]"
-                        }
-
-                        message += "\n"
-
-                        properties.commands.each { ShiroCommand it ->
-                            message += "\t ${Core.getPrefixForServer(e)}${it.command()} "
-
-                            if (it.usage() != "") {
-                                message += "${it.usage()}"
-                            }
-
-                            message += "\n"
-                        }
-
-                        message += "\n"
-                    }
-                }
-
-                message += "```"
-
-                e.message.channel.sendMessage(message)
             }
             /**
              * Catch all other commands
@@ -116,7 +73,7 @@ class EventHandler {
                             e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
                                 e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
                             ) {
-                                this.cctv(e.client, e.message)
+                                Core.cctv(e)
 
                                 GroovyObject object = module["class"].newInstance()
                                 object.invokeMethod("action", e)
@@ -137,7 +94,7 @@ class EventHandler {
                 if (!answered) {
                     switch (e.message.content) {
                         case "REFRESH CHAT SESSION":
-                            this.cctv(e.client, e.message)
+                            Core.cctv(e)
 
                             Core.ownerAction(e, {
                                 cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
@@ -149,13 +106,13 @@ class EventHandler {
                             if (e.message.mentions.size() > 0) {
                                 e.message.mentions.any {
                                     if (it.ID == e.client.ourUser.ID) {
-                                        this.cctv(e.client, e.message)
+                                        Core.cctv(e)
                                         sendToCleverbot(e)
                                         return true
                                     }
                                 }
                             } else if (e.message.channel.private) {
-                                this.cctv(e.client, e.message)
+                                Core.cctv(e)
                                 sendToCleverbot(e)
                             }
                             break
@@ -187,33 +144,5 @@ class EventHandler {
         })
 
         channel.sendMessage(response == "" ? ":grey_question:" : response)
-    }
-
-    /**
-     * CCTV > all
-     * @param c IDiscordClient
-     * @param m IMessage
-     */
-    @SuppressWarnings("GrMethodMayBeStatic")
-    private void cctv(IDiscordClient c, IMessage m) {
-        if (Brain.instance.get("cctv.enabled", true) as boolean) {
-            IChannel channel = c?.
-                getGuildByID(Brain.instance.get("cctv.server", "180818466847064065") as String)?.
-                getChannelByID(Brain.instance.get("cctv.channel", "221215096842485760") as String)
-
-            if (channel != null) {
-                channel.sendMessage(
-                    ":cool: A new message! \n" +
-                        "```\n" +
-                        "At: ${m.timestamp}\n" +
-                        "Origin: #${m.channel.name} in ${m.channel.guild.name} " +
-                        "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
-                        "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
-                        "Roles: ${m.author.getRolesForGuild(m.channel.guild).join(",")} \n" +
-                        "Message:\n ${m.content}\n" +
-                        "```"
-                )
-            }
-        }
     }
 }
