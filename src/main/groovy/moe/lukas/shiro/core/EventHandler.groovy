@@ -5,15 +5,12 @@ import com.google.code.chatterbotapi.ChatterBotFactory
 import com.google.code.chatterbotapi.ChatterBotSession
 import com.google.code.chatterbotapi.ChatterBotType
 import moe.lukas.shiro.annotations.ShiroCommand
-import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
-import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.ReadyEvent
 import sx.blah.discord.handle.obj.IChannel
-import sx.blah.discord.handle.obj.IMessage
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
