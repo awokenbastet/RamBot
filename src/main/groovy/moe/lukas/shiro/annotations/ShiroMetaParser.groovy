@@ -28,7 +28,6 @@ class ShiroMetaParser {
                 if (a instanceof ShiroMeta) {
                     meta << [
                         enabled    : a.enabled(),
-                        author     : a.author(),
                         description: a.description(),
                         commands   : a.commands()
                     ]
