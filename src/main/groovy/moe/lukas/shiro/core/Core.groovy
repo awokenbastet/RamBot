@@ -1,5 +1,6 @@
 package moe.lukas.shiro.core
 
+import java.security.MessageDigest
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 import sx.blah.discord.api.ClientBuilder
@@ -165,5 +166,9 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
                 )
             }
         }
+    }
+
+    static String hash(String s) {
+        return MessageDigest.getInstance("MD5").digest(s.bytes).encodeHex().toString()
     }
 }
