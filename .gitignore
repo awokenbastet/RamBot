@@ -1,6 +1,7 @@
 build/
 .idea/
 brain.json
+cache/
 
 gradlew
 gradlew.bat

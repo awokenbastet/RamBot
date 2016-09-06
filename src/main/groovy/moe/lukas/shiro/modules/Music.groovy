@@ -12,9 +12,12 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.audio.AudioPlayer
 
+/**
+ * Experimental musicbot
+ */
 @ShiroMeta(
     enabled = true,
-    description = "Listen to YouTube :) [EXPERIMENTAL]",
+    description = "\n Listen to Music :) [EXPERIMENTAL] \n For a list of supported hosters visit https://rg3.github.io/youtube-dl/supportedsites.html \n",
     commands = [
         @ShiroCommand(command = "join", usage = "Make the bot join your voice channel"),
         @ShiroCommand(command = "leave", usage = "Make the bot leave your voice channel"),
@@ -116,8 +119,9 @@ class Music implements IAdvancedModule {
                         Timer.setTimeout(500, {
                             String cacheName = "cache/" + Core.hash(url)
 
-                            if (new File(cacheName).exists()) {
+                            if (new File(cacheName + ".mp3").exists()) {
                                 status.edit(":white_check_mark: Added! (from cache)")
+                                player.queue(new File(cacheName + ".mp3"))
                             } else {
                                 Process ytdl = new ProcessBuilder(
                                     "youtube-dl",
@@ -156,7 +160,7 @@ class Music implements IAdvancedModule {
 
                         player.playlist.each {
                             File f = it.metadata["file"] as File
-                            msg += "- ${f.name}"
+                            msg += "${f.name}\n"
                         }
 
                         channel.sendMessage(msg)
