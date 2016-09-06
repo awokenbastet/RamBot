@@ -40,3 +40,13 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 |![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot) <br> **Warning:** Shiro (anime character) hater
 |![](http://i.imgur.com/vBnv5u2.png)|Winry|JavaScript|[Devsome/Winry-Discordbot](https://github.com/Devsome/EliteBot) <br> **Warning:** Author likes and writes messy code!
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
+
+### Notable Mentions
+Shiro wouldn't exist without these awesome pieces of software!
+
+- [The Groovy Programming Language by CodeHaus/Apache](http://groovy-lang.org)
+- [Discord](http://discordapp.com)
+- [Discord4J by austinv11](https://github.com/austinv11/Discord4J)
+- [Unirest by Mashape](http://unirest.io)
+- [Reflections by Ronmamo](https://github.com/ronmamo/reflections)
+- [Chatter-Bot-Api by Pierre David Belanger](https://github.com/pierredavidbelanger/chatter-bot-api)
