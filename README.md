@@ -52,4 +52,4 @@ Bots built by friends or awesome strangers
 |![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot) <br> **Warning:** Shiro (anime character) hater
 |![](http://i.imgur.com/vBnv5u2.png)|Winry|JavaScript|[Devsome/Winry-Discordbot](https://github.com/Devsome/EliteBot) <br> **Warning:** Author likes and writes messy code!
 |![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
-|![](https://i.imgur.com/PlRrEFk.png)|Luna|Python3|[Miraii/LunaBot](https://github.com/miraai/LunaBot)
+|![](https://i.imgur.com/PlRrEFk.png)|Luna|Python3|[Miraai/LunaBot](https://github.com/miraai/LunaBot)
