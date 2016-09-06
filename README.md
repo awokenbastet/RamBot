@@ -44,6 +44,8 @@ Shiro wouldn't exist without these awesome pieces of software!
 - [Chatter-Bot-Api by Pierre David Belanger](https://github.com/pierredavidbelanger/chatter-bot-api)
 
 ### Shiro's Friends :tada:
+Bots built by friends or awesome strangers
+
 |Avatar|Name|Language|Link|
 |:-:|:-:|:-:|:-:|
 |![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
