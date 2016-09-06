@@ -14,7 +14,7 @@ import sx.blah.discord.util.audio.AudioPlayer
 
 @ShiroMeta(
     enabled = true,
-    description = "Listen to YouTube :)",
+    description = "Listen to YouTube :) [EXPERIMENTAL]",
     commands = [
         @ShiroCommand(command = "join", usage = "Make the bot join your voice channel"),
         @ShiroCommand(command = "leave", usage = "Make the bot leave your voice channel"),
