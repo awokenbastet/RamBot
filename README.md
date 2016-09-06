@@ -3,7 +3,11 @@
 [![](https://img.shields.io/badge/Language-Groovy-yellowgreen.svg)](http://groovy-lang.org/)
 
 
-Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).
+Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).<br>
+
+A design goal was to keep the experience with her non-intrusive.<br>
+That means there are currently neither modules for moderation/administration nor plans to make them.<br>
+However since Shiro supports modules you can extend her to infinity!
 
 ### Can I see/suggest features/commands/...?
 YES!<br>
