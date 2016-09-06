@@ -33,8 +33,9 @@ class ModuleLoader {
             def m = [
                 name      : c.getName().replace("moe.lukas.shiro.modules.", ""),
                 properties: ShiroMetaParser.parse(c),
-                class     : c
+                class     : c.newInstance()
             ]
+
             if(m.properties.enabled) {
                 print("${m.name} reacts to [|")
                 m.properties.commands.each { ShiroCommand it ->
@@ -43,7 +44,7 @@ class ModuleLoader {
                 print("]")
 
                 try {
-                    c.newInstance().invokeMethod("init", client)
+                    m.class.invokeMethod("init", client)
                     print(" | Module initialized!")
                 } catch (MissingMethodException e) {
                 } finally {

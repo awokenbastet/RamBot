@@ -72,8 +72,7 @@ class EventHandler {
                             ) {
                                 Core.cctv(e)
 
-                                GroovyObject object = module["class"].newInstance()
-                                object.invokeMethod("action", e)
+                                module["class"].invokeMethod("action", e)
                                 System.gc()
 
                                 answered = true
