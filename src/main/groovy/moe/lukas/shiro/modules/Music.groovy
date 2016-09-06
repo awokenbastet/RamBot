@@ -13,7 +13,7 @@ import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.audio.AudioPlayer
 
 @ShiroMeta(
-    enabled = false,
+    enabled = true,
     description = "Listen to YouTube :)",
     commands = [
         @ShiroCommand(command = "join", usage = "Make the bot join your voice channel"),
@@ -28,7 +28,7 @@ import sx.blah.discord.util.audio.AudioPlayer
     ]
 )
 class Music implements IAdvancedModule {
-    private acceptCommands = false
+    private boolean acceptCommands = false
 
     @Override
     void init(IDiscordClient client) {
@@ -70,7 +70,7 @@ class Music implements IAdvancedModule {
             IVoiceChannel vc = message.author.connectedVoiceChannels[0]
             AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(channel.guild)
 
-            player.setVolume(0.5F)
+            player.setVolume(0.1F)
 
             if (channel.private) {
                 channel.sendMessage("That doesn't work in PM's! :grimacing:")
@@ -95,7 +95,7 @@ class Music implements IAdvancedModule {
                         player.setPaused(false)
                         break
 
-                    case "stop":
+                    case "pause":
                         player.setPaused(true)
                         break
 
@@ -114,14 +114,11 @@ class Music implements IAdvancedModule {
                         IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
 
                         Timer.setTimeout(500, {
-                            Timer.setTimeout(500, {
-                                String cacheName = "cache/" + Core.hash(url)
+                            String cacheName = "cache/" + Core.hash(url)
 
-                                if (new File(cacheName).exists()) {
-                                    status.edit("Found! :ok_hand:")
-                                    return cacheName
-                                }
-
+                            if (new File(cacheName).exists()) {
+                                status.edit(":white_check_mark: Added! (from cache)")
+                            } else {
                                 Process ytdl = new ProcessBuilder(
                                     "youtube-dl",
                                     "-x",
@@ -145,12 +142,24 @@ class Music implements IAdvancedModule {
                                 }
 
                                 if (ytdl.exitValue() == 0) {
-                                    status.edit("Done :ok_hand:")
+                                    status.edit(":white_check_mark: Added! (Downloaded)")
+                                    player.queue(new File(cacheName + ".mp3"))
                                 } else {
                                     status.edit("Error :frowning: \n```\n$output\n```")
                                 }
-                            })
+                            }
                         })
+                        break
+
+                    case "list":
+                        String msg = ":musical_note: Current Playlist :musical_note: \n"
+
+                        player.playlist.each {
+                            File f = it.metadata["file"] as File
+                            msg += "- ${f.name}"
+                        }
+
+                        channel.sendMessage(msg)
                         break
                 }
             }
