@@ -33,15 +33,7 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 ![](https://i.imgur.com/5CzH1yW.png)<br>
 ![](https://i.imgur.com/Xtu1uNF.png)
 
-### Shiro's Friends :tada:
-|Avatar|Name|Language|Link|
-|:-:|:-:|:-:|:-:|
-|![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
-|![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot) <br> **Warning:** Shiro (anime character) hater
-|![](http://i.imgur.com/vBnv5u2.png)|Winry|JavaScript|[Devsome/Winry-Discordbot](https://github.com/Devsome/EliteBot) <br> **Warning:** Author likes and writes messy code!
-|![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
-
-### Notable Mentions
+### Notable Mentions (<3)
 Shiro wouldn't exist without these awesome pieces of software!
 
 - [The Groovy Programming Language by CodeHaus/Apache](http://groovy-lang.org)
@@ -50,3 +42,11 @@ Shiro wouldn't exist without these awesome pieces of software!
 - [Unirest by Mashape](http://unirest.io)
 - [Reflections by Ronmamo](https://github.com/ronmamo/reflections)
 - [Chatter-Bot-Api by Pierre David Belanger](https://github.com/pierredavidbelanger/chatter-bot-api)
+
+### Shiro's Friends :tada:
+|Avatar|Name|Language|Link|
+|:-:|:-:|:-:|:-:|
+|![](http://i.imgur.com/PNcNRfM.png)|Ako-Chan|C#|[Serraniel/Ako-Discord-Bot-Loader](https://github.com/Serraniel/Ako-Discord-Bot-Loader)
+|![](http://i.imgur.com/Tb0FZoZ.png)|Shinobu-Chan|Python 3|[Der-Eddy/discord_bot](https://github.com/Der-Eddy/discord_bot) <br> **Warning:** Shiro (anime character) hater
+|![](http://i.imgur.com/vBnv5u2.png)|Winry|JavaScript|[Devsome/Winry-Discordbot](https://github.com/Devsome/EliteBot) <br> **Warning:** Author likes and writes messy code!
+|![](http://i.imgur.com/LyJh6OY.png)|Nadeko|C#|[Kwoth/NadekoBot](https://github.com/Kwoth/NadekoBot)
