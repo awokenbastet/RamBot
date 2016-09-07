@@ -36,31 +36,25 @@ class Music implements IAdvancedModule {
     @Override
     void init(IDiscordClient client) {
         println("\n[Music] Checking for youtube-dl and ffmpeg...")
-
-        boolean foundFFMPEG = false
-        boolean foundYTDL = false
-
+        
+        boolean foundYTD = false
+        
         System.getenv("PATH").split(File.pathSeparator).each {
             new File(it).listFiles().each {
                 switch (it.name) {
                     case "youtube-dl":
                     case "youtube-dl.exe":
-                        foundYTDL = true
-                        break
-
-                    case "ffmpeg":
-                    case "ffmpeg.exe":
-                        foundFFMPEG = true
+                        foundYTD = true
                         break
                 }
             }
         }
 
-        if (foundYTDL && foundFFMPEG) {
+        if (foundYTD) {
             println("[Music] Found! Ready to load music!")
             acceptCommands = true
         } else {
-            println('[Music] Please install ffmpeg and youtube-dl and add it to your $PATH or %PATH%')
+            println('[Music] Please install ffmpeg/libav and youtube-dl and add it to your $PATH or %PATH%')
             println('[Music] This plugin will disable itself to prevent errors!')
         }
     }
