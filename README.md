@@ -36,12 +36,15 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 ### Notable Mentions (<3)
 Shiro wouldn't exist without these awesome pieces of software!
 
-- [The Groovy Programming Language by CodeHaus/Apache](http://groovy-lang.org)
+- [Groovy by CodeHaus/Apache](http://groovy-lang.org)
 - [Discord](http://discordapp.com)
 - [Discord4J by austinv11](https://github.com/austinv11/Discord4J)
-- [Unirest by Mashape](http://unirest.io)
 - [Reflections by Ronmamo](https://github.com/ronmamo/reflections)
+- [Unirest by Mashape](http://unirest.io)
 - [Chatter-Bot-Api by Pierre David Belanger](https://github.com/pierredavidbelanger/chatter-bot-api)
+- [Youtube-DL by RG3](https://github.com/rg3/youtube-dl/)
+- [FFMPEG](http://ffmpeg.org/)
+- [libav](https://libav.org/)
 
 ### Shiro's Friends :tada:
 Bots built by friends or awesome strangers
