@@ -19,7 +19,10 @@ import java.util.concurrent.TimeUnit
  */
 @ShiroMeta(
     enabled = true,
-    description = "\n Listen to Music :) [EXPERIMENTAL] \n For a list of supported hosters visit https://rg3.github.io/youtube-dl/supportedsites.html \n",
+    description = '''
+    Listen to Music :) [EXPERIMENTAL]
+    For a list of supported hosters visit https://rg3.github.io/youtube-dl/supportedsites.html
+''',
     commands = [
         @ShiroCommand(command = "join", usage = "Make the bot join your voice channel"),
         @ShiroCommand(command = "leave", usage = "Make the bot leave your voice channel"),
