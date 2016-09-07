@@ -42,6 +42,7 @@ Shiro wouldn't exist without these awesome pieces of software!
 - [Reflections by Ronmamo](https://github.com/ronmamo/reflections)
 - [Unirest by Mashape](http://unirest.io)
 - [Chatter-Bot-Api by Pierre David Belanger](https://github.com/pierredavidbelanger/chatter-bot-api)
+- [LogBack](http://logback.qos.ch/)
 - [Youtube-DL by RG3](https://github.com/rg3/youtube-dl/)
 - [FFMPEG](http://ffmpeg.org/)
 - [libav](https://libav.org/)
