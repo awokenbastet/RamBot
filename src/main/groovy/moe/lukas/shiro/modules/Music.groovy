@@ -12,6 +12,8 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.audio.AudioPlayer
 
+import java.util.concurrent.TimeUnit
+
 /**
  * Experimental musicbot
  */
@@ -36,9 +38,9 @@ class Music implements IAdvancedModule {
     @Override
     void init(IDiscordClient client) {
         println("\n[Music] Checking for youtube-dl and ffmpeg...")
-        
+
         boolean foundYTD = false
-        
+
         System.getenv("PATH").split(File.pathSeparator).each {
             new File(it).listFiles().each {
                 switch (it.name) {
@@ -127,23 +129,32 @@ class Music implements IAdvancedModule {
                                     url
                                 ).start()
 
-                                InputStream is = ytdl.getInputStream()
-                                InputStreamReader isr = new InputStreamReader(is)
-                                BufferedReader br = new BufferedReader(isr)
+                                if (ytdl.waitFor(5, TimeUnit.MINUTES)) {
+                                    InputStream is = ytdl.getInputStream()
+                                    InputStreamReader isr = new InputStreamReader(is)
+                                    BufferedReader br = new BufferedReader(isr)
 
-                                String output = ""
-                                String line
+                                    String output = ""
+                                    String line
 
-                                while ((line = br.readLine()) != null) {
-                                    println(line)
-                                    output += line + "\n"
-                                }
+                                    while ((line = br.readLine()) != null) {
+                                        println(line)
+                                        output += line + "\n"
+                                    }
 
-                                if (ytdl.exitValue() == 0) {
-                                    status.edit(":white_check_mark: Added! (Downloaded)")
-                                    player.queue(new File(cacheName + ".mp3"))
+                                    if (ytdl.exitValue() == 0) {
+                                        status.edit(":white_check_mark: Added! (Downloaded)")
+                                        player.queue(new File(cacheName + ".mp3"))
+                                    } else {
+                                        status.edit("Error :frowning: \n```\n$output\n```")
+                                    }
                                 } else {
-                                    status.edit("Error :frowning: \n```\n$output\n```")
+                                    status.edit(":no_entry: Timeout (Waited for 5 minutes). \n Please try again. (maybe a shorter video?)")
+                                    new File("cache").listFiles().each {
+                                        if (it.name.matches(/${Core.hash(url)}.*/)) {
+                                            it.delete()
+                                        }
+                                    }
                                 }
                             }
                         })
