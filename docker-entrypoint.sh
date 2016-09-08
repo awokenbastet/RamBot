@@ -3,4 +3,5 @@
 echo ""
 echo "--------- Welcome to the Shiro container! \o/ ---------"
 
-java -jar /data/bin/shiro.jar
+cd /data
+java -jar /Shiro.jar
