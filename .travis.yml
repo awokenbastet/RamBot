@@ -11,6 +11,6 @@ jdk:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
       docker login -e="$DE" -u="$DU" -p="$DP";
-      docker build -t sn0w/shiro .
-      docker push sn0w/shiro
+      docker build -t sn0w/shiro .;
+      docker push sn0w/shiro;
     fi
