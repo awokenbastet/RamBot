@@ -9,9 +9,7 @@ jdk:
   - oraclejdk8
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-      gradle jar;
-      docker login -e="$DE" -u="$DU" -p="$DP";
+    - gradle jar;
+      docker login -u="$DU" -p="$DP";
       docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .;
-      docker push sn0w/shiro;
-    fi
+      docker push "sn0w/shiro:$TRAVIS_COMMIT";
