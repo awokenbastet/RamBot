@@ -10,7 +10,8 @@ jdk:
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      gradle jar
       docker login -e="$DE" -u="$DU" -p="$DP";
-      docker build -t sn0w/shiro .;
+      docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .;
       docker push sn0w/shiro;
     fi

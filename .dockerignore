@@ -1,0 +1,15 @@
+#TODO: Improve/Shorten
+.gradle/
+.idea/
+cache/
+docs/
+gradle/
+modules/
+out/
+src/
+.gitignore
+.travis.yml
+brain.json
+build.gradle
+LICENSE
+README.md
