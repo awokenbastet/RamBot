@@ -16,6 +16,7 @@ RUN mkdir -p /data/bin
 COPY build/libs/Shiro.jar /data/bin
 
 COPY docker-entrypoint.sh /
+RUN chmod a+x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["/usr/bin/java -jar"]
