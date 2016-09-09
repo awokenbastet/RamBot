@@ -25,6 +25,13 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 - About 20mb of free HDD space
 - Internet connection, duh
 
+### Docker? Docker!
+Just do a 
+```
+docker run -dv /docker/shiro:/data sn0w/shiro:<full commit id or branch name>
+```
+and everything is ready! :)
+
 ### Testimonials! (OMG OMG OMG \o/)
 [![](https://i.imgur.com/5rPB8iM.png)](https://github.com/serraniel)<br>
 ![](https://i.imgur.com/6m0MhFX.png)<br>
