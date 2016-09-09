@@ -22,7 +22,7 @@ dependencies {
     compile "com.mashape.unirest:unirest-java:1.4.9"
 
     compile "ca.pjer:chatter-bot-api:1.4.2"
-    compile "com.github.axet:vget:1.1.34"
+    compile 'net.sourceforge.jaadec:jaad:0.8.5'
 }
 
 jar {

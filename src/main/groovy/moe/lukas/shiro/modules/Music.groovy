@@ -1,10 +1,13 @@
 package moe.lukas.shiro.modules
 
+import groovy.json.JsonParser
+import groovy.json.JsonSlurper
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.util.Timer
+import org.json.JSONObject
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
@@ -77,102 +80,123 @@ class Music implements IAdvancedModule {
             if (channel.private) {
                 channel.sendMessage("That doesn't work in PM's! :grimacing:")
             } else {
-                switch (message.content.split(" ")[0].replace(Core.getPrefixForServer(e), "")) {
-                    case "join":
-                        if (!vc.isConnected()) {
-                            IMessage status = channel.sendMessage("Connecting...")
-                            vc.join()
-                            status.edit("Joined! :smiley:")
-                        }
-                        break
+                if (vc.connectedUsers.contains(message.author)) {
+                    switch (message.content.split(" ")[0].replace(Core.getPrefixForServer(e), "")) {
+                        case "join":
+                            if (!vc.isConnected()) {
+                                IMessage status = channel.sendMessage("Connecting...")
+                                vc.join()
+                                status.edit("Joined! :smiley:")
+                            }
+                            break
 
-                    case "leave":
-                        if (vc.isConnected()) {
-                            channel.sendMessage("OK, bye :wave:")
-                            vc.leave()
-                        }
-                        break
+                        case "leave":
+                            if (vc.isConnected()) {
+                                channel.sendMessage("OK, bye :wave:")
+                                vc.leave()
+                            }
+                            break
 
-                    case "play":
-                        player.setPaused(false)
-                        break
+                        case "play":
+                            player.setPaused(false)
+                            break
 
-                    case "pause":
-                        player.setPaused(true)
-                        break
+                        case "pause":
+                            player.setPaused(true)
+                            break
 
-                    case "skip":
-                        player.skip()
-                        break
+                        case "skip":
+                            player.skip()
+                            break
 
-                    case "add":
-                        String url = message.content.split(" ")[1]
+                        case "add":
+                            String url = message.content.split(" ")[1]
 
-                        File cache = new File("cache")
-                        if (!cache.exists()) {
-                            cache.mkdir()
-                        }
+                            File cache = new File("cache")
+                            if (!cache.exists()) {
+                                cache.mkdir()
+                            }
 
-                        IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
+                            IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
 
-                        Timer.setTimeout(500, {
-                            String cacheName = "cache/" + Core.hash(url)
+                            Timer.setTimeout(500, {
+                                String cacheName = "cache/" + Core.hash(url)
 
-                            if (new File(cacheName + ".mp3").exists()) {
-                                status.edit(":white_check_mark: Added! (from cache)")
-                                player.queue(new File(cacheName + ".mp3"))
-                            } else {
-                                Process ytdl = new ProcessBuilder(
-                                    "youtube-dl",
-                                    "-x",
-                                    "--audio-format",
-                                    "mp3",
-                                    "-o",
-                                    "$cacheName.%(ext)s",
-                                    url
-                                ).start()
-
-                                if (ytdl.waitFor(5, TimeUnit.MINUTES)) {
-                                    InputStream is = ytdl.getInputStream()
-                                    InputStreamReader isr = new InputStreamReader(is)
-                                    BufferedReader br = new BufferedReader(isr)
-
-                                    String output = ""
-                                    String line
-
-                                    while ((line = br.readLine()) != null) {
-                                        println(line)
-                                        output += line + "\n"
-                                    }
-
-                                    if (ytdl.exitValue() == 0) {
-                                        status.edit(":white_check_mark: Added! (Downloaded)")
-                                        player.queue(new File(cacheName + ".mp3"))
-                                    } else {
-                                        status.edit("Error :frowning: \n```\n$output\n```")
-                                    }
+                                if (new File(cacheName + ".mp3").exists()) {
+                                    status.edit(":white_check_mark: Added! (from cache)")
+                                    player.queue(new File(cacheName + ".mp3"))
                                 } else {
-                                    status.edit(":no_entry: Timeout (Waited for 5 minutes). \n Please try again. (maybe a shorter video?)")
-                                    new File("cache").listFiles().each {
-                                        if (it.name.matches(/${Core.hash(url)}.*/)) {
-                                            it.delete()
+                                    Process ytdl = new ProcessBuilder(
+                                        "youtube-dl",
+                                        "--abort-on-error",
+                                        "--no-color",
+                                        "--no-playlist",
+                                        "--max-filesize",
+                                        "64m",
+                                        "--prefer-avconv",
+                                        "--write-info-json",
+                                        "--add-metadata",
+                                        "-x",
+                                        "-f",
+                                        "bestaudio/best",
+                                        "--audio-format",
+                                        "mp3",
+                                        "-o",
+                                        "$cacheName.%(ext)s",
+                                        url
+                                    ).start()
+
+                                    if (ytdl.waitFor(5, TimeUnit.MINUTES)) {
+                                        InputStream is = ytdl.getInputStream()
+                                        InputStreamReader isr = new InputStreamReader(is)
+                                        BufferedReader br = new BufferedReader(isr)
+
+                                        String output = ""
+                                        String line
+
+                                        while ((line = br.readLine()) != null) {
+                                            println(line)
+                                            output += line + "\n"
+                                        }
+
+                                        if (ytdl.exitValue() == 0) {
+                                            status.edit(":white_check_mark: Added! (Downloaded)")
+                                            player.queue(new File(cacheName + ".mp3"))
+                                        } else {
+                                            status.edit("Error :frowning: \n```\n$output\n```")
+                                        }
+                                    } else {
+                                        status.edit(":no_entry: Timeout (Waited for 5 minutes). \n Please try again. (maybe a shorter video?)")
+                                        new File("cache").listFiles().each {
+                                            if (it.name.matches(/${Core.hash(url)}.*/)) {
+                                                it.delete()
+                                            }
                                         }
                                     }
                                 }
+                            })
+                            break
+
+                        case "list":
+                            String msg = ":musical_note: Current Playlist :musical_note: \n"
+
+                            player.playlist.each {
+                                String filename = (it.metadata["file"] as File).name
+                                File meta = new File("cache/" + filename.replace(".mp3", ".info.json"))
+
+                                if (meta.exists()) {
+                                    def json = new JsonSlurper().parse(meta.readBytes())
+
+                                    msg += "**${json.title}** by **${json.uploader}** \n"
+                                } else {
+                                    msg += "**${filename}** (META missing) \n"
+                                }
                             }
-                        })
-                        break
 
-                    case "list":
-                        String msg = ":musical_note: Current Playlist :musical_note: \n"
-
-                        player.playlist.each {
-                            File f = it.metadata["file"] as File
-                            msg += "${f.name}\n"
-                        }
-
-                        channel.sendMessage(msg)
-                        break
+                            channel.sendMessage(msg)
+                            System.gc()
+                            break
+                    }
                 }
             }
         }
