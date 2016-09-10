@@ -227,8 +227,10 @@ class Music implements IAdvancedModule {
                         case "list":
                             String msg = ":musical_note: Current Playlist :musical_note: \n"
 
+                            int i = 1
                             player.playlist.each {
-                                msg += resolveTrackMeta((it.metadata["file"] as File).name)
+                                msg += "**$i.** " + resolveTrackMeta((it.metadata["file"] as File).name)
+                                i++
                             }
 
                             channel.sendMessage(msg)
@@ -252,7 +254,7 @@ class Music implements IAdvancedModule {
     @EventSubscriber
     void onTrackStart(TrackStartEvent e) {
         playerChannels[e.player.guild.ID].sendMessage(
-            ":musical_note: Now Playing: ${resolveTrackMeta((e.track.metadata["file"] as File).name)}"
+            ":musical_note: Now Playing: **${resolveTrackMeta((e.track.metadata["file"] as File).name)}**"
         )
     }
 
@@ -263,9 +265,9 @@ class Music implements IAdvancedModule {
         if (meta.exists()) {
             def json = new JsonSlurper().parse(meta.readBytes())
 
-            return "**${json.title}**\n"
+            return "${json.title}\n"
         } else {
-            return "**${filename}** (META missing)\n"
+            return "${filename} _(META missing)_\n"
         }
     }
 }
