@@ -5,6 +5,7 @@ import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.core.IAdvancedModule
+import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
@@ -110,6 +111,8 @@ class Music implements IAdvancedModule {
                         case "add":
                             String url = message.content.split(" ")[1]
 
+                            Logger.info("Downloading $url for ${message.author.name}#${message.author.discriminator} in ${channel.name} of ${channel.guild.name}")
+
                             File cache = new File("cache")
                             if (!cache.exists()) {
                                 cache.mkdir()
@@ -144,26 +147,35 @@ class Music implements IAdvancedModule {
                                         url
                                     ).start()
 
-                                    if (ytdl.waitFor(5, TimeUnit.MINUTES)) {
+                                    // Log YTDL in other thread
+                                    // This thread will block until YTDL is complete
+                                    String output = ""
+                                    new Thread({
                                         InputStream is = ytdl.getInputStream()
                                         InputStreamReader isr = new InputStreamReader(is)
                                         BufferedReader br = new BufferedReader(isr)
 
-                                        String output = ""
+
                                         String line
 
                                         while ((line = br.readLine()) != null) {
                                             println(line)
                                             output += line + "\n"
                                         }
+                                    }).start()
 
+                                    // Wait for end of YTDL execution
+                                    if (ytdl.waitFor(5, TimeUnit.MINUTES)) {
                                         if (ytdl.exitValue() == 0) {
+                                            Logger.info("Success!")
                                             status.edit(":white_check_mark: Added! (Downloaded)")
                                             player.queue(new File(cacheName + ".mp3"))
                                         } else {
+                                            Logger.err("Error!")
                                             status.edit("Error :frowning: \n```\n$output\n```")
                                         }
                                     } else {
+                                        Logger.err("YTDL Timeout")
                                         status.edit(":no_entry: Timeout (Waited for 5 minutes). \n Please try again. (maybe a shorter video?)")
                                         new File("cache").listFiles().each {
                                             if (it.name.matches(/${Core.hash(url)}.*/)) {
