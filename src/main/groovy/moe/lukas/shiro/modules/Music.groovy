@@ -40,6 +40,8 @@ import sx.blah.discord.util.audio.events.TrackStartEvent
 
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
+
+        @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]")
     ]
 )
 class Music implements IAdvancedModule {
@@ -232,6 +234,14 @@ class Music implements IAdvancedModule {
                             channel.sendMessage(msg)
                             System.gc()
                             break
+
+                        case "vol":
+                            Core.ownerAction(e, {
+                                float vol = message.content.split(" ")[1] as float
+
+                                player.setVolume(vol)
+                                channel.sendMessage(":speaker: **$vol%**")
+                            })
                     }
                 }
             }
