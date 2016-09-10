@@ -16,9 +16,6 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.audio.AudioPlayer
-import sx.blah.discord.util.audio.events.AudioPlayerEvent
-import sx.blah.discord.util.audio.events.TrackFinishEvent
-import sx.blah.discord.util.audio.events.TrackSkipEvent
 import sx.blah.discord.util.audio.events.TrackStartEvent
 
 /**
