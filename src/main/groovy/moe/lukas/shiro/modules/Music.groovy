@@ -1,13 +1,11 @@
 package moe.lukas.shiro.modules
 
-import groovy.json.JsonParser
 import groovy.json.JsonSlurper
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.util.Timer
-import org.json.JSONObject
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
@@ -132,7 +130,7 @@ class Music implements IAdvancedModule {
                                         "--no-color",
                                         "--no-playlist",
                                         "--max-filesize",
-                                        "64m",
+                                        "128m",
                                         "--prefer-avconv",
                                         "--write-info-json",
                                         "--add-metadata",
