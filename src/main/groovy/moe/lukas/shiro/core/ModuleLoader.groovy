@@ -23,6 +23,15 @@ class ModuleLoader {
     }
 
     /**
+     * Reload all plugins
+     * @param client
+     */
+    static void reload(IDiscordClient client) {
+        modules = []
+        load(client)
+    }
+
+    /**
      * Load all modules into $instances
      */
     static void load(IDiscordClient client) {
@@ -36,7 +45,7 @@ class ModuleLoader {
                 class     : c.newInstance()
             ]
 
-            if(m.properties.enabled) {
+            if (m.properties.enabled) {
                 print("${m.name} reacts to [|")
                 m.properties.commands.each { ShiroCommand it ->
                     print(it.command() + "|")

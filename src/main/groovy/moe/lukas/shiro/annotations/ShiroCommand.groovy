@@ -11,4 +11,8 @@ import java.lang.annotation.Target
     public String command()
 
     public String usage() default ""
+
+    public boolean hidden() default false
+
+    public boolean adminOnly() default false
 }

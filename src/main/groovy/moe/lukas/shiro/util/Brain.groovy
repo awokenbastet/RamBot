@@ -60,7 +60,7 @@ class Brain {
     /**
      * Backup the current brain
      */
-    private void sync() {
+    public void sync() {
         PrintWriter file = new PrintWriter(this.filename)
         file.println(JsonOutput.toJson(this.storage))
         file.close()

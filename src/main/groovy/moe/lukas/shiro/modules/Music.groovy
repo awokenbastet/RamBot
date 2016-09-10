@@ -34,14 +34,14 @@ import sx.blah.discord.util.audio.events.TrackStartEvent
         @ShiroCommand(command = "play", usage = "Play the current playlist"),
         @ShiroCommand(command = "pause", usage = "Pause the playlist"),
         @ShiroCommand(command = "skip", usage = "Skip the current track"),
-        @ShiroCommand(command = "clear", usage = "Clears the playlist [ADMIN ONLY]"),
-        @ShiroCommand(command = "loop", usage = "Toggle looping the playlist [ADMIN ONLY]"),
-        @ShiroCommand(command = "shuffle", usage = "Shuffle the playlist [ADMIN ONLY]"),
+        @ShiroCommand(command = "clear", usage = "Clears the playlist [ADMIN ONLY]", adminOnly = true),
+        @ShiroCommand(command = "loop", usage = "Toggle looping the playlist [ADMIN ONLY]", adminOnly = true),
+        @ShiroCommand(command = "shuffle", usage = "Shuffle the playlist [ADMIN ONLY]", adminOnly = true),
 
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
 
-        @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]")
+        @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]", adminOnly = true)
     ]
 )
 class Music implements IAdvancedModule {
@@ -125,24 +125,20 @@ class Music implements IAdvancedModule {
                             break
 
                         case "clear":
-                            Core.ownerAction(e, {
-                                player.clear()
-                                channel.sendMessage(":wastebasket: Cleared!")
-                            })
+
+                            player.clear()
+                            channel.sendMessage(":wastebasket: Cleared!")
                             break
 
                         case "loop":
-                            Core.ownerAction(e, {
-                                player.setLoop(!player.looping)
-                                channel.sendMessage(":repeat: Looping ${player.looping ? "en" : "dis"}abled!")
-                            })
+                            player.setLoop(!player.looping)
+                            channel.sendMessage(":repeat: Looping ${player.looping ? "en" : "dis"}abled!")
+
                             break
 
                         case "shuffle":
-                            Core.ownerAction(e, {
-                                player.shuffle()
-                                channel.sendMessage(":twisted_rightwards_arrows: Shuffled all tracks!")
-                            })
+                            player.shuffle()
+                            channel.sendMessage(":twisted_rightwards_arrows: Shuffled all tracks!")
                             break
 
                         case "add":
@@ -238,12 +234,11 @@ class Music implements IAdvancedModule {
                             break
 
                         case "vol":
-                            Core.ownerAction(e, {
-                                float vol = message.content.split(" ")[1] as float
+                            float vol = message.content.split(" ")[1] as float
 
-                                player.setVolume(vol)
-                                channel.sendMessage(":speaker: **$vol%**")
-                            })
+                            player.setVolume(vol)
+                            channel.sendMessage(":speaker: **$vol%**")
+                            break
                     }
                 }
             }

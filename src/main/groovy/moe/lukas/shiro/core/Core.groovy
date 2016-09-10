@@ -133,7 +133,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
         if (e.message?.guild?.ownerID == e.message.author.ID || e.message.author.ID == Brain.instance.get("owner")) {
             c.call()
         } else {
-            e.message.channel.sendMessage("Only the owner of the Guild is allowed to do this :wink:")
+            e.message.channel.sendMessage(":no_entry: Only owners are allowed to do that!")
         }
     }
 

@@ -1,0 +1,39 @@
+package moe.lukas.shiro.modules
+
+import moe.lukas.shiro.annotations.ShiroCommand
+import moe.lukas.shiro.annotations.ShiroMeta
+import moe.lukas.shiro.core.Core
+import moe.lukas.shiro.core.IModule
+import moe.lukas.shiro.core.ModuleLoader
+import moe.lukas.shiro.util.Brain
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent
+
+@ShiroMeta(
+    enabled = true,
+    commands = [
+        @ShiroCommand(command = "brain:reload", hidden = true, adminOnly = true),
+        @ShiroCommand(command = "brain:save", hidden = true, adminOnly = true),
+        @ShiroCommand(command = "plugins:reload", hidden = true, adminOnly = true)
+    ]
+)
+class Sys implements IModule {
+    @Override
+    void action(MessageReceivedEvent e) {
+        switch (e.message.content.replace(Core.getPrefixForServer(e, false), "")) {
+            case "plugins:reload":
+                ModuleLoader.reload(e.client)
+                e.message.channel.sendMessage(":cyclone: Plugins reloaded!")
+                break
+
+            case "brain:reload":
+                Brain.instance.init()
+                e.message.channel.sendMessage(":cyclone: Brain reloaded!")
+                break
+
+            case "brain:save":
+                Brain.instance.sync()
+                e.message.channel.sendMessage(":cyclone: Brain saved!")
+                break
+        }
+    }
+}

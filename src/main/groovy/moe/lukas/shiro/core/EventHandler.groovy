@@ -33,85 +33,84 @@ class EventHandler {
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
-        if (e.message.channel.private) {
-            Core.setPrefixForServer(e, "%")
-        }
-
         /**
-         * Ignore other bots.
-         * Shiro no likey :c
+         * Ignore other bots and @everyone/@here
          */
         if (!e.message.author.bot && !e.message.mentionsEveryone()) {
-            /**
-             * Check if the Owner requests a CMD change
-             */
-            if (e.message.content.matches(/^SET PREFIX (.){0,5}$/)) {
-                Core.cctv(e)
 
-                if (e.message?.guild?.ownerID == e.message.author.ID) {
-                    Core.setPrefixForServer(e, e.message.content.replace("SET PREFIX ", ""))
-                    e.message.channel.sendMessage("Saved :smiley:")
-                } else {
-                    e.message.channel.sendMessage("Only the owner of this Guild is allowed to do this :wink:")
+            /**
+             * Check if the message contains a @mention
+             */
+            if (e.message.mentions.size() > 0) {
+                e.message.mentions.any {
+                    if (it.ID == e.client.ourUser.ID) {
+                        Core.cctv(e)
+
+                        /**
+                         * Process @mention command
+                         * Send the message to cleverbot if nothing matches
+                         */
+                        switch (e.message.content.split(" ").drop(1).join(" ")) {
+                            case ~/^REFRESH CHAT SESSION$/:
+                                Core.ownerAction(e, {
+                                    cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
+                                    e.message.channel.sendMessage("Done :smiley:")
+                                })
+                                break
+
+                            case ~/^SET PREFIX (.){0,5}$/:
+                                Core.ownerAction(e, {
+                                    Core.setPrefixForServer(
+                                        e,
+                                        e.message.content
+                                            .replace("SET PREFIX ", "")
+                                            .replace("<@${e.client.ourUser.ID}>", "")
+                                    )
+                                    e.message.channel.sendMessage("Saved :smiley:")
+                                })
+                                break
+
+                            default:
+                                sendToCleverbot(e)
+                                break
+                        }
+
+                        return true
+                    }
                 }
             }
             /**
-             * Catch all other commands
+             * Check if the channel is private
+             */
+            else if (e.message.channel.private) {
+                Core.cctv(e)
+                sendToCleverbot(e)
+            }
+            /**
+             * Check if a module matches
              */
             else {
-
-                boolean answered = false
-
-                // Check for command matches
                 ModuleLoader.modules.each { LinkedHashMap module ->
                     if (module.properties.enabled == true) {
                         module.properties.commands.any { ShiroCommand it ->
-                            if (
-                            e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}\s.*/) ||
-                                e.message.content.matches(/^${Core.getPrefixForServer(e)}${it.command()}$/)
-                            ) {
-                                Core.cctv(e)
+                            switch (e.message.content) {
+                                case ~/^${Core.getPrefixForServer(e)}${it.command()}\s.*/:
+                                case ~/^${Core.getPrefixForServer(e)}${it.command()}$/:
+                                    def action = {
+                                        Core.cctv(e)
+                                        module["class"].invokeMethod("action", e)
+                                    }
 
-                                module["class"].invokeMethod("action", e)
-                                System.gc()
+                                    if (it.adminOnly()) {
+                                        Core.ownerAction(e, action)
+                                    } else {
+                                        action()
+                                    }
 
-                                answered = true
-
-                                // break loop
-                                return true
+                                    // break loop and switch
+                                    return true
                             }
                         }
-                    }
-                }
-
-                /**
-                 * Forward anything else to cleverbot
-                 */
-                if (!answered) {
-                    switch (e.message.content) {
-                        case "REFRESH CHAT SESSION":
-                            Core.cctv(e)
-
-                            Core.ownerAction(e, {
-                                cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
-                                e.message.channel.sendMessage("Done :smiley:")
-                            })
-                            break
-
-                        default:
-                            if (e.message.mentions.size() > 0) {
-                                e.message.mentions.any {
-                                    if (it.ID == e.client.ourUser.ID) {
-                                        Core.cctv(e)
-                                        sendToCleverbot(e)
-                                        return true
-                                    }
-                                }
-                            } else if (e.message.channel.private) {
-                                Core.cctv(e)
-                                sendToCleverbot(e)
-                            }
-                            break
                     }
                 }
             }
@@ -123,6 +122,7 @@ class EventHandler {
     void onOffline(DiscordDisconnectedEvent e) {
         Logger.warn("Discord gateway disconnected!")
         Logger.warn("")
+        System.exit(2)
     }
 
     /**

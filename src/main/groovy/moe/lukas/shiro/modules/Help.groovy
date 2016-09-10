@@ -10,8 +10,8 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 @ShiroMeta(
     enabled = true,
     commands = [
-        @ShiroCommand(command = "help"),
-        @ShiroCommand(command = "h")
+        @ShiroCommand(command = "help", hidden = true),
+        @ShiroCommand(command = "h", hidden = true)
     ]
 )
 class Help implements IModule {
