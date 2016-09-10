@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import java.util.concurrent.TimeUnit
 import groovy.json.JsonSlurper
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
@@ -8,13 +9,17 @@ import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
 import sx.blah.discord.api.IDiscordClient
+import sx.blah.discord.api.events.EventDispatcher
+import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.audio.AudioPlayer
-
-import java.util.concurrent.TimeUnit
+import sx.blah.discord.util.audio.events.AudioPlayerEvent
+import sx.blah.discord.util.audio.events.TrackFinishEvent
+import sx.blah.discord.util.audio.events.TrackSkipEvent
+import sx.blah.discord.util.audio.events.TrackStartEvent
 
 /**
  * Experimental musicbot
@@ -32,6 +37,9 @@ import java.util.concurrent.TimeUnit
         @ShiroCommand(command = "play", usage = "Play the current playlist"),
         @ShiroCommand(command = "pause", usage = "Pause the playlist"),
         @ShiroCommand(command = "skip", usage = "Skip the current track"),
+        @ShiroCommand(command = "clear", usage = "Clears the playlist [ADMIN ONLY]"),
+        @ShiroCommand(command = "loop", usage = "Toggle looping the playlist [ADMIN ONLY]"),
+        @ShiroCommand(command = "shuffle", usage = "Shuffle the playlist [ADMIN ONLY]"),
 
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
@@ -39,6 +47,8 @@ import java.util.concurrent.TimeUnit
 )
 class Music implements IAdvancedModule {
     private boolean acceptCommands = false
+
+    private HashMap<String, IChannel> playerChannels = [:]
 
     @Override
     void init(IDiscordClient client) {
@@ -60,6 +70,9 @@ class Music implements IAdvancedModule {
         if (foundYTD) {
             println("[Music] Found! Ready to load music!")
             acceptCommands = true
+
+            EventDispatcher eventDispatcher = client.getDispatcher()
+            eventDispatcher.registerListener(this)
         } else {
             println('[Music] Please install ffmpeg/libav and youtube-dl and add it to your $PATH or %PATH%')
             println('[Music] This plugin will disable itself to prevent errors!')
@@ -86,6 +99,8 @@ class Music implements IAdvancedModule {
                                 IMessage status = channel.sendMessage("Connecting...")
                                 vc.join()
                                 status.edit("Joined! :smiley:")
+
+                                playerChannels[channel.guild.ID] = channel
                             }
                             break
 
@@ -93,6 +108,8 @@ class Music implements IAdvancedModule {
                             if (vc.isConnected()) {
                                 channel.sendMessage("OK, bye :wave:")
                                 vc.leave()
+
+                                playerChannels.remove(channel.guild.ID)
                             }
                             break
 
@@ -106,6 +123,27 @@ class Music implements IAdvancedModule {
 
                         case "skip":
                             player.skip()
+                            break
+
+                        case "clear":
+                            Core.ownerAction(e, {
+                                player.clear()
+                                channel.sendMessage(":wastebasket: Cleared!")
+                            })
+                            break
+
+                        case "loop":
+                            Core.ownerAction(e, {
+                                player.setLoop(!player.looping)
+                                channel.sendMessage(":repeat: Looping ${player.looping ? "en" : "dis"}abled!")
+                            })
+                            break
+
+                        case "shuffle":
+                            Core.ownerAction(e, {
+                                player.shuffle()
+                                channel.sendMessage(":twisted_rightwards_arrows: Shuffled all tracks!")
+                            })
                             break
 
                         case "add":
@@ -191,16 +229,7 @@ class Music implements IAdvancedModule {
                             String msg = ":musical_note: Current Playlist :musical_note: \n"
 
                             player.playlist.each {
-                                String filename = (it.metadata["file"] as File).name
-                                File meta = new File("cache/" + filename.replace(".mp3", ".info.json"))
-
-                                if (meta.exists()) {
-                                    def json = new JsonSlurper().parse(meta.readBytes())
-
-                                    msg += "**${json.title}** by **${json.uploader}** \n"
-                                } else {
-                                    msg += "**${filename}** (META missing) \n"
-                                }
+                                msg += resolveTrackMeta((it.metadata["file"] as File).name)
                             }
 
                             channel.sendMessage(msg)
@@ -209,6 +238,27 @@ class Music implements IAdvancedModule {
                     }
                 }
             }
+        }
+    }
+
+    @SuppressWarnings("GroovyUnusedDeclaration")
+    @EventSubscriber
+    void onTrackStart(TrackStartEvent e) {
+        playerChannels[e.player.guild.ID].sendMessage(
+            ":musical_note: Now Playing: ${resolveTrackMeta((e.track.metadata["file"] as File).name)}"
+        )
+    }
+
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private String resolveTrackMeta(String filename) {
+        File meta = new File("cache/" + filename.replace(".mp3", ".info.json"))
+
+        if (meta.exists()) {
+            def json = new JsonSlurper().parse(meta.readBytes())
+
+            return "**${json.title}**\n"
+        } else {
+            return "**${filename}** (META missing)\n"
         }
     }
 }
