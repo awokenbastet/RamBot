@@ -86,8 +86,6 @@ class Music implements IAdvancedModule {
             IVoiceChannel vc = message.author.connectedVoiceChannels[0]
             AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(channel.guild)
 
-            player.setVolume(0.1F)
-
             if (channel.private) {
                 channel.sendMessage("That doesn't work in PM's! :grimacing:")
             } else {
@@ -187,7 +185,6 @@ class Music implements IAdvancedModule {
                                         InputStream is = ytdl.getInputStream()
                                         InputStreamReader isr = new InputStreamReader(is)
                                         BufferedReader br = new BufferedReader(isr)
-
 
                                         String line
 
