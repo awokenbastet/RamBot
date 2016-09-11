@@ -64,8 +64,8 @@ Users with access to me:  $users
 
 ----------------------- Bot Information ----------------------
 My Nickname: ${bot.name}#${bot.discriminator} (${bot.getNicknameForGuild(e.message.guild)})
-Status: ${bot.status}
-Presence: ${bot.presence}
+Status:      ${bot.status}
+Presence:    ${bot.presence}
 
 Framework: Discord4J (https://github.com/austinv11/Discord4J)
 Language:  Groovy (http://groovy-lang.org/) and Java
