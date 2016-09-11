@@ -1,8 +1,5 @@
 package moe.lukas.shiro.modules
 
-import java.lang.management.ManagementFactory
-import java.lang.management.RuntimeMXBean
-import java.text.SimpleDateFormat
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
@@ -34,8 +31,10 @@ class Stats implements IModule {
 
         int servers = 0
         int channels = 0
+        int users = 0
         client.guilds.each {
             servers++
+            users += it.users.size()
             it.channels.each { channels++ }
         }
 
@@ -61,6 +60,7 @@ Max. usable RAM:    ${SystemInfo.maxUsableRam}
 Connected Servers:        $servers
 Watching Channels:        $channels
 Connected voice-channels: ${bot.connectedVoiceChannels.size()}
+Users with access to me:  $users
 
 ----------------------- Bot Information ----------------------
 My Nickname: ${bot.name}#${bot.discriminator} (${bot.getNicknameForGuild(e.message.guild)})
