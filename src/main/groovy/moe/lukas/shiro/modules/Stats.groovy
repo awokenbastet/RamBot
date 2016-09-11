@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
+import moe.lukas.shiro.util.SystemInfo
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IUser
@@ -18,12 +19,6 @@ import sx.blah.discord.handle.obj.IUser
 class Stats implements IModule {
     @Override
     void action(MessageReceivedEvent e) {
-        // System information
-        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss")
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
-        String uptime = sdf.format(rb.uptime)
 
         // Process information
         Runtime runtime = Runtime.getRuntime();
@@ -50,28 +45,30 @@ Here are some stats about me :smiley:
 
 ```
 --------------------- System Information ---------------------
-OS:       ${System.getProperty("os.name")} [Version: ${System.getProperty("os.version")} | Arch: ${
-            System.getProperty("os.arch")
-        }]
-Process:  ${rb.name}
-JVM:      ${rb.vmName}@${rb.vmVersion} by ${rb.vmVendor}
-JVM Spec: ${rb.specName}@${rb.specVersion} by ${rb.specVendor}
-Uptime:   $uptime
+OS:       ${SystemInfo.OS}
+Process:  ${SystemInfo.process}
+JVM:      ${SystemInfo.JVM}
+JVM Spec: ${SystemInfo.spec}
+Uptime:   ${SystemInfo.uptime}
 
 --------------------- Process Information --------------------
-Allocated RAM:      ${Math.round(runtime.totalMemory() / 1048576)}mb
-Used allocated RAM: ${Math.round((runtime.totalMemory() - runtime.freeMemory()) / 1048576)}mb
-Free allocated RAM: ${Math.round(runtime.freeMemory() / 1048576)}mb
-Max. usable RAM:    ${Math.round(runtime.maxMemory() / 1048576)}mb
+Allocated RAM:      ${SystemInfo.allocatedRam}
+Used allocated RAM: ${SystemInfo.usedAllocatedRam}
+Free allocated RAM: ${SystemInfo.freeAllocatedRam}
+Max. usable RAM:    ${SystemInfo.maxUsableRam}
 
 --------------------- Discord Information --------------------
 Connected Servers:        $servers
 Watching Channels:        $channels
 Connected voice-channels: ${bot.connectedVoiceChannels.size()}
 
+----------------------- Bot Information ----------------------
 My Nickname: ${bot.name}#${bot.discriminator} (${bot.getNicknameForGuild(e.message.guild)})
 Status: ${bot.status}
 Presence: ${bot.presence}
+
+Framework: Discord4J (https://github.com/austinv11/Discord4J)
+Language:  Groovy (http://groovy-lang.org/) and Java
 ```
 """)
     }
