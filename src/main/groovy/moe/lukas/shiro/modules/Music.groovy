@@ -192,6 +192,10 @@ class Music implements IAdvancedModule {
                                             println(line)
                                             output += line + "\n"
                                         }
+
+                                        br.close()
+                                        isr.close()
+                                        is.close()
                                     }).start()
 
                                     // Wait for end of YTDL execution
