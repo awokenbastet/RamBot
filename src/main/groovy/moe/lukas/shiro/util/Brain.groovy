@@ -2,11 +2,13 @@ package moe.lukas.shiro.util
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import groovy.transform.CompileStatic
 
 /**
  * Brain to store/read values of any type
  */
 @Singleton(strict = false)
+@CompileStatic
 class Brain {
     /**
      * JsonSlurper instance to parse json
@@ -24,12 +26,12 @@ class Brain {
     /**
      * The filename for brain backups
      */
-    private filename = "brain.json"
+    private String filename = "brain.json"
 
     /**
      * The actual brain
      */
-    private LinkedHashMap storage = []
+    private HashMap storage = [:]
 
     /**
      * Init the brain from our last known backup
@@ -37,7 +39,7 @@ class Brain {
     private void init() {
         File file = new File(this.filename)
 
-        // Write an empty JSON file if it doesnt exist
+        // Write an empty JSON file if it doesn't exist
         if (!file.exists()) {
             this.sync()
         }
@@ -54,7 +56,7 @@ class Brain {
         }
 
         data.close()
-        this.storage = (LinkedHashMap) this.slurper.parseText(json)
+        this.storage = this.slurper.parseText(json) as HashMap
     }
 
     /**

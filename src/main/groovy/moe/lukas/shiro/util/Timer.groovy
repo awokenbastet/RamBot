@@ -1,5 +1,8 @@
 package moe.lukas.shiro.util
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class Timer {
     static void setTimeout(long ms, Closure callback) {
         Thread t = new Thread({

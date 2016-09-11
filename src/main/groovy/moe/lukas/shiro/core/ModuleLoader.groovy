@@ -1,5 +1,6 @@
 package moe.lukas.shiro.core
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.annotations.ShiroMetaParser
@@ -11,8 +12,9 @@ import sx.blah.discord.api.IDiscordClient
  * Class to help loading/finding modules
  * Reflection > all ;)
  */
+@CompileStatic
 class ModuleLoader {
-    static List<LinkedHashMap> modules = []
+    static List<HashMap> modules = []
 
     /**
      * Returns all present modules

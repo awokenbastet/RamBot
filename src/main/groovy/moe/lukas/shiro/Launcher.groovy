@@ -1,5 +1,6 @@
 package moe.lukas.shiro
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger

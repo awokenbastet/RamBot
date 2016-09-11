@@ -2,10 +2,12 @@ package moe.lukas.shiro.util
 
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.Unirest
+import groovy.transform.CompileStatic
 
 /**
  * Helper to shorten urls
  */
+@CompileStatic
 class URLShortener {
     /**
      * Shortens a URL using bfy.tw

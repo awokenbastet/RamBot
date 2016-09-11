@@ -9,9 +9,10 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(
     enabled = true,
+    hidden = true,
     commands = [
-        @ShiroCommand(command = "help", hidden = true),
-        @ShiroCommand(command = "h", hidden = true)
+        @ShiroCommand(command = "help"),
+        @ShiroCommand(command = "h")
     ]
 )
 class Help implements IModule {
@@ -21,10 +22,10 @@ class Help implements IModule {
 
         String message = "```\n"
 
-        ModuleLoader.modules.each { LinkedHashMap module ->
-            LinkedHashMap properties = module.properties
+        ModuleLoader.modules.each { HashMap module ->
+            HashMap properties = module.properties
 
-            if (properties.enabled && properties.commands.size() > 0) {
+            if (!properties.hidden && properties.enabled && properties.commands.size() > 0) {
                 message += "${module.name} "
 
                 if (properties.description == "") {
@@ -36,13 +37,15 @@ class Help implements IModule {
                 message += "\n"
 
                 properties.commands.each { ShiroCommand it ->
-                    message += "\t ${Core.getPrefixForServer(e)}${it.command()} "
+                    if (!it.hidden()) {
+                        message += "\t ${Core.getPrefixForServer(e)}${it.command()} "
 
-                    if (it.usage() != "") {
-                        message += "${it.usage()}"
+                        if (it.usage() != "") {
+                            message += "${it.usage()}"
+                        }
+
+                        message += "\n"
                     }
-
-                    message += "\n"
                 }
 
                 message += "\n"

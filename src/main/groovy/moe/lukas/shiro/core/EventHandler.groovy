@@ -14,7 +14,7 @@ import sx.blah.discord.handle.obj.IChannel
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
-    private LinkedHashMap<String, ChatterBotSession> cleverbotSessions = []
+    private HashMap<String, ChatterBotSession> cleverbotSessions = []
 
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
@@ -90,7 +90,7 @@ class EventHandler {
              * Check if a module matches
              */
             else {
-                ModuleLoader.modules.each { LinkedHashMap module ->
+                ModuleLoader.modules.each { HashMap module ->
                     if (module.properties.enabled == true) {
                         module.properties.commands.any { ShiroCommand it ->
                             switch (e.message.content) {

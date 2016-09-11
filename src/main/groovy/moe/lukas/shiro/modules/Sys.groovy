@@ -10,10 +10,11 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(
     enabled = true,
+    hidden = true,
     commands = [
-        @ShiroCommand(command = "brain:reload", hidden = true, adminOnly = true),
-        @ShiroCommand(command = "brain:save", hidden = true, adminOnly = true),
-        @ShiroCommand(command = "plugins:reload", hidden = true, adminOnly = true)
+        @ShiroCommand(command = "brain:reload", adminOnly = true),
+        @ShiroCommand(command = "brain:save", adminOnly = true),
+        @ShiroCommand(command = "plugins:reload", adminOnly = true)
     ]
 )
 class Sys implements IModule {

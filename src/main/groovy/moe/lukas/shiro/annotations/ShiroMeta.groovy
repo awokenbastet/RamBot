@@ -16,4 +16,6 @@ import java.lang.annotation.Target
     String description() default ""
 
     ShiroCommand[] commands() default []
+
+    boolean hidden() default false
 }

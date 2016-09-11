@@ -20,16 +20,17 @@ class ShiroMetaParser {
      * @param c
      * @return
      */
-    static LinkedHashMap parse(Class<?> c) {
+    static HashMap parse(Class<?> c) {
         if (annotationPresent(c)) {
-            LinkedHashMap meta = []
+            HashMap meta = []
 
             c.getAnnotations().each { Annotation a ->
                 if (a instanceof ShiroMeta) {
                     meta << [
                         enabled    : a.enabled(),
                         description: a.description(),
-                        commands   : a.commands()
+                        commands   : a.commands(),
+                        hidden     : a.hidden()
                     ]
                 }
             }
