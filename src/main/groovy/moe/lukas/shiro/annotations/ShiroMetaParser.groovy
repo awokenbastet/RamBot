@@ -1,10 +1,13 @@
 package moe.lukas.shiro.annotations
 
+import groovy.transform.CompileStatic
+
 import java.lang.annotation.Annotation
 
 /**
  * Helper to parse ShiroMeta annotations
  */
+@CompileStatic
 class ShiroMetaParser {
     /**
      * Check if $c contains a ShiroMeta annotation
@@ -22,7 +25,7 @@ class ShiroMetaParser {
      */
     static HashMap parse(Class<?> c) {
         if (annotationPresent(c)) {
-            HashMap meta = []
+            HashMap meta = [:]
 
             c.getAnnotations().each { Annotation a ->
                 if (a instanceof ShiroMeta) {

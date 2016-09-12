@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
@@ -11,6 +12,7 @@ import sx.blah.discord.handle.obj.IMessage
     description = "Test my reflexes c:",
     commands = [@ShiroCommand(command = "ping")]
 )
+@CompileStatic
 class Ping implements IModule {
     void action(MessageReceivedEvent e) {
         long start = System.nanoTime()

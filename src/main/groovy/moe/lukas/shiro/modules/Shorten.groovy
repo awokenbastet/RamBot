@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
@@ -16,6 +17,7 @@ import sx.blah.discord.handle.obj.IChannel
         @ShiroCommand(command = "shrt", usage = "<url>")
     ]
 )
+@CompileStatic
 class Shorten implements IModule {
     void action(MessageReceivedEvent e) {
         IChannel channel = e.getMessage().getChannel()

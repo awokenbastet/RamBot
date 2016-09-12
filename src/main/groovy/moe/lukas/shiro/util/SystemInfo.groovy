@@ -1,9 +1,12 @@
 package moe.lukas.shiro.util
 
+import groovy.transform.CompileStatic
+
 import java.lang.management.ManagementFactory
 import java.lang.management.RuntimeMXBean
 import java.text.SimpleDateFormat
 
+@CompileStatic
 class SystemInfo {
     public static RuntimeMXBean rmx = ManagementFactory.getRuntimeMXBean()
     public static Runtime runtime = Runtime.getRuntime()
@@ -31,18 +34,18 @@ class SystemInfo {
     }
 
     public static String getAllocatedRam() {
-        return "${Math.round(runtime.totalMemory() / 1048576)}mb"
+        return "${Math.round(runtime.totalMemory() / 1048576F)}mb"
     }
 
     public static String getUsedAllocatedRam() {
-        return "${Math.round((runtime.totalMemory() - runtime.freeMemory()) / 1048576)}mb"
+        return "${Math.round((runtime.totalMemory() - runtime.freeMemory()) / 1048576F)}mb"
     }
 
     public static String getFreeAllocatedRam() {
-        return "${Math.round(runtime.freeMemory() / 1048576)}mb"
+        return "${Math.round(runtime.freeMemory() / 1048576F)}mb"
     }
 
     public static String getMaxUsableRam() {
-        return "${Math.round(runtime.maxMemory() / 1048576)}mb"
+        return "${Math.round(runtime.maxMemory() / 1048576F)}mb"
     }
 }

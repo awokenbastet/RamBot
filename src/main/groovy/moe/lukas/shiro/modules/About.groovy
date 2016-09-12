@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
@@ -13,6 +14,7 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
         @ShiroCommand(command = "a")
     ]
 )
+@CompileStatic
 class About implements IModule {
     void action(MessageReceivedEvent e) {
         e.getMessage().getChannel().sendMessage('''

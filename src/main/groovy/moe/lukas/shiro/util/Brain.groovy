@@ -104,4 +104,8 @@ class Brain {
         this.storage[key] = value
         this.sync()
     }
+
+    void reload() {
+        this.init()
+    }
 }
