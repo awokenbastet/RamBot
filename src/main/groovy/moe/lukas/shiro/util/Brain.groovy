@@ -31,12 +31,12 @@ class Brain {
     /**
      * The actual brain
      */
-    private HashMap storage = [:]
+    private volatile HashMap storage = [:]
 
     /**
      * Init the brain from our last known backup
      */
-    private void init() {
+    private synchronized void init() {
         File file = new File(this.filename)
 
         // Write an empty JSON file if it doesn't exist
@@ -62,7 +62,7 @@ class Brain {
     /**
      * Backup the current brain
      */
-    public void sync() {
+    public synchronized void sync() {
         PrintWriter file = new PrintWriter(this.filename)
         file.println(JsonOutput.toJson(this.storage))
         file.close()
@@ -100,12 +100,12 @@ class Brain {
      * @param key
      * @param value
      */
-    void set(String key, def value) {
+    synchronized void set(String key, def value) {
         this.storage[key] = value
         this.sync()
     }
 
-    void reload() {
+    synchronized void reload() {
         this.init()
     }
 }
