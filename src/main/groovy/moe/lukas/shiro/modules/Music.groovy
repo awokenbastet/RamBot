@@ -101,6 +101,8 @@ class Music implements IAdvancedModule {
                                 status.edit("Joined! :smiley:")
 
                                 playerChannels[channel.guild.ID] = channel
+
+                                player.setVolume(0.1F)
                             }
                             break
 
@@ -108,6 +110,8 @@ class Music implements IAdvancedModule {
                             if (vc.isConnected()) {
                                 channel.sendMessage("OK, bye :wave:")
                                 vc.leave()
+                                player.clear()
+                                player.clean()
 
                                 playerChannels.remove(channel.guild.ID)
                             }
@@ -194,6 +198,7 @@ class Music implements IAdvancedModule {
                                         while ((line = br.readLine()) != null) {
                                             println(line)
                                             output += line + "\n"
+                                            Thread.sleep(500)
                                         }
 
                                         br.close()
@@ -238,10 +243,14 @@ class Music implements IAdvancedModule {
                             break
 
                         case "vol":
-                            float vol = message.content.split(" ")[1] as float
+                            if (message.content.split(" ").size() == 1) {
+                                channel.sendMessage(":speaker: **${Math.round(player.volume * 100)}%**")
+                            } else {
+                                float vol = ((message.content.split(" ")[1] as float) / 100) as float
 
-                            player.setVolume(vol)
-                            channel.sendMessage(":speaker: **$vol%**")
+                                player.setVolume(vol)
+                                channel.sendMessage(":speaker: **${Math.round(player.volume * 100)}%**")
+                            }
                             break
                     }
                 }
