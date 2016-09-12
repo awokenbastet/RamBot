@@ -2,6 +2,7 @@ package moe.lukas.shiro.modules
 
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.Unirest
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
@@ -17,6 +18,7 @@ import sx.blah.discord.handle.obj.IChannel
         @ShiroCommand(command = "weather", usage = "<city|moon>")
     ]
 )
+@CompileStatic
 class Weather implements IModule {
     private static String ENDPOINT = "http://wttr.in/"
 

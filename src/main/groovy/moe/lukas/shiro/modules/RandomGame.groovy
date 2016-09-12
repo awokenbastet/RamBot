@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.util.Timer
@@ -8,6 +9,7 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.Status
 
 @ShiroMeta(enabled = true)
+@CompileStatic
 class RandomGame implements IAdvancedModule {
     List<String> games = [
         // phrases

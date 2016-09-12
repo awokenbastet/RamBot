@@ -1,5 +1,7 @@
 package moe.lukas.shiro.core
 
+import groovy.transform.CompileStatic
+
 import java.security.MessageDigest
 import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
@@ -13,6 +15,7 @@ import sx.blah.discord.handle.obj.IMessage
 /**
  * Shiro's core
  */
+@CompileStatic
 class Core {
     /**
      * The current discord client

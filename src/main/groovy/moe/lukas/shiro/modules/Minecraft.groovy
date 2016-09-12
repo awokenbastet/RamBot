@@ -2,6 +2,7 @@ package moe.lukas.shiro.modules
 
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.Unirest
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
@@ -15,6 +16,7 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
         @ShiroCommand(command = "minecraft", usage = "<user>")
     ]
 )
+@CompileStatic
 class Minecraft implements IModule {
     void action(MessageReceivedEvent e) {
         String[] parts = e.getMessage().getContent().split(" ")

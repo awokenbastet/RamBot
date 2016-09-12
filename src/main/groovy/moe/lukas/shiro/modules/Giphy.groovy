@@ -3,6 +3,7 @@ package moe.lukas.shiro.modules
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.JsonNode
 import com.mashape.unirest.http.Unirest
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
@@ -19,6 +20,7 @@ import sx.blah.discord.handle.obj.IChannel
         @ShiroCommand(command = "giphy", usage = "<query>")
     ]
 )
+@CompileStatic
 class Giphy implements IModule {
     private static String ENDPOINT = "http://api.giphy.com/v1/gifs/search?"
     private static String API_KEY = "dc6zaTOxFJmzC"

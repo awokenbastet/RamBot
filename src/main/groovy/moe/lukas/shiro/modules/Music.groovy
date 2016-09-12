@@ -1,5 +1,7 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
+
 import java.util.concurrent.TimeUnit
 import groovy.json.JsonSlurper
 import moe.lukas.shiro.annotations.ShiroCommand
@@ -44,6 +46,7 @@ import sx.blah.discord.util.audio.events.TrackStartEvent
         @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]", adminOnly = true)
     ]
 )
+@CompileStatic
 class Music implements IAdvancedModule {
     private boolean acceptCommands = false
 
@@ -55,9 +58,9 @@ class Music implements IAdvancedModule {
 
         boolean foundYTD = false
 
-        System.getenv("PATH").split(File.pathSeparator).each {
-            new File(it).listFiles().each {
-                switch (it.name) {
+        System.getenv("PATH").split(File.pathSeparator).each { String f ->
+            new File(f).listFiles().each { File ff ->
+                switch (ff.name) {
                     case "youtube-dl":
                     case "youtube-dl.exe":
                         foundYTD = true
@@ -211,9 +214,9 @@ class Music implements IAdvancedModule {
                                     } else {
                                         Logger.err("YTDL Timeout")
                                         status.edit(":no_entry: Timeout (Waited for 5 minutes). \n Please try again. (maybe a shorter video?)")
-                                        new File("cache").listFiles().each {
-                                            if (it.name.matches(/${Core.hash(url)}.*/)) {
-                                                it.delete()
+                                        new File("cache").listFiles().each { File f ->
+                                            if (f.name.matches(/${Core.hash(url)}.*/)) {
+                                                f.delete()
                                             }
                                         }
                                     }
@@ -261,7 +264,7 @@ class Music implements IAdvancedModule {
         if (meta.exists()) {
             def json = new JsonSlurper().parse(meta.readBytes())
 
-            return "${json.title}\n"
+            return "${json['title']}\n"
         } else {
             return "${filename} _(META missing)_\n"
         }

@@ -6,6 +6,7 @@ import moe.lukas.shiro.util.Brain
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
 
+@CompileStatic
 class Launcher {
     public static void main(String[] args) {
         Logger.info("Running from ${System.getProperty("user.dir")}")

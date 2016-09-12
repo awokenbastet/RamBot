@@ -1,11 +1,14 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
 import moe.lukas.shiro.util.SystemInfo
+import moe.lukas.shiro.util.Timer
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
+import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
 @ShiroMeta(
@@ -13,32 +16,31 @@ import sx.blah.discord.handle.obj.IUser
     description = "Show the bot's statistics",
     commands = [@ShiroCommand(command = "stats")]
 )
+@CompileStatic
 class Stats implements IModule {
     @Override
     void action(MessageReceivedEvent e) {
-        // Discord information
-        IDiscordClient client = e.client
-        IUser bot = client.ourUser
+        IMessage msg = e.message.channel.sendMessage(":arrows_counterclockwise: Collecting information...")
 
-        int humans = 0
-        int bots = 0
-        int combined = 0
-        e.message.guild.users.each { it.bot ? bots++ : humans++; combined++ }
+        Timer.setTimeout(500, {
+            IDiscordClient client = e.client
+            IUser bot = client.ourUser
 
-        int servers = 0
-        int channels = 0
-        List<String> users = []
-        client.guilds.each {
-            servers++
-            it.channels.each { channels++ }
-            it.users.each {
-                if(!users.contains(it.ID)) {
-                    users << it.ID
-                }
+            int humans = 0
+            int bots = 0
+            int combined = 0
+            e.message.guild.users.each { it.bot ? bots++ : humans++; combined++ }
+
+            int servers = 0
+            int channels = 0
+            List<String> users = []
+            client.guilds.each {
+                servers++
+                it.channels.each { channels++ }
+                it.users.each { users << it.ID }
             }
-        }
 
-        e.message.channel.sendMessage("""
+            msg.edit("""
 Hi, I'm Shiro!
 Here are some stats about me :smiley:
 
@@ -71,5 +73,6 @@ Framework: Discord4J (https://github.com/austinv11/Discord4J)
 Language:  Groovy (http://groovy-lang.org/) and Java
 ```
 """)
+        })
     }
 }

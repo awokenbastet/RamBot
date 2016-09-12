@@ -1,5 +1,7 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
+
 import java.util.concurrent.ThreadLocalRandom
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
@@ -14,6 +16,7 @@ import sx.blah.discord.handle.obj.IChannel
         @ShiroCommand(command = "roll", usage = "<min> <max>")
     ]
 )
+@CompileStatic
 class Roll implements IModule {
     void action(MessageReceivedEvent e) {
         IChannel channel = e.getMessage().getChannel()

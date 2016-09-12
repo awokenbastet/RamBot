@@ -3,6 +3,7 @@ package moe.lukas.shiro.modules
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.JsonNode
 import com.mashape.unirest.http.Unirest
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule
@@ -17,6 +18,7 @@ import sx.blah.discord.handle.obj.IChannel
         @ShiroCommand(command = "xkcd")
     ]
 )
+@CompileStatic
 class XKCD implements IModule {
     void action(MessageReceivedEvent e) {
         IChannel channel = e.getMessage().getChannel()

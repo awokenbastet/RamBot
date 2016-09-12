@@ -8,8 +8,25 @@ language: groovy
 jdk:
   - oraclejdk8
 
+before_cache:
+  -  rm -f $HOME/.gradle/caches/modules
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+script:
+  - gradle jar
+
 after_success:
-    - gradle jar;
-      docker login -u="$DU" -p="$DP";
-      docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .;
-      docker push "sn0w/shiro:$TRAVIS_COMMIT";
+  - docker login -u="$DU" -p="$DP"; docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .; docker push "sn0w/shiro:$TRAVIS_COMMIT";
+
+deploy:
+  provider: releases
+  api_key:
+    secure: XEv+eI11B0yuzBG9GYpEDyNiiVbccDAaI3C9dXXTyAB1X4Emp3LrsBbz6XkSqERh1LQZzlimzaRtW8gUx77iE1jRY8v88RsEqQVZmJrW+GYcmw6jIa5RF8E31J6IhzASjr/IePIzu4yG9cD4Qp0lJFUMUzEfroTp1VIJfxFtfPbRJizzIV08UiTjGompkKZ+Sf5SDg8rFf4RbyK9cYej0dZ6ZzRQC9uinbsxKn4It5e/t40j6Fs0LNDD373priIkxk5mbDDnebEUrBEwGq54zvz0wqhmO4vmiEMXU41yw0VMK/MSUHmZ1n9FWh1hzvJrVehGyCVrsHNeiAAJuWgwN4kMADRxgGNAionSHLjHu+Xl4sZuBk7aZuNHaxKm9cgjYInylms+zmd1KvAlNlBuoUhaKKsoCWlLirhNVWrX9Xl38EE/uEs8fiIhVls7HZV/tQcYB+BqPd0UpX1W71bDbtFfWPBt8c5R8kY5cvti4MdHuQky36YguojRUDBus9KhmcTv6OVZTYcxRnp02yyb7M3W7OXpv6u4sWrLx0T/zSCZPu8BiEo18tNX5XU1gC9T1ag/9aUhfDeI3wCDdaXGbQ9S31uJgnLPlwL2qfVc7XjjyVqF/3+tVikBHmhcVcvdauT4dPdtf0Zyzuu4aCWkRWYKA32dlJcbKTip21VGS5U=
+  file: build/libs/shiro.jar
+  skip_cleanup: true
+  on:
+    tags: true
