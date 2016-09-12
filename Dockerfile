@@ -12,7 +12,7 @@ RUN youtube-dl -U
 
 RUN mkdir -p /data
 
-COPY build/libs/Shiro.jar /
+COPY build/libs/shiro.jar /
 
 COPY docker-entrypoint.sh /
 RUN chmod a+x /docker-entrypoint.sh
