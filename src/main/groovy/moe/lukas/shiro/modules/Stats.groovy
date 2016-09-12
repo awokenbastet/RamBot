@@ -16,10 +16,6 @@ import sx.blah.discord.handle.obj.IUser
 class Stats implements IModule {
     @Override
     void action(MessageReceivedEvent e) {
-
-        // Process information
-        Runtime runtime = Runtime.getRuntime();
-
         // Discord information
         IDiscordClient client = e.client
         IUser bot = client.ourUser
@@ -31,11 +27,15 @@ class Stats implements IModule {
 
         int servers = 0
         int channels = 0
-        int users = 0
+        List<String> users = []
         client.guilds.each {
             servers++
-            users += it.users.size()
             it.channels.each { channels++ }
+            it.users.each {
+                if(!users.contains(it.ID)) {
+                    users << it.ID
+                }
+            }
         }
 
         e.message.channel.sendMessage("""
@@ -60,7 +60,7 @@ Max. usable RAM:    ${SystemInfo.maxUsableRam}
 Connected Servers:        $servers
 Watching Channels:        $channels
 Connected voice-channels: ${bot.connectedVoiceChannels.size()}
-Users with access to me:  $users
+Users with access to me:  ${users.size()}
 
 ----------------------- Bot Information ----------------------
 My Nickname: ${bot.name}#${bot.discriminator} (${bot.getNicknameForGuild(e.message.guild)})
