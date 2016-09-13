@@ -19,6 +19,7 @@ dependencies {
     compile "org.reflections:reflections:0.9.10"
     compile "com.mashape.unirest:unirest-java:1.4.9"
     compile "ca.pjer:chatter-bot-api:1.4.2"
+    compile "org.jsoup:jsoup:1.9.2"
 }
 
 jar {
