@@ -13,11 +13,16 @@ repositories {
 }
 
 dependencies {
+    // Core
     compile "org.codehaus.groovy:groovy-all:2.4.3"
-    compile "ch.qos.logback:logback-classic:1.1.7"
-    compile "com.github.austinv11:Discord4j:2.6.0"
     compile "org.reflections:reflections:0.9.10"
     compile "com.mashape.unirest:unirest-java:1.4.9"
+
+    // Discord
+    compile "com.github.austinv11:Discord4j:2.6.0"
+    compile "ch.qos.logback:logback-classic:1.1.7"
+
+    // Modules
     compile "ca.pjer:chatter-bot-api:1.4.2"
     compile "org.jsoup:jsoup:1.9.2"
 }
