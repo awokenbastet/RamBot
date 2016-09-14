@@ -161,9 +161,9 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
                         "```\n" +
                         "At: ${m.timestamp}\n" +
                         "Origin: #${m.channel.name} in ${m.channel?.guild?.name} " +
-                        "(${m.channel.guild.ID}:${m.channel.ID}) \n" +
+                        "(${m.channel?.guild?.ID}:${m.channel.ID}) \n" +
                         "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
-                        "Roles: ${m.author.getRolesForGuild(m.channel.guild).join(",")} \n" +
+                        "Roles: ${m.author.getRolesForGuild(m.channel?.guild).join(",")} \n" +
                         "Message:\n ${m.content}\n" +
                         "```"
                 )
