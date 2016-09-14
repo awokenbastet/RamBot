@@ -20,7 +20,9 @@ class Help implements IModule {
     void action(MessageReceivedEvent e) {
         Core.cctv(e)
 
-        String message = "```\n"
+        List<String> messages = []
+
+        String message = ""
 
         ModuleLoader.modules.each { HashMap module ->
             HashMap properties = module.properties
@@ -50,10 +52,22 @@ class Help implements IModule {
 
                 message += "\n"
             }
+
+            if(message.size() > 1500) {
+                messages << message
+                message = ""
+            }
         }
 
-        message += "```"
+        if(messages.size() == 0) {
+            messages << message
+        }
 
-        e.message.channel.sendMessage(message)
+        e.message.reply(":mailbox_with_mail:")
+
+        messages.each {
+            e.message.author.getOrCreatePMChannel().sendMessage("```\n$it\n```")
+            Thread.sleep(500)
+        }
     }
 }
