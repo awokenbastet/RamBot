@@ -22,6 +22,11 @@ class Help implements IModule {
 
         List<String> messages = []
 
+        String pre = """
+Hi ${e.message.author.name} :smiley:
+You requested to see the help for me at `${e.message.guild.name}`.
+Remember to use the `${Core.getPrefixForServer(e)}` prefix in your guild :wink:\n
+"""
         String message = ""
 
         ModuleLoader.modules.each { HashMap module ->
@@ -64,6 +69,7 @@ class Help implements IModule {
         }
 
         e.message.reply(":mailbox_with_mail:")
+        e.message.author.getOrCreatePMChannel().sendMessage(pre)
 
         messages.each {
             e.message.author.getOrCreatePMChannel().sendMessage("```\n$it\n```")
