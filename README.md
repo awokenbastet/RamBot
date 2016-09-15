@@ -11,7 +11,7 @@ However since Shiro supports modules you can extend her to infinity!
 
 ### Can I see/suggest features/commands/...?
 YES!<br>
-Check [here](/issues) or [here](/projects) if anyone had the idea before or open a new issue :)
+Check [here](https://github.com/sn0w/shiro/issues) or [here](https://github.com/sn0w/shiro/projects) if anyone had the idea before or open a new issue :)
 
 ### Documentation and FAQ
 Go to [meetshiro.xyz](http://meetshiro.xyz)
