@@ -1,6 +1,7 @@
 build/
 .idea/
 brain.json
+config.json
 cache/
 
 gradlew

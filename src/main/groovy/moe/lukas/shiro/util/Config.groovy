@@ -4,8 +4,8 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 @Singleton(strict = false)
-class Brain extends AbstractStorage {
-    private Brain() {
-        super("brain.json")
+class Config extends AbstractStorage {
+    private Config() {
+        super("config.json")
     }
 }
