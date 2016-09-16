@@ -18,8 +18,9 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 class Google implements IModule {
     @Override
     void action(MessageReceivedEvent e) {
-        e.message.channel.sendMessage(
-            ":mag: ${URLShortener.shorten("http://lmgtfy.com/?q=${e.message.content.split(" ").drop(1).join("+")}")}"
-        )
+        String q = URLEncoder.encode(e.message.content.split(" ").drop(1).join("+"), "UTF-8")
+        String url = URLShortener.shorten("http://lmgtfy.com/?q=$q")
+
+        e.message.channel.sendMessage(":mag: <$url>")
     }
 }
