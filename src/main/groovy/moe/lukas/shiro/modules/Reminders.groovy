@@ -111,9 +111,7 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
                                 ts
                             )
 
-                            channel.sendMessage(
-                                "Ok, I'll remind you to `$text` at `${new Date(ts * 1000)}` :ok_hand:"
-                            )
+                            channel.sendMessage("Ok, I'll remind you :ok_hand:")
                             break
 
                         default:
