@@ -26,8 +26,14 @@ import sx.blah.discord.handle.obj.IUser
 )
 @CompileStatic
 class Reminders implements IAdvancedModule {
+    IDiscordClient client = null
+
     @Override
     void init(IDiscordClient client) {
+        if(this.client == null) {
+            this.client = client
+        }
+
         Timer.setInterval(10000, {
             ReminderList reminders = getReminders()
 
@@ -130,18 +136,22 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
                 IUser author = message.author
                 ReminderList reminders = getReminders()
 
-                String m = "```"
+                String m = "```\n"
 
                 reminders.each { Long ts, ReminderListEntry list ->
                     list.each {
                         if (it.user == author.ID) {
-                            m += "${new Date(ts * 1000L)} \t - \t ${it.text}"
+                            m += "${new Date(ts * 1000L)} - ${it["message"]} | "
+                            m += "Target: #${client.getGuildByID(it["guild"]).getChannelByID(it["channel"]).name} in "
+                            m += "${client.getGuildByID(it["guild"]).name}\n"
                         }
                     }
                 }
 
                 if (m == "```") {
                     m = "You don't have any active reminders :frowning:"
+                } else {
+                    m += "\n```"
                 }
 
                 channel.sendMessage(m)
