@@ -70,7 +70,7 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
             case "rm":
                 String[] parts = message.content.split(" ")
 
-                if (parts.size() > 4) {
+                if (parts.size() >= 4) {
                     String text
                     String time
 
