@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
@@ -13,7 +14,7 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
 @ShiroMeta(
-    enabled = false,
+    enabled = true,
     description = "Reminds you to do stuff!",
     commands = [
         @ShiroCommand(command = "remind", usage = "<your_text> <in> [number]<S|M|H|D>"),
@@ -23,11 +24,27 @@ import sx.blah.discord.handle.obj.IUser
         @ShiroCommand(command = "rms", usage = "[Alias for !reminders]")
     ]
 )
+@CompileStatic
 class Reminders implements IAdvancedModule {
     @Override
     void init(IDiscordClient client) {
         Timer.setInterval(10000, {
+            ReminderList reminders = getReminders()
 
+            reminders.each { Long ts, ReminderListEntry v ->
+                if (ts <= System.currentTimeSeconds()) {
+                    v.each {
+                        client.getGuildByID(it.guild).getChannelByID(it.channel).sendMessage("""
+Hey <@${it.user}> :smiley:
+You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
+""")
+                    }
+
+                    reminders.remove(ts)
+                }
+            }
+
+            Brain.instance.set("reminders", reminders)
         })
     }
 
@@ -37,14 +54,19 @@ class Reminders implements IAdvancedModule {
         IUser user = message.author
         IChannel channel = message.channel
 
+        if (channel.private) {
+            channel.sendMessage("Doesn't work in private channels. Sorry :frowning:")
+            return
+        }
+
         switch (e.message.content.split(" ")[0].replace(Core.getPrefixForServer(e), "")) {
             case "remind":
             case "rm":
                 String[] parts = message.content.split(" ")
 
                 if (parts.size() > 4) {
-                    String text = null
-                    String time = null
+                    String text
+                    String time
 
                     // drop command
                     parts = parts.drop(1)
@@ -81,9 +103,13 @@ class Reminders implements IAdvancedModule {
                                     break
                             }
 
-                            Map<Long, String> reminders = Brain.instance.get("reminders.${channel.ID}.${user.ID}", [:])
-                            reminders[ts] = text
-                            Brain.instance.set("reminders.${channel.ID}.${user.ID}", reminders)
+                            setReminder(
+                                channel.guild.ID,
+                                channel.ID,
+                                user.ID,
+                                text,
+                                ts
+                            )
 
                             channel.sendMessage(
                                 "Ok, I'll remind you to `$text` at `${new Date(ts * 1000)}` :ok_hand:"
@@ -103,24 +129,56 @@ class Reminders implements IAdvancedModule {
 
             case "reminders":
             case "rms":
-                Map<Long, String> reminders = Brain.instance.get("reminders.${channel.ID}.${user.ID}", [:])
+                IUser author = message.author
+                ReminderList reminders = getReminders()
 
-                String m = ""
+                String m = "```"
 
-                if (reminders.size() > 0) {
-                    m += "Here are your pending reminders! :smiley:\n```\n"
-
-                    reminders.each {
-                        m += "${new Date(it.key * 1000)}\t:\t${it.value}\n"
+                reminders.each { Long ts, ReminderListEntry list ->
+                    list.each {
+                        if (it.user == author.ID) {
+                            m += "${new Date(ts * 1000L)} \t - \t ${it.text}"
+                        }
                     }
+                }
 
-                    m += "```"
-                } else {
-                    m += "You don't have any pending reminders right now :frowning:"
+                if (m == "```") {
+                    m = "You don't have any active reminders :frowning:"
                 }
 
                 channel.sendMessage(m)
                 break
         }
     }
+
+    private ReminderList getReminders() {
+        return Brain.instance.get("reminders", new ReminderList()) as ReminderList
+    }
+
+    private void setReminder(String guild, String channel, String user, String message, long time) {
+        ReminderList reminders = getReminders()
+
+        if (reminders[time] == null) {
+            reminders[time] = new ReminderListEntry()
+        }
+
+        reminders[time] << [
+            guild  : guild,
+            channel: channel,
+            user   : user,
+            message: message
+        ]
+
+        Brain.instance.set("reminders", reminders)
+    }
+
+    class ReminderList extends HashMap<Long, ReminderListEntry> {
+        ReminderList() { super() }
+    }
+
+    class ReminderListEntry extends ArrayList<HashMap<String, String>> {
+        ReminderListEntry() { super() }
+    }
 }
+
+
