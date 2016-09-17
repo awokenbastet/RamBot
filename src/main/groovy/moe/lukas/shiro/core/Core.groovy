@@ -1,9 +1,10 @@
 package moe.lukas.shiro.core
 
 import groovy.transform.CompileStatic
+import moe.lukas.shiro.util.Database
 
 import java.security.MessageDigest
-import moe.lukas.shiro.util.Brain
+
 import moe.lukas.shiro.util.Logger
 import sx.blah.discord.api.ClientBuilder
 import sx.blah.discord.api.IDiscordClient
@@ -66,7 +67,7 @@ class Core {
     static String getPrefixForServer(MessageReceivedEvent e, fallback = true) {
         def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
 
-        String prefix = Brain.instance.get("prefixes.${id}")
+        String prefix = Database.instance.get("prefixes", id)
 
         if (prefix == null && fallback) {
             e.getMessage().getChannel().sendMessage('''
@@ -75,7 +76,7 @@ There is no configured prefix for your guild!\n
 I will fallback to `%`
 Please tell your server owner to set a new command prefix using `SET PREFIX <your prefix>`
 ''')
-            Brain.instance.set("prefixes.${id}", "%")
+            Database.instance.set("prefixes", id, "%")
             return "%"
         } else {
             return prefix
@@ -89,7 +90,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      */
     static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
         def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
-        Brain.instance.set("prefixes.${id}", prefix)
+        Database.instance.set("prefixes", id, prefix)
     }
 
     /**
@@ -133,7 +134,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param c
      */
     static void ownerAction(MessageReceivedEvent e, Closure c) {
-        if (e.message?.guild?.ownerID == e.message.author.ID || e.message.author.ID == Brain.instance.get("owner")) {
+        if (e.message?.guild?.ownerID == e.message.author.ID || e.message.author.ID == Database.instance.get("core", "owner")) {
             c.call()
         } else {
             e.message.channel.sendMessage(":no_entry: Only owners are allowed to do that!")
@@ -150,22 +151,22 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
         IDiscordClient c = e.client
         IMessage m = e.message
 
-        if (Brain.instance.get("cctv.enabled", true) as boolean) {
+        if (Database.instance.get("core", "cctv.enabled", true) as boolean) {
             IChannel channel = c?.
-                getGuildByID(Brain.instance.get("cctv.server", "180818466847064065") as String)?.
-                getChannelByID(Brain.instance.get("cctv.channel", "221215096842485760") as String)
+                    getGuildByID(Database.instance.get("core", "cctv.server", "180818466847064065") as String)?.
+                    getChannelByID(Database.instance.get("core", "cctv.channel", "221215096842485760") as String)
 
             if (channel != null) {
                 channel.sendMessage(
-                    ":cool: A new message! \n" +
-                        "```\n" +
-                        "At: ${m.timestamp}\n" +
-                        "Origin: #${m.channel.name} in ${m.channel?.guild?.name} " +
-                        "(${m.channel?.guild?.ID}:${m.channel.ID}) \n" +
-                        "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
-                        "Roles: ${m.author.getRolesForGuild(m.channel?.guild).join(",")} \n" +
-                        "Message:\n ${m.content}\n" +
-                        "```"
+                        ":cool: A new message! \n" +
+                                "```\n" +
+                                "At: ${m.timestamp}\n" +
+                                "Origin: #${m.channel.name} in ${m.channel?.guild?.name} " +
+                                "(${m.channel?.guild?.ID}:${m.channel.ID}) \n" +
+                                "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
+                                "Roles: ${m.author.getRolesForGuild(m.channel?.guild).join(",")} \n" +
+                                "Message:\n ${m.content}\n" +
+                                "```"
                 )
             }
         }

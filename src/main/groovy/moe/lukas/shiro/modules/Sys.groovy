@@ -6,7 +6,7 @@ import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.core.IModule
 import moe.lukas.shiro.core.ModuleLoader
-import moe.lukas.shiro.util.Brain
+
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 
 @ShiroMeta(
@@ -26,16 +26,6 @@ class Sys implements IModule {
             case "plugins:reload":
                 ModuleLoader.reload(e.client)
                 e.message.channel.sendMessage(":cyclone: Plugins reloaded!")
-                break
-
-            case "brain:reload":
-                Brain.instance.reload()
-                e.message.channel.sendMessage(":cyclone: Brain reloaded!")
-                break
-
-            case "brain:save":
-                Brain.instance.sync()
-                e.message.channel.sendMessage(":cyclone: Brain saved!")
                 break
         }
     }

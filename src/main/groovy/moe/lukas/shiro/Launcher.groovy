@@ -1,29 +1,48 @@
 package moe.lukas.shiro
 
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import moe.lukas.shiro.core.Core
-import moe.lukas.shiro.util.Brain
-import moe.lukas.shiro.util.Config
+import moe.lukas.shiro.util.Database
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
 
 @CompileStatic
 class Launcher {
-    public static void main(String[] args) {
-        Logger.info("Running from ${System.getProperty("user.dir")}")
-        Logger.info("If this path is incorrect kill the program now and check your setup!")
-        Logger.info(" --- waiting 5 seconds ---");
-        System.out.println()
+    static void main(String[] args) {
+        Logger.info("Hi, I'm Shiro c:")
+        Logger.info("Give me a moment to prepare myself...")
 
-        Timer.setTimeout(5 * 1000, {
-            String token = Config.instance.get("token", "YOUR_TOKEN_HERE")
+        File config = new File("config.json")
+        if (!config.exists()) {
+            config.createNewFile()
+            config.write("""
+{
+  "mysql": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "root",
+    "pass": "root",
+    "db": "shiro"
+  },
+  "discord-token":"YOUR_TOKEN_HERE"
+}
+""")
+            Logger.err("Please open the config.json and enter some data.")
+            System.exit(1)
+        } else {
+            HashMap json = new JsonSlurper().parse(config) as HashMap
 
-            if (token == null || token == "YOUR_TOKEN_HERE") {
-                Logger.err("Please open 'config.json' and enter your Discord-API-Token!")
-                System.exit(1)
-            } else {
-                Core.boot(token)
-            }
-        })
+            println()
+            Logger.info("Running from ${System.getProperty("user.dir")}")
+            Logger.info("If this path is incorrect kill the program now and check your setup!")
+            Logger.info(" --- waiting 5 seconds ---")
+            System.out.println()
+
+            Timer.setTimeout(5 * 1000, {
+                Database.createInstance(json.mysql as HashMap)
+                Core.boot(json["discord-token"] as String)
+            })
+        }
     }
 }

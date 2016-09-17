@@ -5,7 +5,7 @@ import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.core.IAdvancedModule
-import moe.lukas.shiro.util.Brain
+import moe.lukas.shiro.util.Database
 import moe.lukas.shiro.util.Timer
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
@@ -13,44 +13,43 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
-@ShiroMeta(
-    enabled = true,
-    description = "Reminds you to do stuff!",
-    commands = [
-        @ShiroCommand(command = "remind", usage = "<your_text> <in> [number]<S|M|H|D>"),
-        @ShiroCommand(command = "rm", usage = "[Alias for !remind]"),
-
-        @ShiroCommand(command = "reminders", usage = "Lists all reminders"),
-        @ShiroCommand(command = "rms", usage = "[Alias for !reminders]")
-    ]
-)
 @CompileStatic
+@ShiroMeta(
+        enabled = true,
+        description = "Reminds you to do stuff!",
+        commands = [
+                @ShiroCommand(command = "remind", usage = "<your_text> <in> [number]<S|M|H|D>"),
+                @ShiroCommand(command = "rm", usage = "[Alias for !remind]"),
+
+                @ShiroCommand(command = "reminders", usage = "Lists all reminders"),
+                @ShiroCommand(command = "rms", usage = "[Alias for !reminders]")
+        ]
+)
 class Reminders implements IAdvancedModule {
     IDiscordClient client = null
 
     @Override
     void init(IDiscordClient client) {
-        if(this.client == null) {
-            this.client = client
-        }
+        this.client = client
 
         Timer.setInterval(10000, {
-            ReminderList reminders = getReminders()
+            HashMap<Long, ArrayList<HashMap<String, String>>> reminders = getReminders()
 
-            reminders.each { Long ts, ReminderListEntry v ->
+            reminders.each { Long ts, ArrayList<HashMap<String, String>> v ->
                 if (ts <= System.currentTimeSeconds()) {
                     v.each {
                         client.getGuildByID(it.guild).getChannelByID(it.channel).sendMessage("""
-Hey <@${it.user}> :smiley:
-You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
+Reminder <@${it.user}> :smiley:
+```
+${it.message}
+```
 """)
+                        Database.instance.query("UPDATE `shiro`.`reminders` SET `sent`='1' WHERE `id` = ${it.id};")
                     }
-
-                    reminders.remove(ts)
                 }
             }
 
-            Brain.instance.set("reminders", reminders)
+
         })
     }
 
@@ -110,11 +109,11 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
                             }
 
                             setReminder(
-                                channel.guild.ID,
-                                channel.ID,
-                                user.ID,
-                                text,
-                                ts
+                                    channel.guild.ID,
+                                    channel.ID,
+                                    user.ID,
+                                    text,
+                                    ts
                             )
 
                             channel.sendMessage("Ok, I'll remind you :ok_hand:")
@@ -134,11 +133,11 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
             case "reminders":
             case "rms":
                 IUser author = message.author
-                ReminderList reminders = getReminders()
+                HashMap<Long, ArrayList<HashMap<String, String>>> reminders = getReminders()
 
                 String m = "```\n"
 
-                reminders.each { Long ts, ReminderListEntry list ->
+                reminders.each { Long ts, ArrayList<HashMap<String, String>> list ->
                     list.each {
                         if (it.user == author.ID) {
                             m += "${new Date(ts * 1000L)} - ${it["message"]} | "
@@ -148,7 +147,7 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
                     }
                 }
 
-                if (m == "```") {
+                if (m == "```\n") {
                     m = "You don't have any active reminders :frowning:"
                 } else {
                     m += "\n```"
@@ -159,34 +158,45 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
         }
     }
 
-    private ReminderList getReminders() {
-        return Brain.instance.get("reminders", new ReminderList()) as ReminderList
-    }
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private HashMap<Long, ArrayList<HashMap<String, String>>> getReminders(long time = 0L) {
+        List<Map<String, Object>> data = Database.instance.query(
+                "SELECT * FROM `reminders` WHERE `sent` = 0" +
+                        (
+                                time == 0L ?
+                                        "" :
+                                        " AND `timestamp` = `$time`"
+                        )
+                        + ";"
+        )
 
-    private void setReminder(String guild, String channel, String user, String message, long time) {
-        ReminderList reminders = getReminders()
+        HashMap<Long, ArrayList<HashMap<String, String>>> reminders = [:]
 
-        if (reminders[time] == null) {
-            reminders[time] = new ReminderListEntry()
+        data.each {
+            long ts = it["timestamp"] as long
+            it.remove("timestamp")
+
+            if (reminders[ts] == null) {
+                reminders[ts] = new ArrayList<HashMap<String, String>>()
+            }
+
+            reminders[ts] << (it as HashMap<String, String>)
         }
 
-        reminders[time] << [
-            guild  : guild,
-            channel: channel,
-            user   : user,
-            message: message
-        ]
-
-        Brain.instance.set("reminders", reminders)
+        return reminders
     }
 
-    class ReminderList extends HashMap<Long, ReminderListEntry> {
-        ReminderList() { super() }
-    }
-
-    class ReminderListEntry extends ArrayList<HashMap<String, String>> {
-        ReminderListEntry() { super() }
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private void setReminder(String guild, String channel, String user, String message, long time) {
+        Database.instance.query(
+                "INSERT INTO `shiro`.`reminders` (`timestamp`, `guild`, `channel`, `user`, `message`) VALUES (?, ?, ?, ?, ?);",
+                [
+                        time as String,
+                        guild,
+                        channel,
+                        user,
+                        message
+                ]
+        )
     }
 }
-
-

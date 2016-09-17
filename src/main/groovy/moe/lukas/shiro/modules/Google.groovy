@@ -1,6 +1,5 @@
 package moe.lukas.shiro.modules
 
-import com.mashape.unirest.http.Unirest
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.IModule

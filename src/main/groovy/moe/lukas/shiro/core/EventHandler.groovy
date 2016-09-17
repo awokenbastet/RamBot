@@ -14,7 +14,7 @@ import sx.blah.discord.handle.obj.IChannel
 
 class EventHandler {
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
-    private HashMap<String, ChatterBotSession> cleverbotSessions = []
+    private HashMap<String, ChatterBotSession> cleverbotSessions = [:]
 
     @EventSubscriber
     @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
@@ -37,11 +37,17 @@ class EventHandler {
          * Ignore other bots and @everyone/@here
          */
         if (!e.message.author.bot && !e.message.mentionsEveryone()) {
-
+            /**
+             * Check if the channel is private
+             */
+            if (e.message.channel.private) {
+                Core.cctv(e)
+                sendToCleverbot(e)
+            }
             /**
              * Check if the message contains a @mention
              */
-            if (e.message.mentions.size() > 0) {
+            else if (e.message.mentions.size() > 0) {
                 e.message.mentions.any {
                     if (it.ID == e.client.ourUser.ID) {
                         Core.cctv(e)
@@ -78,13 +84,6 @@ class EventHandler {
                         return true
                     }
                 }
-            }
-            /**
-             * Check if the channel is private
-             */
-            else if (e.message.channel.private) {
-                Core.cctv(e)
-                sendToCleverbot(e)
             }
             /**
              * Check if a module matches
