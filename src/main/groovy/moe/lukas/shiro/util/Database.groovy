@@ -133,8 +133,14 @@ class Database {
         } catch (SQLException e) {
             switch (e.SQLState) {
                 case "1062":
-                    this.query("UPDATE `shiro`.`$table` SET `key`='$key', `value`='$value' WHERE `key`='$key';")
+                case "23000":
+                    this.query("UPDATE `shiro`.`$table` SET `value`='$value' WHERE `key`='$key';")
                     break
+
+                default:
+                    e.printStackTrace()
+                    break
+
             }
         } catch (Exception e) {
             e.printStackTrace()

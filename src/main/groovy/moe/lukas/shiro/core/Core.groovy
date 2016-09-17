@@ -90,7 +90,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      */
     static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
         def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
-        Database.instance.set("prefixes", id, prefix)
+        Database.instance.set("prefixes", id, prefix.trim().replaceAll(/\s+/, ""))
     }
 
     /**
