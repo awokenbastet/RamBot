@@ -39,17 +39,13 @@ class Reminders implements IAdvancedModule {
                 if (ts <= System.currentTimeSeconds()) {
                     v.each {
                         client.getGuildByID(it.guild).getChannelByID(it.channel).sendMessage("""
-Reminder <@${it.user}> :smiley:
-```
-${it.message}
-```
+Hey <@${it.user}> :smiley:
+You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
 """)
                         Database.instance.query("UPDATE `shiro`.`reminders` SET `sent`='1' WHERE `id` = ${it.id};")
                     }
                 }
             }
-
-
         })
     }
 
