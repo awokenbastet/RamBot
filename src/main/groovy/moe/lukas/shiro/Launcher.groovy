@@ -42,6 +42,12 @@ class Launcher {
             Timer.setTimeout(5 * 1000, {
                 Database.createInstance(json.mysql as HashMap)
                 Core.boot(json["discord-token"] as String)
+
+                Runtime.runtime.addShutdownHook(new Thread({
+                    println("Meh. Someone told the OS to kill me :(")
+                    println("Logging out...")
+                    Core.logout()
+                }))
             })
         }
     }

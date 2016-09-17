@@ -175,4 +175,8 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
     static String hash(String s) {
         return MessageDigest.getInstance("MD5").digest(s.bytes).encodeHex().toString()
     }
+
+    static void logout() {
+        client.logout()
+    }
 }
