@@ -321,19 +321,17 @@ class Music implements IAdvancedModule {
             null, //extractor
             author,
             channel,
-            guild,
-            null, //meta
+            guild
         ]
 
         if (meta.exists()) {
             def json = new JsonSlurper().parse(meta.readBytes())
             insert[1] = json["title"] as String
             insert[3] = json["extractor"] as String
-            insert[7] = meta.readLines("UTF-8").join("\n")
         }
 
         Database.instance.query(
-            "INSERT INTO `shiro`.`music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`, `meta`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+            "INSERT INTO `shiro`.`music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?, ?, ?);",
             insert
         )
     }
