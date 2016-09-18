@@ -245,7 +245,7 @@ class Music implements IAdvancedModule {
 
                             int i = 1
                             player.playlist.each {
-                                msg += "**$i.** " + resolveTrackMeta((it.metadata["file"] as File).name)
+                                msg += "**$i.** " + resolveTrackMeta((it.metadata["file"] as File).name) + "\n"
                                 i++
                             }
 
@@ -269,22 +269,25 @@ class Music implements IAdvancedModule {
 
                             int counter = 0
                             cache.listFiles().any { File f ->
-                                if (counter >= 5) {
-                                    return true
-                                }
-
-                                boolean match = false
-                                player.getPlaylist().any {
-                                    if ((it.metadata.file as File).name == f.name) {
-                                        match = true
+                                if(f.name.contains(".mp3")) {
+                                    if (counter >= 5) {
+                                        return true
                                     }
+
+                                    boolean match = false
+                                    player.getPlaylist().any {
+                                        if ((it.metadata.file as File).name == f.name) {
+                                            match = true
+                                        }
+                                    }
+
+                                    if (!match) {
+                                        player.queue(f)
+                                    }
+
+                                    counter++
                                 }
 
-                                if (!match) {
-                                    player.queue(f)
-                                }
-
-                                counter++
                             }
 
                             channel.sendMessage("Done :smiley:")
