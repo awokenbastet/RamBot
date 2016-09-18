@@ -283,9 +283,8 @@ class Music implements IAdvancedModule {
 
                                     if (!match) {
                                         player.queue(f)
+                                        counter++
                                     }
-
-                                    counter++
                                 }
 
                             }
