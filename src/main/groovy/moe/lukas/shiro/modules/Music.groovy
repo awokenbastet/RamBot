@@ -37,14 +37,14 @@ import java.util.concurrent.TimeUnit
         @ShiroCommand(command = "play", usage = "Play the current playlist"),
         @ShiroCommand(command = "pause", usage = "Pause the playlist"),
         @ShiroCommand(command = "skip", usage = "Skip the current track"),
-        @ShiroCommand(command = "clear", usage = "Clears the playlist [ADMIN ONLY]", adminOnly = true),
-        @ShiroCommand(command = "loop", usage = "Toggle looping the playlist [ADMIN ONLY]", adminOnly = true),
-        @ShiroCommand(command = "shuffle", usage = "Shuffle the playlist [ADMIN ONLY]", adminOnly = true),
+        @ShiroCommand(command = "clear", usage = "Clears the playlist", adminOnly = true),
+        @ShiroCommand(command = "loop", usage = "Toggle looping the playlist", adminOnly = true),
+        @ShiroCommand(command = "shuffle", usage = "Shuffle the playlist", adminOnly = true),
 
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
 
-        @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]", adminOnly = true),
+        @ShiroCommand(command = "vol", usage = "Change the volume", adminOnly = true),
 
         @ShiroCommand(command = "random", usage = "Adds up to 5 random songs from the bot's cache :)"),
     ]

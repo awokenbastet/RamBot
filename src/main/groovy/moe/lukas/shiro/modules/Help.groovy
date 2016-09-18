@@ -33,12 +33,12 @@ Remember to use the `${Core.getPrefixForServer(e)}` prefix in your guild :wink:\
             HashMap properties = module.properties
 
             if (!properties.hidden && properties.enabled && properties.commands.size() > 0) {
-                message += "${module.name} "
+                message += "${module.name}"
 
                 if (properties.description == "") {
-                    message += "[no description]"
+                    message += " [no description]"
                 } else {
-                    message += "[${properties.description}]"
+                    message += " [${properties.description}]"
                 }
 
                 message += "\n"
@@ -51,6 +51,10 @@ Remember to use the `${Core.getPrefixForServer(e)}` prefix in your guild :wink:\
                             message += "${it.usage()}"
                         }
 
+                        if(it.adminOnly()) {
+                            message += " [ADMIN ONLY]"
+                        }
+
                         message += "\n"
                     }
                 }
@@ -58,13 +62,13 @@ Remember to use the `${Core.getPrefixForServer(e)}` prefix in your guild :wink:\
                 message += "\n"
             }
 
-            if(message.size() > 1500) {
+            if (message.size() > 1500) {
                 messages << message
                 message = ""
             }
         }
 
-        if(messages.size() == 0) {
+        if (messages.size() == 0) {
             messages << message
         }
 
