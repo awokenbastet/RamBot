@@ -1,13 +1,12 @@
 package moe.lukas.shiro.modules
 
-import groovy.transform.CompileStatic
-
-import java.util.concurrent.TimeUnit
 import groovy.json.JsonSlurper
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
 import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.core.IAdvancedModule
+import moe.lukas.shiro.util.Database
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
 import sx.blah.discord.api.IDiscordClient
@@ -19,6 +18,8 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.audio.AudioPlayer
 import sx.blah.discord.util.audio.events.TrackStartEvent
+
+import java.util.concurrent.TimeUnit
 
 /**
  * Experimental musicbot
@@ -43,7 +44,9 @@ import sx.blah.discord.util.audio.events.TrackStartEvent
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
 
-        @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]", adminOnly = true)
+        @ShiroCommand(command = "vol", usage = "Change the volume [ADMIN ONLY]", adminOnly = true),
+
+        @ShiroCommand(command = "random", usage = "Adds up to 5 random songs from the bot's cache :)"),
     ]
 )
 @CompileStatic
@@ -212,6 +215,14 @@ class Music implements IAdvancedModule {
                                             Logger.info("Success!")
                                             status.edit(":white_check_mark: Added! (Downloaded)")
                                             player.queue(new File(cacheName + ".mp3"))
+
+                                            storeTrackMeta(
+                                                cacheName,
+                                                url,
+                                                "${message.author.name}#${message.author.discriminator}",
+                                                channel.name,
+                                                channel.guild.name
+                                            )
                                         } else {
                                             Logger.err("Error!")
                                             status.edit("Error :frowning: \n```\n$output\n```")
@@ -252,6 +263,32 @@ class Music implements IAdvancedModule {
                                 channel.sendMessage(":speaker: **${Math.round(player.volume * 100)}%**")
                             }
                             break
+
+                        case "random":
+                            File cache = new File("cache")
+
+                            int counter = 0
+                            cache.listFiles().any { File f ->
+                                if (counter >= 5) {
+                                    return true
+                                }
+
+                                boolean match = false
+                                player.getPlaylist().any {
+                                    if ((it.metadata.file as File).name == f.name) {
+                                        match = true
+                                    }
+                                }
+
+                                if (!match) {
+                                    player.queue(f)
+                                }
+
+                                counter++
+                            }
+
+                            channel.sendMessage("Done :smiley:")
+                            break
                     }
                 }
             }
@@ -268,14 +305,36 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private String resolveTrackMeta(String filename) {
-        File meta = new File("cache/" + filename.replace(".mp3", ".info.json"))
+        return Database.instance.query(
+            "SELECT `title` FROM `shiro`.`music` WHERE `hash` = '${filename.replace("cache/", "").replace(".mp3", "")}'"
+        )[0]["title"]
+    }
+
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private void storeTrackMeta(String filename, String url, String author, String channel, String guild) {
+        File meta = new File(filename + ".info.json")
+
+        def insert = [
+            filename.replace("cache/", ""), //Hash
+            null, // title
+            url,  // source
+            null, //extractor
+            author,
+            channel,
+            guild,
+            null, //meta
+        ]
 
         if (meta.exists()) {
             def json = new JsonSlurper().parse(meta.readBytes())
-
-            return "${json['title']}\n"
-        } else {
-            return "${filename} _(META missing)_\n"
+            insert[1] = json["title"] as String
+            insert[3] = json["extractor"] as String
+            insert[7] = meta.readLines("UTF-8").join("\n")
         }
+
+        Database.instance.query(
+            "INSERT INTO `shiro`.`music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`, `meta`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+            insert
+        )
     }
 }
