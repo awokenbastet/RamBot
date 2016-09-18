@@ -274,19 +274,11 @@ class Music implements IAdvancedModule {
                                         return true
                                     }
 
-                                    boolean match = false
-                                    player.getPlaylist().any {
-                                        if ((it.metadata.file as File).name == f.name) {
-                                            match = true
-                                        }
-                                    }
-
-                                    if (!match) {
+                                    if (!player.getPlaylist().any { (it.metadata.file as File).name == f.name }) {
                                         player.queue(f)
                                         counter++
                                     }
                                 }
-
                             }
 
                             channel.sendMessage("Done :smiley:")
@@ -307,9 +299,17 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private String resolveTrackMeta(String filename) {
-        return Database.instance.query(
-            "SELECT `title` FROM `shiro`.`music` WHERE `hash` = '${filename.replace("cache/", "").replace(".mp3", "")}'"
-        )[0]["title"]
+        filename = filename.replace("cache/", "").replace(".mp3", "")
+
+        def result = Database.instance.query(
+            "SELECT `title` FROM `shiro`.`music` WHERE `hash` = '${filename}'"
+        )[0]
+
+        if(result == null) {
+            return filename
+        } else {
+            result["title"]
+        }
     }
 
     @SuppressWarnings("GrMethodMayBeStatic")
