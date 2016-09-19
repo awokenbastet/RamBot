@@ -11,6 +11,7 @@ import java.lang.annotation.Annotation
 class ShiroMetaParser {
     /**
      * Check if $c contains a ShiroMeta annotation
+     *
      * @param c
      * @return
      */
@@ -20,6 +21,7 @@ class ShiroMetaParser {
 
     /**
      * Get all ShiroMeta values as map
+     *
      * @param c
      * @return
      */
