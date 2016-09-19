@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     // Core
-    compile "org.codehaus.groovy:groovy-all:2.4.3"
+    compile "org.codehaus.groovy:groovy-all:2.4.3:indy"
     compile "org.reflections:reflections:0.9.10"
     compile "com.mashape.unirest:unirest-java:1.4.9"
     compile "mysql:mysql-connector-java:6.0.3"
