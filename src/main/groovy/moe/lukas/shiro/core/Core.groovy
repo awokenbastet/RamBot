@@ -2,9 +2,6 @@ package moe.lukas.shiro.core
 
 import groovy.transform.CompileStatic
 import moe.lukas.shiro.util.Database
-
-import java.security.MessageDigest
-
 import moe.lukas.shiro.util.Logger
 import sx.blah.discord.api.ClientBuilder
 import sx.blah.discord.api.IDiscordClient
@@ -12,9 +9,13 @@ import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
+import sx.blah.discord.handle.obj.Permissions
 
+import java.security.MessageDigest
 /**
  * Shiro's core
+ *
+ * Contains some commonly used helpers
  */
 @CompileStatic
 class Core {
@@ -24,11 +25,11 @@ class Core {
     private static IDiscordClient client
 
     /**
-     * Connect to the discord api
+     * Connect and register listeners
+     *
      * @param token
-     * @param login
      */
-    private static void connect(String token, boolean login = true) {
+    static void boot(String token, boolean login = true) {
         Logger.info("Connecting to Discord...")
 
         ClientBuilder clientBuilder = new ClientBuilder()
@@ -39,62 +40,37 @@ class Core {
         } else {
             client = clientBuilder.build()
         }
-    }
 
-    /**
-     * Register all listener classes
-     */
-    private static void registerListeners() {
         EventDispatcher eventDispatcher = client.getDispatcher()
-        eventDispatcher.registerListener(new EventHandler())
-    }
-
-    /**
-     * Connect and register shorthand
-     * @param token
-     */
-    static void boot(String token) {
-        connect(token)
-        registerListeners()
+        eventDispatcher.registerListener(new EventProxy())
     }
 
     /**
      * Get prefix configured for $server
+     *
      * @param e
      * @param callback
      * @return
      */
-    static String getPrefixForServer(MessageReceivedEvent e, fallback = true) {
-        def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
-
-        String prefix = Database.instance.get("prefixes", id)
-
-        if (prefix == null && fallback) {
-            e.getMessage().getChannel().sendMessage('''
-Warning :warning:\n
-There is no configured prefix for your guild!\n
-I will fallback to `%`
-Please tell your server owner to set a new command prefix using `SET PREFIX <your prefix>`
-''')
-            Database.instance.set("prefixes", id, "%")
-            return "%"
-        } else {
-            return prefix
-        }
+    static String getPrefixForServer(MessageReceivedEvent e) {
+        String id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
+        return Database.instance.get("prefixes", id)
     }
 
     /**
      * Set prefix for server
+     *
      * @param e
      * @param prefix
      */
     static void setPrefixForServer(MessageReceivedEvent e, String prefix) {
-        def id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
+        String id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
         Database.instance.set("prefixes", id, prefix.trim().replaceAll(/\s+/, ""))
     }
 
     /**
      * Enable typing in channel c
+     *
      * @param c
      */
     static void enableTyping(IChannel c) {
@@ -107,6 +83,7 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
 
     /**
      * Disable typing in channel c
+     *
      * @param c
      */
     static void disableTyping(IChannel c) {
@@ -119,25 +96,45 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
 
     /**
      * Type while the closure runs
+     *
      * @param c
      * @param closure
      */
     static void whileTyping(IChannel c, Closure closure) {
         enableTyping(c)
-        closure.call()
+        closure()
         disableTyping(c)
     }
 
     /**
      * Only call c if the author of e is a guild owner
+     *
      * @param e
      * @param c
      */
     static void ownerAction(MessageReceivedEvent e, Closure c) {
         if (e.message?.guild?.ownerID == e.message.author.ID || e.message.author.ID == Database.instance.get("core", "owner")) {
-            c.call()
+            c()
         } else {
             e.message.channel.sendMessage(":no_entry: Only owners are allowed to do that!")
+        }
+    }
+
+    /**
+     * Only call c if the author has a role that contains the ADMINISTRATOR permission
+     *
+     * @param e
+     * @param c
+     */
+    static void adminAction(MessageReceivedEvent e, Closure c) {
+        boolean isAdmin = e.message.author.getRolesForGuild(e.message.guild).any {
+            return it.permissions.contains(Permissions.ADMINISTRATOR)
+        }
+
+        if(isAdmin) {
+            c()
+        } else {
+            e.message.channel.sendMessage(":no_entry: Only users with ADMINISTRATOR permission are allowed to do that!")
         }
     }
 
@@ -146,7 +143,6 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
      * @param c IDiscordClient
      * @param m IMessage
      */
-    @SuppressWarnings("GrMethodMayBeStatic")
     static void cctv(MessageReceivedEvent e) {
         IDiscordClient c = e.client
         IMessage m = e.message
@@ -172,10 +168,19 @@ Please tell your server owner to set a new command prefix using `SET PREFIX <you
         }
     }
 
+    /**
+     * Create a MD5 hash of $s
+     *
+     * @param s
+     * @return
+     */
     static String hash(String s) {
         return MessageDigest.getInstance("MD5").digest(s.bytes).encodeHex().toString()
     }
 
+    /**
+     * Log out from discord
+     */
     static void logout() {
         client.logout()
     }

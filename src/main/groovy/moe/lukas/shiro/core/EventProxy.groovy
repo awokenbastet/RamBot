@@ -12,12 +12,28 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.impl.events.ReadyEvent
 import sx.blah.discord.handle.obj.IChannel
 
-class EventHandler {
+/**
+ * Handles Discord4J Events and redirects them to other classes/methods
+ */
+@SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
+class EventProxy {
+    /**
+     * Cleverbot connection
+     */
     private ChatterBot cleverbot = new ChatterBotFactory().create(ChatterBotType.CLEVERBOT)
+
+    /**
+     * Cleverbot sessions
+     * Every IChannel gets it's own session
+     */
     private HashMap<String, ChatterBotSession> cleverbotSessions = [:]
 
+    /**
+     * Triggered after connecting to the discord API
+     *
+     * @param e
+     */
     @EventSubscriber
-    @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onReadyEvent(ReadyEvent e) {
         int servers = e.client.guilds.size()
         int channels = 0
@@ -30,8 +46,12 @@ class EventHandler {
         Logger.info("To add me to your server visit https://discordapp.com/oauth2/authorize?client_id=${e.client.getApplicationClientID()}&scope=bot&permissions=")
     }
 
+    /**
+     * Triggered after a message is sent to any IChannel
+     *
+     * @param e
+     */
     @EventSubscriber
-    @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onMessageReceived(MessageReceivedEvent e) {
         /**
          * Ignore other bots and @everyone/@here
@@ -41,47 +61,42 @@ class EventHandler {
              * Check if the channel is private
              */
             if (e.message.channel.private) {
-                Core.cctv(e)
-                sendToCleverbot(e)
+                // do nothing
             }
             /**
              * Check if the message contains a @mention
              */
             else if (e.message.mentions.size() > 0) {
-                e.message.mentions.any {
-                    if (it.ID == e.client.ourUser.ID) {
-                        Core.cctv(e)
+                if (e.message.mentions[0].ID == e.client.ourUser.ID) {
+                    Core.cctv(e)
 
-                        /**
-                         * Process @mention command
-                         * Send the message to cleverbot if nothing matches
-                         */
-                        switch (e.message.content.split(" ").drop(1).join(" ")) {
-                            case ~/^REFRESH CHAT SESSION$/:
-                                Core.ownerAction(e, {
-                                    cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
-                                    e.message.channel.sendMessage("Done :smiley:")
-                                })
-                                break
+                    /**
+                     * Process @mention command
+                     * Send the message to cleverbot if nothing matches
+                     */
+                    switch (e.message.content.split(" ").drop(1).join(" ")) {
+                        case ~/^REFRESH CHAT SESSION$/:
+                            Core.adminAction(e, {
+                                cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
+                                e.message.channel.sendMessage("Done :smiley:")
+                            })
+                            break
 
-                            case ~/^SET PREFIX (.){0,5}$/:
-                                Core.ownerAction(e, {
-                                    Core.setPrefixForServer(
-                                        e,
-                                        e.message.content
-                                            .replace("SET PREFIX ", "")
-                                            .replace("<@${e.client.ourUser.ID}>", "")
-                                    )
-                                    e.message.channel.sendMessage("Saved :smiley:")
-                                })
-                                break
+                        case ~/^SET PREFIX (.){0,5}$/:
+                            Core.ownerAction(e, {
+                                Core.setPrefixForServer(
+                                    e,
+                                    e.message.content
+                                        .replace("SET PREFIX ", "")
+                                        .replace("<@${e.client.ourUser.ID}>", "")
+                                )
+                                e.message.channel.sendMessage("Saved :smiley:")
+                            })
+                            break
 
-                            default:
-                                sendToCleverbot(e)
-                                break
-                        }
-
-                        return true
+                        default:
+                            sendToCleverbot(e)
+                            break
                     }
                 }
             }
@@ -90,8 +105,8 @@ class EventHandler {
              */
             else {
                 ModuleLoader.modules.each { HashMap module ->
-                    if (module.properties.enabled == true) {
-                        module.properties.commands.any { ShiroCommand it ->
+                    if (module.properties["enabled"] == true) {
+                        module.properties["commands"].any { ShiroCommand it ->
                             switch (e.message.content) {
                                 case ~/^${Core.getPrefixForServer(e)}${it.command()}\s.*/:
                                 case ~/^${Core.getPrefixForServer(e)}${it.command()}$/:
@@ -116,8 +131,12 @@ class EventHandler {
         }
     }
 
+    /**
+     * Triggered after disconnecting/connection-loss
+     *
+     * @param e
+     */
     @EventSubscriber
-    @SuppressWarnings(["GrMethodMayBeStatic", "GroovyUnusedDeclaration"])
     void onOffline(DiscordDisconnectedEvent e) {
         Logger.warn("Discord gateway disconnected!")
         Logger.warn("")

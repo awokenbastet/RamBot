@@ -22,7 +22,7 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 class Sys implements IModule {
     @Override
     void action(MessageReceivedEvent e) {
-        switch (e.message.content.replace(Core.getPrefixForServer(e, false), "")) {
+        switch (e.message.content.replace(Core.getPrefixForServer(e), "")) {
             case "plugins:reload":
                 ModuleLoader.reload(e.client)
                 e.message.channel.sendMessage(":cyclone: Plugins reloaded!")
