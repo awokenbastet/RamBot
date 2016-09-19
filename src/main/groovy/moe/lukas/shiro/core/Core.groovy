@@ -47,6 +47,7 @@ class Core {
 
     /**
      * Get prefix configured for $server
+     * Returns scrambled UTF garbage to ensure no matches
      *
      * @param e
      * @param callback
@@ -54,7 +55,8 @@ class Core {
      */
     static String getPrefixForServer(MessageReceivedEvent e) {
         String id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
-        return Database.instance.get("prefixes", id)
+        String prefix = Database.instance.get("prefixes", id)
+        return prefix == null ? "ää\u200Böö\u180Eüü\u180E\u180Eää\u200Böö": prefix
     }
 
     /**
