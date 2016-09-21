@@ -105,20 +105,20 @@ class EventProxy {
              */
             else {
                 ModuleLoader.modules.each { HashMap module ->
-                    if (module.properties["enabled"] == true) {
-                        module.properties["commands"].any { ShiroCommand it ->
+                    if (module.properties.enabled == true) {
+                        module.properties.commands.any { ShiroCommand it ->
                             switch (e.message.content) {
-                                case ~/^${Core.getPrefixForServer(e)}${it.command()}\s.*/:
-                                case ~/^${Core.getPrefixForServer(e)}${it.command()}$/:
+                                case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}\s.*/:
+                                case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}$/:
                                     def action = {
                                         Core.cctv(e)
                                         module["class"].invokeMethod("action", e)
                                     }
 
-                                    if (it.adminOnly()) {
-                                        Core.adminAction(e, action)
-                                    } else if (it.ownerOnly()) {
+                                    if(it.ownerOnly()) {
                                         Core.ownerAction(e, action)
+                                    } else if (it.adminOnly()) {
+                                        Core.adminAction(e, action)
                                     } else {
                                         action()
                                     }
