@@ -116,6 +116,8 @@ class EventProxy {
                                     }
 
                                     if (it.adminOnly()) {
+                                        Core.adminAction(e, action)
+                                    } else if (it.ownerOnly()) {
                                         Core.ownerAction(e, action)
                                     } else {
                                         action()

@@ -18,4 +18,6 @@ import java.lang.annotation.Target
     public boolean hidden() default false
 
     public boolean adminOnly() default false
+
+    public boolean ownerOnly() default false
 }

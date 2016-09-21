@@ -116,7 +116,7 @@ class Core {
      * @param c
      */
     static void ownerAction(MessageReceivedEvent e, Closure c) {
-        if (e.message?.guild?.ownerID == e.message.author.ID || e.message.author.ID == Database.instance.get("core", "owner")) {
+        if (isOwner(e)) {
             c()
         } else {
             e.message.channel.sendMessage(":no_entry: Only owners are allowed to do that!")
@@ -130,15 +130,32 @@ class Core {
      * @param c
      */
     static void adminAction(MessageReceivedEvent e, Closure c) {
-        boolean isAdmin = e.message.author.getRolesForGuild(e.message.guild).any {
-            return it.permissions.contains(Permissions.ADMINISTRATOR)
-        }
-
-        if (isAdmin) {
+        if (isAdmin(e) || isOwner(e)) {
             c()
         } else {
-            e.message.channel.sendMessage(":no_entry: Only users with ADMINISTRATOR permission are allowed to do that!")
+            e.message.channel.sendMessage(":no_entry: Only users with `ADMINISTRATOR` permission are allowed to do that!")
         }
+    }
+
+    /**
+     * Check if the author of $e is an admin
+     * @param e
+     * @return
+     */
+    static boolean isAdmin(MessageReceivedEvent e) {
+        return e.message.author.getRolesForGuild(e.message.guild).any {
+            return it.permissions.contains(Permissions.ADMINISTRATOR)
+        }
+    }
+
+    /**
+     * Check if the author of $e is the owner of $e's guild
+     * @param e
+     * @return
+     */
+    static boolean isOwner(MessageReceivedEvent e) {
+        return e.message?.guild?.ownerID == e.message.author.ID ||
+            e.message.author.ID == Database.instance.get("core", "owner")
     }
 
     /**
