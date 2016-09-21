@@ -11,21 +11,22 @@ However since Shiro supports modules you can extend her to infinity!
 
 ### Can I see/suggest features/commands/...?
 YES!<br>
-Check [here](https://github.com/sn0w/shiro/issues) or [here](https://github.com/sn0w/shiro/projects) if anyone had the idea before or open a new issue :)
+Check [here](https://github.com/sn0w/shiro/issues) if anyone had the idea before or open a new issue :)
 
 ### Documentation and FAQ
 Go to [meetshiro.xyz](http://meetshiro.xyz)
 
 ### Requirements
-- Any OS and CPU that runs Java 8
+- Any OS and CPU that runs Java 8 [or Docker]
 - About 64mb of free RAM
-- About 20mb of free HDD space
+- About 20mb of free HDD space [The docker image needs additional 250mb]
+- A MySQL server (anywhere. Maybe at bplaced? 😅)
 - Internet connection, duh
 
 ### Docker? Docker!
 Just do a 
 ```
-docker run -dv /docker/shiro:/data sn0w/shiro:<full commit id or branch name>
+docker run -dv /docker/shiro:/data --link <mysql-container> sn0w/shiro:<full commit id or branch name>
 ```
 and everything is ready! :)
 
