@@ -12,6 +12,7 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.Permissions
 
 import java.security.MessageDigest
+
 /**
  * Shiro's core
  *
@@ -56,7 +57,7 @@ class Core {
     static String getPrefixForServer(MessageReceivedEvent e) {
         String id = e.message.channel.private ? "PRIVATE." + e.message.author.ID : e.message.guild.ID
         String prefix = Database.instance.get("prefixes", id)
-        return prefix == null ? "ää\u200Böö\u180Eüü\u180E\u180Eää\u200Böö": prefix
+        return prefix == null ? "ää\u200Böö\u180Eüü\u180E\u180Eää\u200Böö" : prefix
     }
 
     /**
@@ -133,7 +134,7 @@ class Core {
             return it.permissions.contains(Permissions.ADMINISTRATOR)
         }
 
-        if(isAdmin) {
+        if (isAdmin) {
             c()
         } else {
             e.message.channel.sendMessage(":no_entry: Only users with ADMINISTRATOR permission are allowed to do that!")
@@ -151,20 +152,20 @@ class Core {
 
         if (Database.instance.get("core", "cctv.enabled", true) as boolean) {
             IChannel channel = c?.
-                    getGuildByID(Database.instance.get("core", "cctv.server", "180818466847064065") as String)?.
-                    getChannelByID(Database.instance.get("core", "cctv.channel", "221215096842485760") as String)
+                getGuildByID(Database.instance.get("core", "cctv.server", "180818466847064065") as String)?.
+                getChannelByID(Database.instance.get("core", "cctv.channel", "221215096842485760") as String)
 
             if (channel != null) {
                 channel.sendMessage(
-                        ":cool: A new message! \n" +
-                                "```\n" +
-                                "At: ${m.timestamp}\n" +
-                                "Origin: #${m.channel.name} in ${m.channel?.guild?.name} " +
-                                "(${m.channel?.guild?.ID}:${m.channel.ID}) \n" +
-                                "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
-                                "Roles: ${m.author.getRolesForGuild(m.channel?.guild).join(",")} \n" +
-                                "Message:\n ${m.content}\n" +
-                                "```"
+                    ":cool: A new message! \n" +
+                        "```\n" +
+                        "At: ${m.timestamp}\n" +
+                        "Origin: #${m.channel.name} in ${m.channel?.guild?.name} " +
+                        "(${m.channel?.guild?.ID}:${m.channel.ID}) \n" +
+                        "Author: ${m.author.name}#${m.author.discriminator} (Nick: ${m.author.getNicknameForGuild(m.channel.guild)})\n" +
+                        "Roles: ${m.author.getRolesForGuild(m.channel?.guild).join(",")} \n" +
+                        "Message:\n ${m.content}\n" +
+                        "```"
                 )
             }
         }
