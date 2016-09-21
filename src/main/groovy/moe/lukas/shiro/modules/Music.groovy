@@ -95,20 +95,10 @@ class Music implements IAdvancedModule {
             if (channel.private) {
                 channel.sendMessage("That doesn't work in PM's! :grimacing:")
             } else {
-                if (vc.connectedUsers.contains(message.author)) {
-                    switch (message.content.split(" ")[0].replace(Core.getPrefixForServer(e), "")) {
-                        case "join":
-                            if (!vc.isConnected()) {
-                                IMessage status = channel.sendMessage("Connecting...")
-                                vc.join()
-                                status.edit("Joined! :smiley:")
+                String command = message.content.split(" ")[0].replace(Core.getPrefixForServer(e), "")
 
-                                playerChannels[channel.guild.ID] = channel
-
-                                player.setVolume(0.1F)
-                            }
-                            break
-
+                if (vc?.connectedUsers?.contains(e.client.ourUser)) {
+                    switch (command) {
                         case "leave":
                             if (vc.isConnected()) {
                                 channel.sendMessage("OK, bye :wave:")
@@ -284,6 +274,24 @@ class Music implements IAdvancedModule {
                             channel.sendMessage("Done :smiley:")
                             break
                     }
+                } else if (command == "join") {
+                    IMessage status = channel.sendMessage("Connecting...")
+
+                    if(vc == null) {
+                        status.edit("You have to join a channel first! :neutral_face:")
+                    } else if (!vc.isConnected()) {
+                        vc.join()
+
+                        playerChannels[channel.guild.ID] = channel
+
+                        player.setVolume(0.1F)
+
+                        status.edit("Joined! :smiley:")
+                    } else {
+                        status.edit("Already joined :neutral_face:")
+                    }
+                } else {
+                    channel.sendMessage(":no_entry: You need to join the Voice-Chat that I'm in or use `${Core.getPrefixForServer(e)}join`.")
                 }
             }
         }
