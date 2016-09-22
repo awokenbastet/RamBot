@@ -15,15 +15,15 @@ import sx.blah.discord.handle.obj.IUser
 
 @CompileStatic
 @ShiroMeta(
-        enabled = true,
-        description = "Reminds you to do stuff!",
-        commands = [
-                @ShiroCommand(command = "remind", usage = "<your_text> <in> [number]<S|M|H|D>"),
-                @ShiroCommand(command = "rm", usage = "[Alias for !remind]"),
+    enabled = true,
+    description = "Reminds you to do stuff!",
+    commands = [
+        @ShiroCommand(command = "remind", usage = "<your_text> <in> [number]<s/seconds|m/minutes|h/hours|d/days>"),
+        @ShiroCommand(command = "rm", usage = "[Alias for remind]"),
 
-                @ShiroCommand(command = "reminders", usage = "Lists all reminders"),
-                @ShiroCommand(command = "rms", usage = "[Alias for !reminders]")
-        ]
+        @ShiroCommand(command = "reminders", usage = "Lists all reminders"),
+        @ShiroCommand(command = "rms", usage = "[Alias for reminders]")
+    ]
 )
 class Reminders implements IAdvancedModule {
     IDiscordClient client = null
@@ -80,7 +80,7 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
                     text = parts.join(" ")
 
                     switch (time) {
-                        case ~/(?i)\d+(s|m|h|d)/:
+                        case ~/(?i)\d+(s|seconds|m|minutes|h|hours|d|days)/:
                             String unit = time.find(~/[a-z]+/)
 
                             long t = time.find(~/\d+/) as long
@@ -88,28 +88,32 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
 
                             switch (unit) {
                                 case "s":
+                                case "seconds":
                                     ts += t
                                     break
 
                                 case "m":
+                                case "minutes":
                                     ts += t * 60
                                     break
 
                                 case "h":
+                                case "hours":
                                     ts += t * 60 * 60
                                     break
 
                                 case "d":
+                                case "days":
                                     ts += t * 60 * 60 * 24
                                     break
                             }
 
                             setReminder(
-                                    channel.guild.ID,
-                                    channel.ID,
-                                    user.ID,
-                                    text,
-                                    ts
+                                channel.guild.ID,
+                                channel.ID,
+                                user.ID,
+                                text,
+                                ts
                             )
 
                             channel.sendMessage("Ok, I'll remind you :ok_hand:")
@@ -157,13 +161,13 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
     @SuppressWarnings("GrMethodMayBeStatic")
     private HashMap<Long, ArrayList<HashMap<String, String>>> getReminders(long time = 0L) {
         List<Map<String, Object>> data = Database.instance.query(
-                "SELECT * FROM `reminders` WHERE `sent` = 0" +
-                        (
-                                time == 0L ?
-                                        "" :
-                                        " AND `timestamp` = `$time`"
-                        )
-                        + ";"
+            "SELECT * FROM `reminders` WHERE `sent` = 0" +
+                (
+                    time == 0L ?
+                        "" :
+                        " AND `timestamp` = `$time`"
+                )
+                + ";"
         )
 
         HashMap<Long, ArrayList<HashMap<String, String>>> reminders = [:]
@@ -185,14 +189,14 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
     @SuppressWarnings("GrMethodMayBeStatic")
     private void setReminder(String guild, String channel, String user, String message, long time) {
         Database.instance.query(
-                "INSERT INTO `shiro`.`reminders` (`timestamp`, `guild`, `channel`, `user`, `message`) VALUES (?, ?, ?, ?, ?);",
-                [
-                        time as String,
-                        guild,
-                        channel,
-                        user,
-                        message
-                ]
+            "INSERT INTO `shiro`.`reminders` (`timestamp`, `guild`, `channel`, `user`, `message`) VALUES (?, ?, ?, ?, ?);",
+            [
+                time as String,
+                guild,
+                channel,
+                user,
+                message
+            ]
         )
     }
 }
