@@ -20,14 +20,14 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 class RandomCat implements IModule {
     void action(MessageReceivedEvent e) {
         HttpResponse<JsonNode> response = Unirest.get("http://random.cat/meow").asJson()
-        if (response.getStatus() != 200) {
-            e.getMessage().getChannel().sendMessage("Error :crying_cat_face:")
+        if (response.status != 200) {
+            e.message.channel.sendMessage("Error :crying_cat_face:")
             return
         }
 
-        e.getMessage().getChannel().sendMessage(
+        e.message.channel.sendMessage(
             "MEOW! :smiley_cat: \n " +
-                response.getBody().getObject().getString("file")
+                response.body.object.getString("file")
         )
     }
 }

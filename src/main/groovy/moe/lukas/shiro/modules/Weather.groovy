@@ -24,8 +24,8 @@ class Weather implements IModule {
 
     void action(MessageReceivedEvent e) {
         HttpResponse<String> stringResponse = null
-        IChannel channel = e.getMessage().getChannel()
-        String city = e.getMessage().getContent().split(" ").drop(1).join("+")
+        IChannel channel = e.message.channel
+        String city = e.message.content.split(" ").drop(1).join("+")
 
         Core.whileTyping(channel, {
             stringResponse = Unirest
@@ -34,11 +34,11 @@ class Weather implements IModule {
                 .asString()
         })
 
-        if (stringResponse.getStatus() == 200 && stringResponse.getBody() != "ERROR") {
+        if (stringResponse.status == 200 && stringResponse.body != "ERROR") {
             if (city.toLowerCase() == "moon") {
                 channel.sendMessage("Dont pretend you'd want to know .-.")
             } else {
-                String response = stringResponse.getBody()
+                String response = stringResponse.body
                 String[] tmp = response.split("\n")
                 response = tmp.dropRight(tmp.size() - 7).join("\n")
 

@@ -76,7 +76,7 @@ class Music implements IAdvancedModule {
             println("[Music] Found! Ready to load music!")
             acceptCommands = true
 
-            EventDispatcher eventDispatcher = client.getDispatcher()
+            EventDispatcher eventDispatcher = client.dispatcher
             eventDispatcher.registerListener(this)
         } else {
             println('[Music] Please install ffmpeg/libav and youtube-dl and add it to your $PATH or %PATH%')
@@ -182,7 +182,7 @@ class Music implements IAdvancedModule {
                                     // This thread will block until YTDL is complete
                                     String output = ""
                                     new Thread({
-                                        InputStream is = ytdl.getInputStream()
+                                        InputStream is = ytdl.inputStream
                                         InputStreamReader isr = new InputStreamReader(is)
                                         BufferedReader br = new BufferedReader(isr)
 
@@ -264,7 +264,7 @@ class Music implements IAdvancedModule {
                                         return true
                                     }
 
-                                    if (!player.getPlaylist().any { (it.metadata.file as File).name == f.name }) {
+                                    if (!player.playlist.any { (it.metadata.file as File).name == f.name }) {
                                         player.queue(f)
                                         counter++
                                     }

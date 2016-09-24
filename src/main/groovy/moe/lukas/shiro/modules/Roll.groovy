@@ -19,11 +19,10 @@ import sx.blah.discord.handle.obj.IChannel
 @CompileStatic
 class Roll implements IModule {
     void action(MessageReceivedEvent e) {
-        IChannel channel = e.getMessage().getChannel()
-        String[] parts = e.getMessage().getContent().split(" ")
+        IChannel channel = e.message.channel
+        String[] parts = e.message.content.split(" ")
 
         if (parts.size() == 3) {
-            Random random = new Random()
             channel.sendMessage(
                 ":crystal_ball: " +
                     ThreadLocalRandom.current().nextInt(parts[1].toInteger(), parts[2].toInteger() + 1)

@@ -17,7 +17,7 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 @CompileStatic
 class About implements IModule {
     void action(MessageReceivedEvent e) {
-        e.getMessage().getChannel().sendMessage('''
+        e.message.channel.sendMessage('''
 Information about me:
 ```
 Shiro (白, Shiro)? is an 11 year old genius NEET (Not in Education, Employment, or Training),

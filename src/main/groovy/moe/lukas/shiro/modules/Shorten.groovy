@@ -20,14 +20,14 @@ import sx.blah.discord.handle.obj.IChannel
 @CompileStatic
 class Shorten implements IModule {
     void action(MessageReceivedEvent e) {
-        IChannel channel = e.getMessage().getChannel()
+        IChannel channel = e.message.channel
         String url = ""
 
         Core.whileTyping(channel, {
-            url = URLShortener.shorten(e.getMessage().getContent().split(" ")[1])
+            url = URLShortener.shorten(e.message.content.split(" ")[1])
         })
 
-        e.getMessage().getChannel().sendMessage(
+        e.message.channel.sendMessage(
             url == null ? "Error :frowning:" : url
         )
     }

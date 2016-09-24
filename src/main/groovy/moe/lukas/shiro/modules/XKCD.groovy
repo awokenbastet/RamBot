@@ -21,15 +21,15 @@ import sx.blah.discord.handle.obj.IChannel
 @CompileStatic
 class XKCD implements IModule {
     void action(MessageReceivedEvent e) {
-        IChannel channel = e.getMessage().getChannel()
+        IChannel channel = e.message.channel
 
         HttpResponse<JsonNode> response = Unirest.get("https://xkcd.com/info.0.json").asJson()
-        if (response.getStatus() != 200) {
+        if (response.status != 200) {
             channel.sendMessage("Error :frowning:")
             return
         }
 
-        JSONObject object = response.getBody().getObject()
+        JSONObject object = response.body.object
         String msg = ""
 
         msg += "${object.getInt("num")} from ${object.getString("day")}/${object.getString("month")}/${object.getString("year")}\n"

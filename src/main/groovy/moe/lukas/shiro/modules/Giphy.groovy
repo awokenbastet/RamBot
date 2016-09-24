@@ -29,8 +29,8 @@ class Giphy implements IModule {
 
     void action(MessageReceivedEvent e) {
         HttpResponse<JsonNode> jsonResponse = null;
-        IChannel channel = e.getMessage().getChannel()
-        String query = e.getMessage().getContent().split(" ").drop(1).join("+")
+        IChannel channel = e.message.channel
+        String query = e.message.content.split(" ").drop(1).join("+")
 
         Core.whileTyping(channel, {
             jsonResponse = Unirest.get(
@@ -38,11 +38,11 @@ class Giphy implements IModule {
             ).asJson()
         })
 
-        if (jsonResponse.getStatus() != 200) {
-            channel.sendMessage("Search failed (Error ${jsonResponse.getStatus()}) :frowning:")
+        if (jsonResponse.status != 200) {
+            channel.sendMessage("Search failed (Error ${jsonResponse.status}) :frowning:")
         } else {
-            JsonNode body = jsonResponse.getBody()
-            JSONArray data = body.getObject().getJSONArray("data")
+            JsonNode body = jsonResponse.body
+            JSONArray data = body.object.getJSONArray("data")
 
             if (data.size() > 0) {
                 channel.sendMessage(data.getJSONObject(new Random().nextInt(data.size())).getString("bitly_url"))

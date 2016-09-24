@@ -19,21 +19,21 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 @CompileStatic
 class Minecraft implements IModule {
     void action(MessageReceivedEvent e) {
-        String[] parts = e.getMessage().getContent().split(" ")
+        String[] parts = e.message.content.split(" ")
 
         if (parts.size() < 2) {
-            e.getMessage().getChannel().sendMessage("Error :frowning:")
+            e.message.channel.sendMessage("Error :frowning:")
             return
         }
 
         HttpResponse<InputStream> stream = Unirest.get("https://minotar.net/body/${parts[1]}/300.png").asBinary()
 
-        if (stream.getStatus() == 200) {
-            e.getMessage().getChannel().sendFile(stream.getBody(), "avatar.png")
+        if (stream.status == 200) {
+            e.message.channel.sendFile(stream.body, "avatar.png")
             System.gc()
             return
         }
 
-        e.getMessage().getChannel().sendMessage("Error :frowning:")
+        e.message.channel.sendMessage("Error :frowning:")
     }
 }
