@@ -4,4 +4,11 @@ echo ""
 echo "--------- Welcome to the Shiro container! \o/ ---------"
 
 cd /data
-java -jar /shiro.jar
+
+java \
+    -server \
+    -XX:+UseCompressedOops \
+    -XX:+UseConcMarkSweepGC \
+    -Dsun.io.useCanonCaches=false \
+    -Djava.net.preferIPv4Stack=true \
+    -jar /shiro.jar
