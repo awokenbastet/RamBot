@@ -14,10 +14,10 @@ repositories {
 
 dependencies {
     // Core
-    compile "org.codehaus.groovy:groovy-all:2.4.3:indy"
-    compile "org.reflections:reflections:0.9.10"
+    compile "org.codehaus.groovy:groovy-all:2.4.7:indy"
     compile "com.mashape.unirest:unirest-java:1.4.9"
-    compile "mysql:mysql-connector-java:6.0.3"
+    compile "org.reflections:reflections:0.9.10"
+    compile "mysql:mysql-connector-java:6.0.4"
 
     // Discord
     compile "com.github.austinv11:Discord4j:2.6.0"
