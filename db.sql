@@ -37,11 +37,10 @@ CREATE TABLE IF NOT EXISTS `prefixes` (
   DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `ratings` (
-  `id`    INT(11)      NOT NULL AUTO_INCREMENT,
   `user`  VARCHAR(100) NOT NULL,
   `guild` VARCHAR(100) NOT NULL,
   `score` INT(11)      NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`user`, `guild`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
