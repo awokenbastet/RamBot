@@ -63,11 +63,15 @@ class EventProxy {
             if (e.message.channel.private) {
                 // do nothing
             }
+
             /**
-             * Check if the message contains a @mention
+             * Check if the message contains mentions
              */
-            else if (e.message.mentions.size() > 0) {
-                if (e.message.mentions[0].ID == e.client.ourUser.ID) {
+            if (e.message.mentions.size() >= 1) {
+                /**
+                 * Check if the user is directly mentioning this bot
+                 */
+                if (e.message?.mentions[0]?.ID == e.client.ourUser.ID) {
                     Core.cctv(e)
 
                     /**
@@ -80,7 +84,7 @@ class EventProxy {
                                 cleverbotSessions[e.message.channel.ID] = cleverbot.createSession(Locale.ENGLISH)
                                 e.message.channel.sendMessage("Done :smiley:")
                             })
-                            break
+                            return
 
                         case ~/^SET PREFIX (.){0,5}$/:
                             Core.ownerAction(e, {
@@ -92,44 +96,19 @@ class EventProxy {
                                 )
                                 e.message.channel.sendMessage("Saved :smiley:")
                             })
-                            break
+                            return
 
                         default:
                             sendToCleverbot(e)
-                            break
+                            return
                     }
+                } else {
+                    checkModules(e)
+                    return
                 }
             }
-            /**
-             * Check if a module matches
-             */
-            else {
-                ModuleLoader.modules.each { HashMap module ->
-                    if (module.properties.enabled == true) {
-                        module.properties.commands.any { ShiroCommand it ->
-                            switch (e.message.content) {
-                                case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}\s.*/:
-                                case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}$/:
-                                    def action = {
-                                        Core.cctv(e)
-                                        module["class"].invokeMethod("action", e)
-                                    }
 
-                                    if(it.ownerOnly()) {
-                                        Core.ownerAction(e, action)
-                                    } else if (it.adminOnly()) {
-                                        Core.adminAction(e, action)
-                                    } else {
-                                        action()
-                                    }
-
-                                    // break loop and switch
-                                    return true
-                            }
-                        }
-                    }
-                }
-            }
+            checkModules(e)
         }
     }
 
@@ -160,5 +139,37 @@ class EventProxy {
         })
 
         channel.sendMessage(response == "" ? ":grey_question:" : response)
+    }
+
+    /**
+     * Check if a module matches
+     * @param e
+     */
+    void checkModules(MessageReceivedEvent e) {
+        ModuleLoader.modules.each { HashMap module ->
+            if (module.properties.enabled == true) {
+                module.properties.commands.any { ShiroCommand it ->
+                    switch (e.message.content) {
+                        case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}\s.*/:
+                        case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}$/:
+                            def action = {
+                                Core.cctv(e)
+                                module["class"].invokeMethod("action", e)
+                            }
+
+                            if (it.ownerOnly()) {
+                                Core.ownerAction(e, action)
+                            } else if (it.adminOnly()) {
+                                Core.adminAction(e, action)
+                            } else {
+                                action()
+                            }
+
+                            // break loop and switch
+                            return true
+                    }
+                }
+            }
+        }
     }
 }
