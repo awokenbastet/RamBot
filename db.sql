@@ -15,6 +15,19 @@ CREATE TABLE IF NOT EXISTS `core` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+CREATE TABLE IF NOT EXISTS `music` (
+  `hash`      VARCHAR(250) NOT NULL,
+  `title`     VARCHAR(100) DEFAULT NULL,
+  `source`    VARCHAR(500) DEFAULT NULL,
+  `extractor` VARCHAR(100) DEFAULT NULL,
+  `user`      VARCHAR(100) DEFAULT NULL,
+  `channel`   VARCHAR(100) DEFAULT NULL,
+  `guild`     VARCHAR(100) DEFAULT NULL,
+  PRIMARY KEY (`hash`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
 CREATE TABLE IF NOT EXISTS `prefixes` (
   `key`   VARCHAR(250) NOT NULL,
   `value` TEXT,
@@ -32,19 +45,6 @@ CREATE TABLE IF NOT EXISTS `reminders` (
   `user`      VARCHAR(250) NOT NULL,
   `message`   VARCHAR(250) NOT NULL,
   PRIMARY KEY (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `music` (
-  `hash`      VARCHAR(250) NOT NULL,
-  `title`     VARCHAR(100) NULL DEFAULT NULL,
-  `source`    VARCHAR(500) NULL DEFAULT NULL,
-  `extractor` VARCHAR(100) NULL DEFAULT NULL,
-  `user`      VARCHAR(100) NULL DEFAULT NULL,
-  `channel`   VARCHAR(100) NULL DEFAULT NULL,
-  `guild`     VARCHAR(100) NULL DEFAULT NULL,
-  PRIMARY KEY (`hash`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
