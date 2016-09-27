@@ -1,8 +1,7 @@
 # Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
 [![Dependency Status](https://www.versioneye.com/user/projects/57e7abacbd6fa600512e25ad/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57e7abacbd6fa600512e25ad) 
 [![Build Status](https://travis-ci.org/sn0w/shiro.svg?branch=master)](https://travis-ci.org/sn0w/shiro) 
-[![](https://img.shields.io/badge/License-AGPLv3-blue.svg)](/LICENSE) 
-[![](https://img.shields.io/badge/Project%20Management-waffle.io-blue.svg)](https://waffle.io/sn0w/Shiro)
+[![](https://images.microbadger.com/badges/version/sn0w/shiro.svg)](http://microbadger.com/images/sn0w/shiro "Get your own version badge on microbadger.com")
 
 Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).<br>
 
