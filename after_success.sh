@@ -8,5 +8,5 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
     docker push "sn0w/shiro:$TRAVIS_COMMIT"
 
     docker tag "sn0w/shiro:$TRAVIS_COMMIT" "sn0w/shiro:$TRAVIS_BRANCH"
-    docker push "sn0w/shiro:$TRAVIS_COMMIT"
+    docker push "sn0w/shiro:$TRAVIS_BRANCH"
 fi
