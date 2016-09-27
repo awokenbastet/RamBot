@@ -1,3 +1,5 @@
+FROM sn0w/shiro-base
+
 ARG VCS_REF
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
@@ -8,8 +10,6 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-url="https://github.com/sn0w/shiro" \
       org.label-schema.vendor="sn0w" \
       org.label-schema.schema-version="1.0"
-
-FROM sn0w/shiro-base
 
 MAINTAINER Lukas Breuer <lukas.breuer@outlook.com>
 
