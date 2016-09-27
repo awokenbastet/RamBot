@@ -20,7 +20,7 @@ dependencies {
     compile "mysql:mysql-connector-java:6.0.4"
 
     // Discord
-    compile "com.github.austinv11:Discord4j:2.6.0"
+    compile "com.github.austinv11:Discord4j:2.6.1"
     compile "ch.qos.logback:logback-classic:1.1.7"
 
     // Modules
