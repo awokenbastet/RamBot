@@ -16,14 +16,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-script:
-  - gradle jar
+script: gradle jar
 
-after_success:
-  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker login -u="$DU" -p="$DP"
-  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .
-  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker push "sn0w/shiro:$TRAVIS_COMMIT"
-  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker tag "sn0w/shiro:$TRAVIS_COMMIT" "sn0w/shiro:$TRAVIS_BRANCH"
+after_success: ./after_success.sh
 
 deploy:
   provider: releases
