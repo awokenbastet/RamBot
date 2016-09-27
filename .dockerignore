@@ -13,3 +13,4 @@ brain.json
 build.gradle
 LICENSE
 README.md
+after_success.sh
