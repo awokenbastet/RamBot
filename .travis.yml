@@ -20,7 +20,10 @@ script:
   - gradle jar
 
 after_success:
-  - docker login -u="$DU" -p="$DP"; docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .; docker push "sn0w/shiro:$TRAVIS_COMMIT";
+  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker login -u="$DU" -p="$DP"
+  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker build -t "sn0w/shiro:$TRAVIS_COMMIT" .
+  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker push "sn0w/shiro:$TRAVIS_COMMIT"
+  - [[ $TRAVIS_PULL_REQUEST == false ]] && docker tag "sn0w/shiro:$TRAVIS_COMMIT" "sn0w/shiro:$TRAVIS_BRANCH"
 
 deploy:
   provider: releases
