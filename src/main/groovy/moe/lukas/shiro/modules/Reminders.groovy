@@ -42,7 +42,7 @@ class Reminders implements IAdvancedModule {
 Hey <@${it.user}> :smiley:
 You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
 """)
-                        Database.instance.query("UPDATE `shiro`.`reminders` SET `sent`='1' WHERE `id` = ${it.id};")
+                        Database.instance.query("UPDATE `reminders` SET `sent`='1' WHERE `id` = ${it.id};")
                     }
                 }
             }
@@ -189,7 +189,7 @@ You wanted me to remind you to `${it.message}`, so DO IT NOOOW!
     @SuppressWarnings("GrMethodMayBeStatic")
     private void setReminder(String guild, String channel, String user, String message, long time) {
         Database.instance.query(
-            "INSERT INTO `shiro`.`reminders` (`timestamp`, `guild`, `channel`, `user`, `message`) VALUES (?, ?, ?, ?, ?);",
+            "INSERT INTO `reminders` (`timestamp`, `guild`, `channel`, `user`, `message`) VALUES (?, ?, ?, ?, ?);",
             [
                 time as String,
                 guild,

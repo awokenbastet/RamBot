@@ -44,12 +44,12 @@ His score is now `$score`
     int rate(IUser user, IGuild guild, String direction) {
         int score = 0
 
-        List q = Database.instance.query("SELECT `score` FROM `shiro`.`ratings` WHERE `user` = ? AND `guild` = ?", [
+        List q = Database.instance.query("SELECT `score` FROM `ratings` WHERE `user` = ? AND `guild` = ?", [
             user.ID, guild.ID
         ])
 
         if (q[0]?.score == null) {
-            Database.instance.query("INSERT INTO `shiro`.`ratings` (`user`, `guild`, `score`) VALUES (?,?,?);", [
+            Database.instance.query("INSERT INTO `ratings` (`user`, `guild`, `score`) VALUES (?,?,?);", [
                 user.ID,
                 guild.ID,
                 0
@@ -70,7 +70,7 @@ His score is now `$score`
                 break
         }
 
-        Database.instance.query("UPDATE `shiro`.`ratings` SET `score`=? WHERE `user`=? AND `guild`=?;", [
+        Database.instance.query("UPDATE `ratings` SET `score`=? WHERE `user`=? AND `guild`=?;", [
             score,
             user.ID,
             guild.ID

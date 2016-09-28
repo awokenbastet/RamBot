@@ -310,7 +310,7 @@ class Music implements IAdvancedModule {
         filename = filename.replace("cache/", "").replace(".mp3", "")
 
         def result = Database.instance.query(
-            "SELECT `title` FROM `shiro`.`music` WHERE `hash` = '${filename}'"
+            "SELECT `title` FROM `music` WHERE `hash` = '${filename}'"
         )[0]
 
         if(result == null) {
@@ -341,7 +341,7 @@ class Music implements IAdvancedModule {
         }
 
         Database.instance.query(
-            "INSERT INTO `shiro`.`music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?, ?, ?);",
+            "INSERT INTO `music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?, ?, ?);",
             insert
         )
     }
