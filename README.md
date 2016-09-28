@@ -1,5 +1,5 @@
 # Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
-[![Dependency Status](https://www.versioneye.com/user/projects/57e7abacbd6fa600512e25ad/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57e7abacbd6fa600512e25ad) 
+[![Dependency Status](https://www.versioneye.com/user/projects/57eb7ac4bd6fa600512e569e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57eb7ac4bd6fa600512e569e) 
 [![Build Status](https://travis-ci.org/sn0w/shiro.svg?branch=master)](https://travis-ci.org/sn0w/shiro) 
 [![](https://images.microbadger.com/badges/version/sn0w/shiro.svg)](http://microbadger.com/images/sn0w/shiro) 
 [![](https://images.microbadger.com/badges/image/sn0w/shiro.svg)](https://microbadger.com/images/sn0w/shiro)
