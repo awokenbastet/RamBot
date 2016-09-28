@@ -15,7 +15,7 @@ class Launcher {
 
         boolean devEnv = System.getenv("ENVIRONMENT") == "DEV"
 
-        File config = new File("config" + devEnv ? ".dev.json" : ".json")
+        File config = new File("config" + (devEnv ? ".dev.json" : ".json"))
         if (!config.exists()) {
             config.createNewFile()
             config.write("""
