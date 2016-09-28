@@ -1,5 +1,5 @@
 # Shiro (Discord-Bot) &nbsp; ![](https://i.imgur.com/CxYRxt0.png)
-[![Dependency Status](https://www.versioneye.com/user/projects/57e7abacbd6fa600512e25ad/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57e7abacbd6fa600512e25ad) 
+[![Dependency Status](https://www.versioneye.com/user/projects/57eb7ac4bd6fa600512e569e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57eb7ac4bd6fa600512e569e) 
 [![Build Status](https://travis-ci.org/sn0w/shiro.svg?branch=master)](https://travis-ci.org/sn0w/shiro) 
 [![](https://images.microbadger.com/badges/version/sn0w/shiro.svg)](http://microbadger.com/images/sn0w/shiro) 
 [![](https://images.microbadger.com/badges/image/sn0w/shiro.svg)](https://microbadger.com/images/sn0w/shiro)
@@ -22,6 +22,7 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 - About 64mb of free RAM
 - About 20mb of free HDD space [The docker image needs additional 250mb]
 - A MySQL server (anywhere. Maybe at bplaced? 😅)
+- FFMPEG/libav and youtube-dl if you want to use the Music module
 - Internet connection, duh
 
 ### Docker? Docker!
@@ -37,7 +38,8 @@ and everything is ready! :)
 ![](https://i.imgur.com/gMciLmO.png)<br>
 ![](https://i.imgur.com/HTO4AYP.png)<br>
 ![](https://i.imgur.com/5CzH1yW.png)<br>
-![](https://i.imgur.com/Xtu1uNF.png)
+![](https://i.imgur.com/Xtu1uNF.png)<br>
+![](https://i.imgur.com/Id9rRzg.png)
 
 ### Notable Mentions (<3)
 Shiro wouldn't exist without these awesome pieces of software!
