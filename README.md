@@ -38,7 +38,8 @@ and everything is ready! :)
 ![](https://i.imgur.com/gMciLmO.png)<br>
 ![](https://i.imgur.com/HTO4AYP.png)<br>
 ![](https://i.imgur.com/5CzH1yW.png)<br>
-![](https://i.imgur.com/Xtu1uNF.png)
+![](https://i.imgur.com/Xtu1uNF.png)<br>
+![](https://i.imgur.com/Id9rRzg.png)
 
 ### Notable Mentions (<3)
 Shiro wouldn't exist without these awesome pieces of software!
