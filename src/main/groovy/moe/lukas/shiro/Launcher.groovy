@@ -13,7 +13,9 @@ class Launcher {
         Logger.info("Hi, I'm Shiro c:")
         Logger.info("Give me a moment to prepare myself...")
 
-        File config = new File("config.json")
+        boolean devEnv = System.getenv("ENVIRONMENT") == "DEV"
+
+        File config = new File("config" + devEnv ? ".dev.json" : ".json")
         if (!config.exists()) {
             config.createNewFile()
             config.write("""
@@ -23,17 +25,22 @@ class Launcher {
     "port": 3306,
     "user": "root",
     "pass": "root",
-    "db": "shiro"
+    "db": "${devEnv ? "shiro" : "shiro_dev"}"
   },
   "discord-token":"YOUR_TOKEN_HERE"
 }
 """)
-            Logger.err("Please open the config.json and enter some data.")
+            Logger.err("Please open ${config.name} and enter some data.")
             System.exit(1)
         } else {
             HashMap json = new JsonSlurper().parse(config) as HashMap
 
             println()
+
+            if(devEnv) {
+                Logger.warn("Running in development mode!")
+            }
+
             Logger.info("Running from ${System.getProperty("user.dir")}")
             Logger.info("If this path is incorrect kill the program now and check your setup!")
             Logger.info(" --- waiting 5 seconds ---")
