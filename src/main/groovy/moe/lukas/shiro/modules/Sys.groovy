@@ -13,8 +13,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
     enabled = true,
     hidden = true,
     commands = [
-        @ShiroCommand(command = "brain:reload", adminOnly = true),
-        @ShiroCommand(command = "brain:save", adminOnly = true),
         @ShiroCommand(command = "plugins:reload", adminOnly = true)
     ]
 )
