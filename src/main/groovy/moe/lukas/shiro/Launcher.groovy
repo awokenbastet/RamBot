@@ -6,6 +6,7 @@ import moe.lukas.shiro.core.Core
 import moe.lukas.shiro.util.Database
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
+import moe.lukas.shiro.voice.DiscordConnection
 
 @CompileStatic
 class Launcher {
@@ -48,7 +49,10 @@ class Launcher {
 
             Timer.setTimeout(5 * 1000, {
                 Database.createInstance(json.mysql as HashMap)
+
                 Core.boot(json["discord-token"] as String)
+
+                DiscordConnection.createInstance(json["discord-token"] as String)
 
                 Runtime.runtime.addShutdownHook(new Thread({
                     println("Meh. Someone told the OS to kill me :(")

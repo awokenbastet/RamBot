@@ -149,9 +149,11 @@ class EventProxy {
         ModuleLoader.modules.each { HashMap module ->
             if (module.properties.enabled == true) {
                 module.properties.commands.any { ShiroCommand it ->
+                    String prefix = Core.getPrefixForServer(e).split("").join("\\")
+
                     switch (e.message.content) {
-                        case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}\s.*/:
-                        case ~/^\${Core.getPrefixForServer(e).split("").join("\\")}${it.command()}$/:
+                        case ~/^\${prefix}${it.command()}\s.*/:
+                        case ~/^\${prefix}${it.command()}$/:
                             def action = {
                                 Core.cctv(e)
                                 module["class"].invokeMethod("action", e)
