@@ -2,17 +2,16 @@ package moe.lukas.shiro.voice
 
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import moe.lukas.shiro.voice.events.MusicFinishEvent
+import moe.lukas.shiro.voice.events.MusicPauseStateChangeEvent
+import moe.lukas.shiro.voice.events.MusicStartEvent
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.audio.IAudioProvider
 import sx.blah.discord.handle.audio.impl.AudioManager
-import sx.blah.discord.util.audio.events.PauseStateChangeEvent
-import sx.blah.discord.util.audio.events.TrackFinishEvent
-import sx.blah.discord.util.audio.events.TrackSkipEvent
-import sx.blah.discord.util.audio.events.TrackStartEvent
+import sx.blah.discord.handle.obj.IGuild
 
 @CompileStatic
 class MusicPlayer implements IAudioProvider {
-
     static final int PCM_FRAME_SIZE = 4
 
     private byte[] buffer = new byte[AudioManager.OPUS_FRAME_SIZE * PCM_FRAME_SIZE]
@@ -32,12 +31,15 @@ class MusicPlayer implements IAudioProvider {
 
     protected float volume = 1.0F
 
+    protected IGuild guild
+
     protected enum State {
         PLAYING, PAUSED, STOPPED
     }
 
-    MusicPlayer(EventDispatcher dispatcher) {
+    MusicPlayer(EventDispatcher dispatcher, IGuild guild = null) {
         eventDispatcher = dispatcher
+        this.guild = guild
     }
 
     @Override
@@ -91,34 +93,40 @@ class MusicPlayer implements IAudioProvider {
         }
     }
 
-    void play(boolean fireEvent) {
-        if (state == State.PLAYING)
+    void play(boolean fireEvent = true) {
+        if (state == State.PLAYING) {
             return
+        }
 
         if (currentAudioSource != null) {
             state = State.PLAYING
             return
         }
 
-        if (audioQueue.isEmpty())
+        if (audioQueue.isEmpty()) {
             throw new IllegalStateException("MusicPlayer: The audio queue is empty! Cannot start playing.")
+        }
 
         loadFromSource(audioQueue.removeFirst())
         state = State.PLAYING
 
-        if (fireEvent)
-            eventDispatcher.dispatch(new TrackStartEvent(null, null))
+        if (fireEvent) {
+            eventDispatcher.dispatch(new MusicStartEvent(this, currentAudioSource))
+        }
     }
 
     void pause() {
-        if (state == State.PAUSED)
+        if (state == State.PAUSED) {
             return
+        }
 
-        if (state == State.STOPPED)
+        if (state == State.STOPPED) {
             throw new IllegalStateException("Cannot pause a stopped player!")
+        }
 
         state = State.PAUSED
-        eventDispatcher.dispatch(new PauseStateChangeEvent(null, state == State.PAUSED))
+
+        eventDispatcher.dispatch(new MusicPauseStateChangeEvent(this, state == State.PAUSED))
     }
 
     boolean isPlaying() {
@@ -133,16 +141,16 @@ class MusicPlayer implements IAudioProvider {
         return state == State.STOPPED
     }
 
-    void stop(boolean fireEvent) {
-        if (state == State.STOPPED)
+    void stop(boolean fireEvent = true) {
+        if (state == State.STOPPED) {
             return
+        }
 
         state = State.STOPPED
 
         try {
             currentAudioStream.close()
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace()
         } finally {
             previousAudioSource = currentAudioSource
@@ -150,8 +158,9 @@ class MusicPlayer implements IAudioProvider {
             currentAudioStream = null
         }
 
-        if (fireEvent)
-            eventDispatcher.dispatch(new PauseStateChangeEvent(null, true))
+        if (fireEvent) {
+            eventDispatcher.dispatch(new MusicPauseStateChangeEvent(this, true))
+        }
     }
 
     void clear() {
@@ -164,7 +173,7 @@ class MusicPlayer implements IAudioProvider {
 
         if (audioQueue.isEmpty()) {
             if (fireEvent) {
-                eventDispatcher.dispatch(new TrackFinishEvent(null, null, null))
+                eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, null))
             }
 
             return
@@ -181,10 +190,12 @@ class MusicPlayer implements IAudioProvider {
 
         loadFromSource(source)
 
-        eventDispatcher.dispatch(new TrackSkipEvent(null, null))
+        if (state == State.STOPPED) {
+            eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, null))
+            return
+        }
 
-        if (state == State.STOPPED)
-            eventDispatcher.dispatch(new TrackFinishEvent(null, null, null))
+        eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, audioQueue.get(0)))
     }
 
     protected void reload(boolean autoPlay, boolean fireEvent) {
@@ -204,7 +215,7 @@ class MusicPlayer implements IAudioProvider {
         if (autoContinue) {
             if (repeat) {
                 reload(true, false)
-                eventDispatcher.dispatch(new TrackFinishEvent(null, null, null))
+                eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, currentAudioSource))
             } else {
                 playNext(true)
             }
@@ -255,7 +266,11 @@ class MusicPlayer implements IAudioProvider {
         return previousAudioSource
     }
 
-    void queue(File f) {
+    IGuild getGuild() {
+        return guild
+    }
+
+    void add(File f) {
         AudioSource source = new LocalSource(f)
         AudioInfo info = source.getInfo()
 

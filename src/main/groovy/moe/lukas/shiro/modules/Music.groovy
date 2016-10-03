@@ -107,7 +107,7 @@ class Music implements IAdvancedModule {
             MusicPlayer player
 
             if (audioManager.audioProvider instanceof DefaultProvider) {
-                player = new MusicPlayer(e.client.dispatcher)
+                player = new MusicPlayer(e.client.dispatcher, channel.guild)
                 player.setVolume(0.1F)
                 audioManager.setAudioProvider(player)
             } else {
@@ -179,7 +179,7 @@ class Music implements IAdvancedModule {
 
                                 if (new File(cacheName + ".mp3").exists()) {
                                     status.edit(":white_check_mark: Added! (from cache)")
-                                    player.queue(new File(cacheName + ".mp3"))
+                                    player.add(new File(cacheName + ".mp3"))
                                 } else {
                                     Process ytdl = new ProcessBuilder(
                                         "youtube-dl",
@@ -240,7 +240,7 @@ class Music implements IAdvancedModule {
                                         if (ytdl.exitValue() == 0) {
                                             Logger.info("Success!")
                                             status.edit(":white_check_mark: Added! (Downloaded)")
-                                            player.queue(new File(cacheName + ".mp3"))
+                                            player.add(new File(cacheName + ".mp3"))
 
                                             storeTrackMeta(
                                                 cacheName,
@@ -300,7 +300,7 @@ class Music implements IAdvancedModule {
                                     }
 
                                     if (!player.audioQueue.any { it.asFile().name == f.name }) {
-                                        player.queue(f)
+                                        player.add(f)
                                         counter++
                                     }
                                 }
@@ -335,8 +335,8 @@ class Music implements IAdvancedModule {
     @SuppressWarnings("GroovyUnusedDeclaration")
     @EventSubscriber
     void onTrackStart(TrackStartEvent e) {
-        playerChannels[e.player.guild.ID].sendMessage(
-            ":musical_note: Now Playing: **${resolveTrackMeta((e.track.metadata["file"] as File).name)}**"
+        playerChannels[(e.player as MusicPlayer).guild.ID].sendMessage(
+            ":musical_note: Now Playing: **${resolveTrackMeta((e.player as MusicPlayer).currentAudioSource.asFile().name)}**"
         )
     }
 
