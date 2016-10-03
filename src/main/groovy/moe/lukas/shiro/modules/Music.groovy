@@ -62,7 +62,7 @@ class Music implements IAdvancedModule {
 
     @Override
     void init(IDiscordClient client) {
-        println("\n[Music] Checking for youtube-dl and ffmpeg...")
+        println("\n[Music] Checking for youtube-dl, ffmpeg and ffprobe...")
 
         boolean foundYTD = false
         boolean foundFFPROBE = false
