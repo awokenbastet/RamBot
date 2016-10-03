@@ -99,7 +99,7 @@ class LocalSource implements AudioSource {
         }
         catch (IOException | JSONException e) {
             audioInfo.error = e.getMessage()
-           e.printStackTrace()
+            e.printStackTrace()
         }
         return audioInfo
     }
@@ -122,5 +122,10 @@ class LocalSource implements AudioSource {
     @Override
     File asFile(String path, boolean deleteOnExists) throws FileAlreadyExistsException, FileNotFoundException {
         return null
+    }
+
+    @Override
+    File asFile() {
+        return this.file
     }
 }

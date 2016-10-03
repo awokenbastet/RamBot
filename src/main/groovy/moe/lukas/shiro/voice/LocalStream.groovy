@@ -28,7 +28,7 @@ class LocalStream extends AudioStream {
 
                         fromFFmpeg = ffmpegProcessF.getErrorStream()
                         if (fromFFmpeg == null) {
-
+                            throw new IOException("FFMPEG returned null")
                         }
 
                         byte[] buffer = new byte[1024]

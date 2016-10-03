@@ -20,7 +20,7 @@ class MusicPlayer implements IAudioProvider {
 
     protected EventDispatcher eventDispatcher = null
 
-    protected LinkedList<AudioSource> audioQueue = new LinkedList<>()
+    protected LinkedList<AudioSource> audioQueue = []
     protected AudioSource previousAudioSource = null
     protected AudioSource currentAudioSource = null
     protected AudioStream currentAudioStream = null
@@ -34,6 +34,10 @@ class MusicPlayer implements IAudioProvider {
 
     protected enum State {
         PLAYING, PAUSED, STOPPED
+    }
+
+    MusicPlayer(EventDispatcher dispatcher) {
+        eventDispatcher = dispatcher
     }
 
     @Override
@@ -74,12 +78,12 @@ class MusicPlayer implements IAudioProvider {
         return noData
     }
 
-    public void skipToNext() {
+    void skipToNext() {
         AudioSource skipped = currentAudioSource
         playNext(true)
     }
 
-    public AudioTimestamp getCurrentTimestamp() {
+    AudioTimestamp getCurrentTimestamp() {
         if (currentAudioStream != null) {
             return currentAudioStream.getCurrentTimestamp()
         } else {
@@ -87,7 +91,7 @@ class MusicPlayer implements IAudioProvider {
         }
     }
 
-    public void play(boolean fireEvent) {
+    void play(boolean fireEvent) {
         if (state == State.PLAYING)
             return
 
@@ -106,7 +110,7 @@ class MusicPlayer implements IAudioProvider {
             eventDispatcher.dispatch(new TrackStartEvent(null, null))
     }
 
-    public void pause() {
+    void pause() {
         if (state == State.PAUSED)
             return
 
@@ -118,15 +122,15 @@ class MusicPlayer implements IAudioProvider {
     }
 
 
-    public boolean isPlaying() {
+    boolean isPlaying() {
         return state == State.PLAYING
     }
 
-    public boolean isPaused() {
+    boolean isPaused() {
         return state == State.PAUSED
     }
 
-    public boolean isStopped() {
+    boolean isStopped() {
         return state == State.STOPPED
     }
 
@@ -150,6 +154,11 @@ class MusicPlayer implements IAudioProvider {
 
         if (fireEvent)
             eventDispatcher.dispatch(new PauseStateChangeEvent(null, true))
+    }
+
+    void clear() {
+        stop(true)
+        audioQueue = []
     }
 
     protected void playNext(boolean fireEvent) {
@@ -180,8 +189,7 @@ class MusicPlayer implements IAudioProvider {
             eventDispatcher.dispatch(new TrackFinishEvent(null, null, null))
     }
 
-    protected void reload(boolean autoPlay, boolean fireEvent)
-    {
+    protected void reload(boolean autoPlay, boolean fireEvent) {
         if (previousAudioSource == null && currentAudioSource == null) {
             throw new IllegalStateException("Cannot restart or reload a player that has never been started!")
         }
@@ -211,5 +219,52 @@ class MusicPlayer implements IAudioProvider {
         AudioStream stream = source.asStream()
         currentAudioSource = source
         currentAudioStream = stream
+    }
+
+    void setRepeat(boolean repeat) {
+        this.repeat = repeat
+    }
+
+    boolean isRepeat() {
+        return repeat
+    }
+
+    float getVolume() {
+        return this.volume
+    }
+
+    void setVolume(float volume) {
+        this.volume = volume
+    }
+
+    void setShuffle(boolean shuffle) {
+        this.shuffle = shuffle
+    }
+
+    boolean isShuffle() {
+        return shuffle
+    }
+
+    LinkedList<AudioSource> getAudioQueue() {
+        return audioQueue
+    }
+
+    AudioSource getCurrentAudioSource() {
+        return currentAudioSource
+    }
+
+    AudioSource getPreviousAudioSource() {
+        return previousAudioSource
+    }
+
+    void queue(File f) {
+        AudioSource source = new LocalSource(f)
+        AudioInfo info = source.getInfo()
+
+        audioQueue << source
+
+        if (stopped) {
+            play(true)
+        }
     }
 }

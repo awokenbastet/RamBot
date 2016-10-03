@@ -13,4 +13,6 @@ interface AudioSource {
     AudioStream asStream()
 
     File asFile(String path, boolean deleteOnExists) throws FileAlreadyExistsException, FileNotFoundException
+
+    File asFile()
 }
