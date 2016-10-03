@@ -121,7 +121,6 @@ class MusicPlayer implements IAudioProvider {
         eventDispatcher.dispatch(new PauseStateChangeEvent(null, state == State.PAUSED))
     }
 
-
     boolean isPlaying() {
         return state == State.PLAYING
     }
@@ -133,7 +132,6 @@ class MusicPlayer implements IAudioProvider {
     boolean isStopped() {
         return state == State.STOPPED
     }
-
 
     void stop(boolean fireEvent) {
         if (state == State.STOPPED)

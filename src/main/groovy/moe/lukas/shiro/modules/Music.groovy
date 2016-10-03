@@ -9,9 +9,7 @@ import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.util.Database
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
-import moe.lukas.shiro.voice.AudioInfo
 import moe.lukas.shiro.voice.AudioSource
-import moe.lukas.shiro.voice.LocalSource
 import moe.lukas.shiro.voice.MusicPlayer
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
@@ -22,6 +20,7 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
+import sx.blah.discord.util.RateLimitException
 import sx.blah.discord.util.audio.events.TrackStartEvent
 
 import java.util.concurrent.TimeUnit
@@ -172,7 +171,8 @@ class Music implements IAdvancedModule {
                                 cache.mkdir()
                             }
 
-                            IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
+                            String downloading = ":arrows_counterclockwise: Downloading..."
+                            IMessage status = channel.sendMessage(downloading)
 
                             Timer.setTimeout(500, {
                                 String cacheName = "cache/" + Core.hash(url)
@@ -209,7 +209,19 @@ class Music implements IAdvancedModule {
                                         InputStreamReader isr = new InputStreamReader(is)
                                         BufferedReader br = new BufferedReader(isr)
 
-                                        String line
+                                        String line = "Preparing..."
+                                        String lastLine = ""
+
+                                        Thread interval = Timer.setInterval(2000, {
+                                            try {
+                                                if(line != lastLine) {
+                                                    status.edit(downloading + "\n```\n$line\n```")
+                                                }
+
+                                                lastLine = line
+                                            } catch(RateLimitException ex) {
+                                            }
+                                        })
 
                                         while ((line = br.readLine()) != null) {
                                             println(line)
@@ -220,6 +232,7 @@ class Music implements IAdvancedModule {
                                         br.close()
                                         isr.close()
                                         is.close()
+                                        interval.stop()
                                     }).start()
 
                                     // Wait for end of YTDL execution
