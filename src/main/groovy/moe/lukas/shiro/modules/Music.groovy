@@ -11,6 +11,7 @@ import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
 import moe.lukas.shiro.voice.AudioSource
 import moe.lukas.shiro.voice.MusicPlayer
+import moe.lukas.shiro.voice.events.MusicStartEvent
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.api.events.EventSubscriber
@@ -334,9 +335,9 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @EventSubscriber
-    void onTrackStart(TrackStartEvent e) {
-        playerChannels[(e.player as MusicPlayer).guild.ID].sendMessage(
-            ":musical_note: Now Playing: **${resolveTrackMeta((e.player as MusicPlayer).currentAudioSource.asFile().name)}**"
+    void onTrackStart(MusicStartEvent e) {
+        playerChannels[e.player.guild.ID].sendMessage(
+            ":musical_note: Now Playing: **${resolveTrackMeta(e.player.currentAudioSource.asFile().name)}**"
         )
     }
 
