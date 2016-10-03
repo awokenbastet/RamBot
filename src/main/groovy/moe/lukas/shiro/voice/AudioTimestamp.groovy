@@ -1,5 +1,9 @@
 package moe.lukas.shiro.voice
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class AudioTimestamp {
     protected int hours
     protected int minutes
@@ -70,6 +74,7 @@ class AudioTimestamp {
         return new AudioTimestamp(hours, minutes, seconds, milliseconds)
     }
 
+    @CompileDynamic
     static AudioTimestamp fromSeconds(int seconds) {
         int hours = seconds / 3600
         seconds = seconds % 3600

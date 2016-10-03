@@ -1,7 +1,10 @@
 package moe.lukas.shiro.voice
 
+import groovy.transform.CompileStatic
+
 import java.util.regex.Matcher
 
+@CompileStatic
 class LocalStream extends AudioStream {
     private Process ffmpegProcess
     private Thread ffmpegErrGobler
@@ -17,21 +20,24 @@ class LocalStream extends AudioStream {
             final Process ffmpegProcessF = ffmpegProcess
 
             ffmpegErrGobler = new Thread("LocalStream ffmpegErrGobler") {
+                @SuppressWarnings("UnnecessaryQualifiedReference")
                 @Override
                 void run() {
                     try {
                         InputStream fromFFmpeg = null
 
                         fromFFmpeg = ffmpegProcessF.getErrorStream()
-                        if (fromFFmpeg == null)
+                        if (fromFFmpeg == null) {
 
-                        byte[] buffer = []
+                        }
+
+                        byte[] buffer = new byte[1024]
                         int amountRead = -1
 
                         while (!isInterrupted() && ((amountRead = fromFFmpeg.read(buffer)) > -1)) {
                             String info = new String(Arrays.copyOf(buffer, amountRead))
                             if (info.contains("time=")) {
-                                Matcher m = TIME_PATTERN.matcher(info)
+                                Matcher m = AudioStream.TIME_PATTERN.matcher(info)
                                 if (m.find()) {
                                     timestamp = AudioTimestamp.fromFFmpegTimestamp(m.group())
                                 }
