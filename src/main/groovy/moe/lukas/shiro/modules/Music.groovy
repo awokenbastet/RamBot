@@ -22,7 +22,6 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 import sx.blah.discord.util.RateLimitException
-import sx.blah.discord.util.audio.events.TrackStartEvent
 
 import java.util.concurrent.TimeUnit
 
@@ -52,6 +51,9 @@ import java.util.concurrent.TimeUnit
         @ShiroCommand(command = "vol", usage = "Change the volume", adminOnly = true),
 
         @ShiroCommand(command = "random", usage = "Adds up to 5 random songs from the bot's cache :)"),
+
+        @ShiroCommand(command = "playing", usage = "Shows the current song"),
+        @ShiroCommand(command = "np", usage = "Alias for playing")
     ]
 )
 @CompileStatic
@@ -215,12 +217,12 @@ class Music implements IAdvancedModule {
 
                                         Thread interval = Timer.setInterval(2000, {
                                             try {
-                                                if(line != lastLine) {
+                                                if (line != lastLine) {
                                                     status.edit(downloading + "\n```\n$line\n```")
                                                 }
 
                                                 lastLine = line
-                                            } catch(RateLimitException ex) {
+                                            } catch (RateLimitException ex) {
                                             }
                                         })
 
@@ -308,6 +310,11 @@ class Music implements IAdvancedModule {
                             }
 
                             channel.sendMessage("Done :smiley:")
+                            break
+
+                        case "np":
+                        case "playing":
+                            channel.sendMessage(":musical_note: Currently playing: **" + resolveTrackMeta(player.currentAudioSource.asFile().name) + "**")
                             break
                     }
                 } else if (command == "join") {
