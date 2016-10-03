@@ -4,16 +4,16 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class Timer {
+
     static void setTimeout(long ms, Closure callback) {
         Thread t = new Thread({
             String name = Thread.currentThread().getName()
-            Thread.currentThread().setName("Timer#Timeout - " + name)
+            Thread.currentThread().setName("Timer#Timeout${Thread.currentThread().id} - " + name)
 
             Thread.sleep(ms)
             callback.call()
         })
 
-        t.setName("TIMEOUT#${t.id}")
         t.start()
     }
 
@@ -21,7 +21,7 @@ class Timer {
     static Thread setInterval(long ms, Closure callback) {
         Thread t = new Thread({
             String name = Thread.currentThread().getName()
-            Thread.currentThread().setName("Timer#Interval - " + name)
+            Thread.currentThread().setName("Timer#Timeout${Thread.currentThread().id} - " + name)
 
             while (true) {
                 callback.call()
@@ -29,7 +29,6 @@ class Timer {
             }
         })
 
-        t.setName("INTERVAL#${t.id}")
         t.start()
 
         return t

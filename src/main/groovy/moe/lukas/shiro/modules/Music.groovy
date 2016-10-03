@@ -9,15 +9,19 @@ import moe.lukas.shiro.core.IAdvancedModule
 import moe.lukas.shiro.util.Database
 import moe.lukas.shiro.util.Logger
 import moe.lukas.shiro.util.Timer
+import moe.lukas.shiro.voice.AudioSource
+import moe.lukas.shiro.voice.MusicPlayer
+import moe.lukas.shiro.voice.events.MusicStartEvent
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.api.events.EventSubscriber
+import sx.blah.discord.handle.audio.IAudioManager
+import sx.blah.discord.handle.audio.impl.DefaultProvider
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
-import sx.blah.discord.util.audio.AudioPlayer
-import sx.blah.discord.util.audio.events.TrackStartEvent
+import sx.blah.discord.util.RateLimitException
 
 import java.util.concurrent.TimeUnit
 
@@ -47,6 +51,9 @@ import java.util.concurrent.TimeUnit
         @ShiroCommand(command = "vol", usage = "Change the volume", adminOnly = true),
 
         @ShiroCommand(command = "random", usage = "Adds up to 5 random songs from the bot's cache :)"),
+
+        @ShiroCommand(command = "playing", usage = "Shows the current song"),
+        @ShiroCommand(command = "np", usage = "Alias for playing")
     ]
 )
 @CompileStatic
@@ -57,29 +64,38 @@ class Music implements IAdvancedModule {
 
     @Override
     void init(IDiscordClient client) {
-        println("\n[Music] Checking for youtube-dl and ffmpeg...")
+        println("\n[Music] Checking for youtube-dl, ffmpeg and ffprobe...")
 
         boolean foundYTD = false
+        boolean foundFFPROBE = false
+        boolean foundFFMPEG = false
 
         System.getenv("PATH").split(File.pathSeparator).each { String f ->
             new File(f).listFiles().each { File ff ->
                 switch (ff.name) {
-                    case "youtube-dl":
-                    case "youtube-dl.exe":
+                    case ~/youtube-dl.*/:
                         foundYTD = true
+                        break
+
+                    case ~/ffprobe.*/:
+                        foundFFPROBE = true
+                        break
+
+                    case ~/ffmpeg.*/:
+                        foundFFMPEG = true
                         break
                 }
             }
         }
 
-        if (foundYTD) {
+        if (foundYTD && foundFFMPEG && foundFFPROBE) {
             println("[Music] Found! Ready to load music!")
             acceptCommands = true
 
             EventDispatcher eventDispatcher = client.dispatcher
             eventDispatcher.registerListener(this)
         } else {
-            println('[Music] Please install ffmpeg/libav and youtube-dl and add it to your $PATH or %PATH%')
+            println('[Music] Please make sure ffmpeg, ffprobe and youtube-dl are installed and present in $PATH')
             println('[Music] This plugin will disable itself to prevent errors!')
         }
     }
@@ -90,7 +106,16 @@ class Music implements IAdvancedModule {
             IMessage message = e.message
             IChannel channel = message.channel
             IVoiceChannel vc = message.author.connectedVoiceChannels[0]
-            AudioPlayer player = AudioPlayer.getAudioPlayerForGuild(channel.guild)
+            IAudioManager audioManager = vc.guild.audioManager
+            MusicPlayer player
+
+            if (audioManager.audioProvider instanceof DefaultProvider) {
+                player = new MusicPlayer(e.client.dispatcher, channel.guild)
+                player.setVolume(0.1F)
+                audioManager.setAudioProvider(player)
+            } else {
+                player = audioManager.audioProvider as MusicPlayer
+            }
 
             if (channel.private) {
                 channel.sendMessage("That doesn't work in PM's! :grimacing:")
@@ -104,39 +129,39 @@ class Music implements IAdvancedModule {
                                 channel.sendMessage("OK, bye :wave:")
                                 vc.leave()
                                 player.clear()
-                                player.clean()
 
                                 playerChannels.remove(channel.guild.ID)
                             }
                             break
 
                         case "play":
-                            player.setPaused(false)
+                            if (!player.playing) {
+                                player.play(true)
+                            }
                             break
 
                         case "pause":
-                            player.setPaused(true)
+                            if (player.playing) {
+                                player.pause()
+                            }
                             break
 
                         case "skip":
-                            player.skip()
+                            player.skipToNext()
                             break
 
                         case "clear":
-
                             player.clear()
                             channel.sendMessage(":wastebasket: Cleared!")
                             break
 
-                        case "loop":
-                            player.setLoop(!player.looping)
-                            channel.sendMessage(":repeat: Looping ${player.looping ? "en" : "dis"}abled!")
-
-                            break
-
                         case "shuffle":
-                            player.shuffle()
-                            channel.sendMessage(":twisted_rightwards_arrows: Shuffled all tracks!")
+                            player.setShuffle(!player.shuffle)
+                            channel.sendMessage(
+                                player.shuffle ?
+                                    ":twisted_rightwards_arrows: Shuffle enabled!" :
+                                    ":arrow_forward: Shuffle disabled!"
+                            )
                             break
 
                         case "add":
@@ -149,14 +174,15 @@ class Music implements IAdvancedModule {
                                 cache.mkdir()
                             }
 
-                            IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
+                            String downloading = ":arrows_counterclockwise: Downloading..."
+                            IMessage status = channel.sendMessage(downloading)
 
                             Timer.setTimeout(500, {
                                 String cacheName = "cache/" + Core.hash(url)
 
                                 if (new File(cacheName + ".mp3").exists()) {
                                     status.edit(":white_check_mark: Added! (from cache)")
-                                    player.queue(new File(cacheName + ".mp3"))
+                                    player.add(new File(cacheName + ".mp3"))
                                 } else {
                                     Process ytdl = new ProcessBuilder(
                                         "youtube-dl",
@@ -186,7 +212,19 @@ class Music implements IAdvancedModule {
                                         InputStreamReader isr = new InputStreamReader(is)
                                         BufferedReader br = new BufferedReader(isr)
 
-                                        String line
+                                        String line = "Preparing..."
+                                        String lastLine = ""
+
+                                        Thread interval = Timer.setInterval(2000, {
+                                            try {
+                                                if (line != lastLine) {
+                                                    status.edit(downloading + "\n```\n$line\n```")
+                                                }
+
+                                                lastLine = line
+                                            } catch (RateLimitException ex) {
+                                            }
+                                        })
 
                                         while ((line = br.readLine()) != null) {
                                             println(line)
@@ -197,6 +235,7 @@ class Music implements IAdvancedModule {
                                         br.close()
                                         isr.close()
                                         is.close()
+                                        interval.stop()
                                     }).start()
 
                                     // Wait for end of YTDL execution
@@ -204,7 +243,7 @@ class Music implements IAdvancedModule {
                                         if (ytdl.exitValue() == 0) {
                                             Logger.info("Success!")
                                             status.edit(":white_check_mark: Added! (Downloaded)")
-                                            player.queue(new File(cacheName + ".mp3"))
+                                            player.add(new File(cacheName + ".mp3"))
 
                                             storeTrackMeta(
                                                 cacheName,
@@ -234,13 +273,12 @@ class Music implements IAdvancedModule {
                             String msg = ":musical_note: Current Playlist :musical_note: \n"
 
                             int i = 1
-                            player.playlist.each {
-                                msg += "**$i.** " + resolveTrackMeta((it.metadata["file"] as File).name) + "\n"
+                            player.audioQueue.each { AudioSource source ->
+                                msg += "**$i.** " + resolveTrackMeta(source.asFile().name) + "\n"
                                 i++
                             }
 
                             channel.sendMessage(msg)
-                            System.gc()
                             break
 
                         case "vol":
@@ -259,13 +297,13 @@ class Music implements IAdvancedModule {
 
                             int counter = 0
                             cache.listFiles().any { File f ->
-                                if(f.name.contains(".mp3")) {
+                                if (f.name.contains(".mp3")) {
                                     if (counter >= 5) {
                                         return true
                                     }
 
-                                    if (!player.playlist.any { (it.metadata.file as File).name == f.name }) {
-                                        player.queue(f)
+                                    if (!player.audioQueue.any { it.asFile().name == f.name }) {
+                                        player.add(f)
                                         counter++
                                     }
                                 }
@@ -273,11 +311,16 @@ class Music implements IAdvancedModule {
 
                             channel.sendMessage("Done :smiley:")
                             break
+
+                        case "np":
+                        case "playing":
+                            channel.sendMessage(":musical_note: Currently playing: **" + resolveTrackMeta(player.currentAudioSource.asFile().name) + "**")
+                            break
                     }
                 } else if (command == "join") {
                     IMessage status = channel.sendMessage("Connecting...")
 
-                    if(vc == null) {
+                    if (vc == null) {
                         status.edit("You have to join a channel first! :neutral_face:")
                     } else if (!vc.isConnected()) {
                         vc.join()
@@ -299,9 +342,9 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @EventSubscriber
-    void onTrackStart(TrackStartEvent e) {
+    void onTrackStart(MusicStartEvent e) {
         playerChannels[e.player.guild.ID].sendMessage(
-            ":musical_note: Now Playing: **${resolveTrackMeta((e.track.metadata["file"] as File).name)}**"
+            ":musical_note: Now Playing: **${resolveTrackMeta(e.player.currentAudioSource.asFile().name)}**"
         )
     }
 
@@ -313,7 +356,7 @@ class Music implements IAdvancedModule {
             "SELECT `title` FROM `music` WHERE `hash` = '${filename}'"
         )[0]
 
-        if(result == null) {
+        if (result == null) {
             return filename
         } else {
             result["title"]

@@ -11,13 +11,13 @@ import java.lang.annotation.Target
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @interface ShiroCommand {
-    public String command()
+    String command()
 
-    public String usage() default ""
+    String usage() default ""
 
-    public boolean hidden() default false
+    boolean hidden() default false
 
-    public boolean adminOnly() default false
+    boolean adminOnly() default false
 
-    public boolean ownerOnly() default false
+    boolean ownerOnly() default false
 }

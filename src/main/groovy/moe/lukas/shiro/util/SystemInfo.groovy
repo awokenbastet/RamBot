@@ -8,44 +8,44 @@ import java.text.SimpleDateFormat
 
 @CompileStatic
 class SystemInfo {
-    public static RuntimeMXBean rmx = ManagementFactory.getRuntimeMXBean()
-    public static Runtime runtime = Runtime.getRuntime()
+    static RuntimeMXBean rmx = ManagementFactory.getRuntimeMXBean()
+    static Runtime runtime = Runtime.getRuntime()
 
-    public static String getUptime() {
+    static String getUptime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss")
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
         return sdf.format(rmx.uptime)
     }
 
-    public static String getOS() {
+    static String getOS() {
         return "${System.getProperty("os.name")} [Version: ${System.getProperty("os.version")} | Arch: ${System.getProperty("os.arch")}]"
     }
 
-    public static String getProcess() {
+    static String getProcess() {
         return rmx.name
     }
 
-    public static String getJVM() {
+    static String getJVM() {
         return "${rmx.vmName}@${rmx.vmVersion} by ${rmx.vmVendor}"
     }
 
-    public static String getSpec() {
+    static String getSpec() {
         return "${rmx.specName}@${rmx.specVersion} by ${rmx.specVendor}"
     }
 
-    public static String getAllocatedRam() {
+    static String getAllocatedRam() {
         return "${Math.round(runtime.totalMemory() / 1048576F)}mb"
     }
 
-    public static String getUsedAllocatedRam() {
+    static String getUsedAllocatedRam() {
         return "${Math.round((runtime.totalMemory() - runtime.freeMemory()) / 1048576F)}mb"
     }
 
-    public static String getFreeAllocatedRam() {
+    static String getFreeAllocatedRam() {
         return "${Math.round(runtime.freeMemory() / 1048576F)}mb"
     }
 
-    public static String getMaxUsableRam() {
+    static String getMaxUsableRam() {
         return "${Math.round(runtime.maxMemory() / 1048576F)}mb"
     }
 }

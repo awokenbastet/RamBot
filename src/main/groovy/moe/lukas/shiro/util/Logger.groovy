@@ -14,7 +14,7 @@ class Logger {
      * @param tag The tag to use
      * @param loggable A string to log
      */
-    private static void log(String tag, String loggable) {
+    static void log(String tag, String loggable) {
         println("[${new Date().format('dd/MM/yy - hh:mm:ss a')}] (${tag.toUpperCase()}) $loggable")
     }
 
