@@ -21,9 +21,9 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
-import sx.blah.discord.util.RateLimitException
 
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 /**
  * Experimental musicbot
@@ -61,6 +61,42 @@ class Music implements IAdvancedModule {
     private boolean acceptCommands = false
 
     private HashMap<String, IChannel> playerChannels = [:]
+
+    private HashMap<String, List<String>> cliCommands = [
+        download: [
+            "youtube-dl",
+            "--abort-on-error",
+            "--no-color",
+            "--no-playlist",
+            "--max-filesize",
+            "512m",
+            "--write-info-json",
+            "-f",
+            "[height<=480][abr<=192][ext=mp4]",
+            "-o",
+            "{filename}.%(ext)s",
+            "{url}"
+        ],
+
+        demux   : [
+            "ffmpeg",
+            "-i",
+            "{input}",
+            "-vn",
+            "-c:a",
+            "copy",
+            "{output}"
+        ],
+
+        resample: [
+            "ffmpeg",
+            "-i",
+            "{input}",
+            "-ar",
+            "48000",
+            "{output}"
+        ]
+    ]
 
     @Override
     void init(IDiscordClient client) {
@@ -174,98 +210,28 @@ class Music implements IAdvancedModule {
                                 cache.mkdir()
                             }
 
-                            String downloading = ":arrows_counterclockwise: Downloading..."
-                            IMessage status = channel.sendMessage(downloading)
+                            IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
 
                             Timer.setTimeout(500, {
-                                String cacheName = "cache/" + Core.hash(url)
+                                processURL(url, status, { boolean error, File file, boolean cached ->
+                                    if (!error) {
+                                        Logger.info("Success!")
+                                        status.edit(":white_check_mark: Added! (${cached ? "From Web" : "From Cache"})")
+                                        player.add(file)
 
-                                if (new File(cacheName + ".mp3").exists()) {
-                                    status.edit(":white_check_mark: Added! (from cache)")
-                                    player.add(new File(cacheName + ".mp3"))
-                                } else {
-                                    Process ytdl = new ProcessBuilder(
-                                        "youtube-dl",
-                                        "--abort-on-error",
-                                        "--no-color",
-                                        "--no-playlist",
-                                        "--max-filesize",
-                                        "128m",
-                                        "--prefer-avconv",
-                                        "--write-info-json",
-                                        "--add-metadata",
-                                        "-x",
-                                        "-f",
-                                        "bestaudio/best",
-                                        "--audio-format",
-                                        "mp3",
-                                        "-o",
-                                        "$cacheName.%(ext)s",
-                                        url
-                                    ).start()
-
-                                    // Log YTDL in other thread
-                                    // This thread will block until YTDL is complete
-                                    String output = ""
-                                    new Thread({
-                                        InputStream is = ytdl.inputStream
-                                        InputStreamReader isr = new InputStreamReader(is)
-                                        BufferedReader br = new BufferedReader(isr)
-
-                                        String line = "Preparing..."
-                                        String lastLine = ""
-
-                                        Thread interval = Timer.setInterval(2000, {
-                                            try {
-                                                if (line != lastLine) {
-                                                    status.edit(downloading + "\n```\n$line\n```")
-                                                }
-
-                                                lastLine = line
-                                            } catch (RateLimitException ex) {
-                                            }
-                                        })
-
-                                        while ((line = br.readLine()) != null) {
-                                            println(line)
-                                            output += line + "\n"
-                                            Thread.sleep(500)
-                                        }
-
-                                        br.close()
-                                        isr.close()
-                                        is.close()
-                                        interval.stop()
-                                    }).start()
-
-                                    // Wait for end of YTDL execution
-                                    if (ytdl.waitFor(5, TimeUnit.MINUTES)) {
-                                        if (ytdl.exitValue() == 0) {
-                                            Logger.info("Success!")
-                                            status.edit(":white_check_mark: Added! (Downloaded)")
-                                            player.add(new File(cacheName + ".mp3"))
-
+                                        if (!cached) {
                                             storeTrackMeta(
-                                                cacheName,
+                                                file.name,
                                                 url,
                                                 "${message.author.name}#${message.author.discriminator}",
                                                 channel.name,
                                                 channel.guild.name
                                             )
-                                        } else {
-                                            Logger.err("Error!")
-                                            status.edit("Error :frowning: \n```\n$output\n```")
                                         }
                                     } else {
-                                        Logger.err("YTDL Timeout")
-                                        status.edit(":no_entry: Timeout (Waited for 5 minutes). \n Please try again. (maybe a shorter video?)")
-                                        new File("cache").listFiles().each { File f ->
-                                            if (f.name.matches(/${Core.hash(url)}.*/)) {
-                                                f.delete()
-                                            }
-                                        }
+
                                     }
-                                }
+                                })
                             })
                             break
 
@@ -297,7 +263,7 @@ class Music implements IAdvancedModule {
 
                             int counter = 0
                             cache.listFiles().any { File f ->
-                                if (f.name.contains(".mp3")) {
+                                if (f.name.contains(".mp4")) {
                                     if (counter >= 5) {
                                         return true
                                     }
@@ -350,7 +316,7 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private String resolveTrackMeta(String filename) {
-        filename = filename.replace("cache/", "").replace(".mp3", "")
+        filename = filename.replace("cache/", "").replace(".mp4", "")
 
         def result = Database.instance.query(
             "SELECT `title` FROM `music` WHERE `hash` = '${filename}'"
@@ -384,8 +350,73 @@ class Music implements IAdvancedModule {
         }
 
         Database.instance.query(
-            "INSERT INTO `music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?, ?, ?);",
+            "INSERT IGNORE INTO `music` (`hash`, `title`, `source`, `extractor`, `user`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?, ?, ?);",
             insert
         )
+    }
+
+    /**
+     * Process this url and apply all cli commands
+     * @param url
+     * @param status
+     * @param callback
+     */
+    private void processURL(String url, IMessage status, Closure callback) {
+        Timer.setTimeout(500, {
+            String cacheName = "cache/" + Core.hash(url)
+            File cacheFile = new File(cacheName + ".m4a")
+
+            if (cacheFile.exists()) {
+                callback(false, cacheFile, true)
+            } else {
+                try {
+                    spawn(cliCommands.download, {
+
+                    })
+                } catch (TimeoutException | RuntimeException e) {
+
+                }
+            }
+        })
+    }
+
+    /**
+     * Spawn this process
+     * @param command
+     * @param callback
+     * @return
+     */
+    private spawn(List<String> command, Closure callback) {
+        Process p = new ProcessBuilder(command).start()
+
+        String output = ""
+        new Thread({
+            InputStream is = p.inputStream
+            InputStreamReader isr = new InputStreamReader(is)
+            BufferedReader br = new BufferedReader(isr)
+
+            String line
+
+            while ((line = br.readLine()) != null) {
+                println(line)
+                output += line + "\n"
+                Thread.sleep(500)
+            }
+
+            br.close()
+            isr.close()
+            is.close()
+        }).start()
+
+        if (p.waitFor(5, TimeUnit.MINUTES)) {
+            if (p.exitValue() == 0) {
+                // Normal exit (success)
+                callback(false, output)
+            } else {
+                throw new RuntimeException()
+            }
+        } else {
+            throw new TimeoutException()
+        }
     }
 }
