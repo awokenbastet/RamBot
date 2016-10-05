@@ -2,6 +2,7 @@ package moe.lukas.shiro.modules
 
 import com.google.common.io.Files
 import groovy.json.JsonSlurper
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
 import moe.lukas.shiro.annotations.ShiroMeta
@@ -362,6 +363,7 @@ class Music implements IAdvancedModule {
      * @param status
      * @param callback
      */
+    @CompileDynamic
     private void processURL(String url, IMessage status, Closure callback) {
         Timer.setTimeout(500, {
             String cacheName = "cache/" + Core.hash(url)
@@ -371,17 +373,17 @@ class Music implements IAdvancedModule {
                 callback(false, cacheFile, true)
             } else {
                 try {
-                    status.edit('arrows_counterclockwise: Downloading...')
+                    status.edit(':arrows_counterclockwise: Downloading...')
                     spawn(fillCommandList(cliCommands.download, [
                         "{filename}": cacheName,
                         "{url}"     : url
                     ]), {
-                        status.edit('arrows_counterclockwise: Demuxing...')
+                        status.edit(':arrows_counterclockwise: Demuxing...')
                         spawn(fillCommandList(cliCommands.demux, [
                             "{input}" : "${cacheName}.mp4",
                             "{output}": "${cacheName}_demux.m4a"
                         ]), {
-                            status.edit('arrows_counterclockwise: Resampling...')
+                            status.edit(':arrows_counterclockwise: Resampling...')
                             spawn(fillCommandList(cliCommands.resample, [
                                 "{input}" : "${cacheName}_demux.m4a",
                                 "{output}": "${cacheName}_resample.m4a"
@@ -409,8 +411,7 @@ class Music implements IAdvancedModule {
      * @return
      */
     private spawn(List<String> command, Closure callback) {
-        ProcessBuilder pb = new ProcessBuilder(command)
-        Process p = pb.start()
+        Process p = new ProcessBuilder(command).start()
 
         String output = ""
         new Thread({
@@ -443,11 +444,16 @@ class Music implements IAdvancedModule {
         }
     }
 
-    private List<String> fillCommandList(List<String> command, Map<String, String> replacements) {
-        command.each { String cmd ->
+    @CompileDynamic
+    private List<String> fillCommandList(List<String> commands, Map<String, String> replacements) {
+        List<String> commandList = commands
+        commandList.each { String cmd ->
             replacements.any {
-                if (it.value == cmd) {
-                    command.set(command.indexOf(cmd), it.key)
+                if (cmd.contains(it.key)) {
+                    commandList.set(
+                        commandList.indexOf(cmd),
+                        cmd.replace(it.key, it.value)
+                    )
                     return true
                 } else {
                     return false
@@ -455,6 +461,6 @@ class Music implements IAdvancedModule {
             }
         }
 
-        return command
+        return commandList
     }
 }

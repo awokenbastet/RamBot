@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.api.Movie
 import net.sourceforge.jaad.mp4.api.Track
 
 @CompileStatic
-class AudioStream {
+class AudioStream implements Closeable {
     private volatile Track track
     private volatile RandomAccessFile raf
 
@@ -29,6 +29,7 @@ class AudioStream {
         return track.readNextFrame().data
     }
 
+    @Override
     void close() {
         raf.close()
     }

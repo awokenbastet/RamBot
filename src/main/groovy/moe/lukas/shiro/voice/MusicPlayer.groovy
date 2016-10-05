@@ -12,7 +12,7 @@ import sx.blah.discord.handle.audio.IAudioProvider
 import sx.blah.discord.handle.obj.IGuild
 
 @CompileStatic
-class MusicPlayer implements IAudioProvider {
+class MusicPlayer implements IAudioProvider, Closeable {
     private volatile Decoder decoder = null
     private volatile SampleBuffer sampleBuffer = null
 
@@ -64,6 +64,11 @@ class MusicPlayer implements IAudioProvider {
         }
 
         return new byte[0]
+    }
+
+    @Override
+    void close() {
+        currentAudioStream.close()
     }
 
     protected void loadFromSource(AudioSource source) {
