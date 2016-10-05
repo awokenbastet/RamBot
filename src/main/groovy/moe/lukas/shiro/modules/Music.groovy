@@ -1,5 +1,6 @@
 package moe.lukas.shiro.modules
 
+import com.google.common.io.Files
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import moe.lukas.shiro.annotations.ShiroCommand
@@ -42,13 +43,13 @@ import java.util.concurrent.TimeoutException
         @ShiroCommand(command = "pause", usage = "Pause the playlist"),
         @ShiroCommand(command = "skip", usage = "Skip the current track"),
         @ShiroCommand(command = "clear", usage = "Clears the playlist", adminOnly = true),
-        @ShiroCommand(command = "loop", usage = "Toggle looping the playlist", adminOnly = true),
-        @ShiroCommand(command = "shuffle", usage = "Shuffle the playlist", adminOnly = true),
+        //@ShiroCommand(command = "loop", usage = "Toggle looping the playlist", adminOnly = true),
+        //@ShiroCommand(command = "shuffle", usage = "Shuffle the playlist", adminOnly = true),
 
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
 
-        @ShiroCommand(command = "vol", usage = "Change the volume", adminOnly = true),
+        //@ShiroCommand(command = "vol", usage = "Change the volume", adminOnly = true),
 
         @ShiroCommand(command = "random", usage = "Adds up to 5 random songs from the bot's cache :)"),
 
@@ -210,7 +211,7 @@ class Music implements IAdvancedModule {
                                 cache.mkdir()
                             }
 
-                            IMessage status = channel.sendMessage(":arrows_counterclockwise: Downloading...")
+                            IMessage status = channel.sendMessage(":arrows_counterclockwise: Preparing...")
 
                             Timer.setTimeout(500, {
                                 processURL(url, status, { boolean error, File file, boolean cached ->
@@ -370,11 +371,32 @@ class Music implements IAdvancedModule {
                 callback(false, cacheFile, true)
             } else {
                 try {
-                    spawn(cliCommands.download, {
+                    status.edit('arrows_counterclockwise: Downloading...')
+                    spawn(fillCommandList(cliCommands.download, [
+                        "{filename}": cacheName,
+                        "{url}"     : url
+                    ]), {
+                        status.edit('arrows_counterclockwise: Demuxing...')
+                        spawn(fillCommandList(cliCommands.demux, [
+                            "{input}" : "${cacheName}.mp4",
+                            "{output}": "${cacheName}_demux.m4a"
+                        ]), {
+                            status.edit('arrows_counterclockwise: Resampling...')
+                            spawn(fillCommandList(cliCommands.resample, [
+                                "{input}" : "${cacheName}_demux.m4a",
+                                "{output}": "${cacheName}_resample.m4a"
+                            ]), {
+                                Files.copy(new File("${cacheName}_resample.m4a"), new File("${cacheName}.m4a"))
+                                new File("${cacheName}_demux.m4a").delete()
+                                new File("${cacheName}.mp4").delete()
 
-                    })
+                                callback(false, cacheFile, false)
+                            })
+                        })
+                    }
+                    )
                 } catch (TimeoutException | RuntimeException e) {
-
+                    callback(true, null, false)
                 }
             }
         })
@@ -387,7 +409,8 @@ class Music implements IAdvancedModule {
      * @return
      */
     private spawn(List<String> command, Closure callback) {
-        Process p = new ProcessBuilder(command).start()
+        ProcessBuilder pb = new ProcessBuilder(command)
+        Process p = pb.start()
 
         String output = ""
         new Thread({
@@ -418,5 +441,20 @@ class Music implements IAdvancedModule {
         } else {
             throw new TimeoutException()
         }
+    }
+
+    private List<String> fillCommandList(List<String> command, Map<String, String> replacements) {
+        command.each { String cmd ->
+            replacements.any {
+                if (it.value == cmd) {
+                    command.set(command.indexOf(cmd), it.key)
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+
+        return command
     }
 }
