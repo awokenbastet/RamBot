@@ -5,17 +5,15 @@ import groovy.transform.CompileStatic
 import moe.lukas.shiro.voice.events.MusicFinishEvent
 import moe.lukas.shiro.voice.events.MusicPauseStateChangeEvent
 import moe.lukas.shiro.voice.events.MusicStartEvent
-import net.sourceforge.jaad.aac.Decoder
-import net.sourceforge.jaad.aac.SampleBuffer
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.audio.IAudioProvider
+import sx.blah.discord.handle.audio.impl.AudioManager
 import sx.blah.discord.handle.obj.IGuild
+
+import java.nio.BufferUnderflowException
 
 @CompileStatic
 class MusicPlayer implements IAudioProvider, Closeable {
-    private volatile Decoder decoder = null
-    private volatile SampleBuffer sampleBuffer = null
-
     protected EventDispatcher eventDispatcher = null
 
     protected LinkedList<AudioSource> audioQueue = []
@@ -47,20 +45,19 @@ class MusicPlayer implements IAudioProvider, Closeable {
     }
 
     @Override
+    IAudioProvider.AudioEncodingType getAudioEncodingType() {
+        return IAudioProvider.AudioEncodingType.OPUS
+    }
+
+    @Override
     @CompileDynamic
     byte[] provide() {
         try {
-            byte[] frame = currentAudioStream.readFrame()
-
-            if (frame != null) {
-                decoder.decodeFrame(frame, sampleBuffer)
-                return sampleBuffer.data
-            } else {
-                sourceFinished()
-            }
-        } catch (Exception e) {
+            return currentAudioStream.readFrame(AudioManager.OPUS_FRAME_SIZE)
+        } catch (BufferUnderflowException e) {
             e.printStackTrace()
             sourceFinished()
+            currentAudioStream.close()
         }
 
         return new byte[0]
@@ -75,9 +72,6 @@ class MusicPlayer implements IAudioProvider, Closeable {
         AudioStream stream = source.asStream()
         currentAudioSource = source
         currentAudioStream = stream
-
-        decoder = new Decoder(currentAudioStream.decoderInfo)
-        sampleBuffer = new SampleBuffer()
     }
 
     void skipToNext() {

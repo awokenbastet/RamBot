@@ -97,16 +97,37 @@ class Music implements IAdvancedModule {
             "-ar",
             "48000",
             "{output}"
+        ],
+
+        unpack  : [
+            "ffmpeg",
+            "-i",
+            "{input}",
+            "-f",
+            "s16le",
+            "-acodec",
+            "pcm_s16le",
+            "{output}"
+        ],
+
+        repack  : [
+            "opusenc",
+            "--bitrate",
+            "96",
+            "--raw",
+            "{input}",
+            "{output}"
         ]
     ]
 
     @Override
     void init(IDiscordClient client) {
-        println("\n[Music] Checking for youtube-dl, ffmpeg and ffprobe...")
+        println("\n[Music] Checking for youtube-dl, ffmpeg, ffprobe and opusenc...")
 
         boolean foundYTD = false
         boolean foundFFPROBE = false
         boolean foundFFMPEG = false
+        boolean foundOpusenc = false
 
         System.getenv("PATH").split(File.pathSeparator).each { String f ->
             new File(f).listFiles().each { File ff ->
@@ -122,18 +143,22 @@ class Music implements IAdvancedModule {
                     case ~/ffmpeg.*/:
                         foundFFMPEG = true
                         break
+
+                    case ~/opusenc.*/:
+                        foundOpusenc = true
+                        break
                 }
             }
         }
 
-        if (foundYTD && foundFFMPEG && foundFFPROBE) {
+        if (foundYTD && foundFFMPEG && foundFFPROBE && foundOpusenc) {
             println("[Music] Found! Ready to load music!")
             acceptCommands = true
 
             EventDispatcher eventDispatcher = client.dispatcher
             eventDispatcher.registerListener(this)
         } else {
-            println('[Music] Please make sure ffmpeg, ffprobe and youtube-dl are installed and present in $PATH')
+            println('[Music] Please make sure youtube-dl, ffmpeg, ffprobe and opusenc are installed and present in $PATH')
             println('[Music] This plugin will disable itself to prevent errors!')
         }
     }
@@ -218,7 +243,7 @@ class Music implements IAdvancedModule {
                                 processURL(url, status, { boolean error, File file, boolean cached ->
                                     if (!error) {
                                         Logger.info("Success!")
-                                        status.edit(":white_check_mark: Added! (${cached ? "From Web" : "From Cache"})")
+                                        status.edit(":white_check_mark: Added! (${cached ? "From Cache" : "From Web"})")
                                         player.add(file)
 
                                         if (!cached) {
@@ -265,7 +290,7 @@ class Music implements IAdvancedModule {
 
                             int counter = 0
                             cache.listFiles().any { File f ->
-                                if (f.name.contains(".mp4")) {
+                                if (f.name.contains(".opus")) {
                                     if (counter >= 5) {
                                         return true
                                     }
@@ -318,7 +343,7 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private String resolveTrackMeta(String filename) {
-        filename = filename.replace("cache/", "").replace(".mp4", "")
+        filename = filename.replace("cache/", "").replace(".opus", "")
 
         def result = Database.instance.query(
             "SELECT `title` FROM `music` WHERE `hash` = '${filename}'"
@@ -367,7 +392,7 @@ class Music implements IAdvancedModule {
     private void processURL(String url, IMessage status, Closure callback) {
         Timer.setTimeout(500, {
             String cacheName = "cache/" + Core.hash(url)
-            File cacheFile = new File(cacheName + ".m4a")
+            File cacheFile = new File(cacheName + ".opus")
 
             if (cacheFile.exists()) {
                 callback(false, cacheFile, true)
@@ -378,21 +403,36 @@ class Music implements IAdvancedModule {
                         "{filename}": cacheName,
                         "{url}"     : url
                     ]), {
-                        status.edit(':arrows_counterclockwise: Demuxing...')
+                        status.edit(':package: Demuxing...')
                         spawn(fillCommandList(cliCommands.demux, [
                             "{input}" : "${cacheName}.mp4",
                             "{output}": "${cacheName}_demux.m4a"
                         ]), {
-                            status.edit(':arrows_counterclockwise: Resampling...')
+                            status.edit(':recycle: Resampling...')
                             spawn(fillCommandList(cliCommands.resample, [
                                 "{input}" : "${cacheName}_demux.m4a",
                                 "{output}": "${cacheName}_resample.m4a"
                             ]), {
-                                Files.copy(new File("${cacheName}_resample.m4a"), new File("${cacheName}.m4a"))
-                                new File("${cacheName}_demux.m4a").delete()
-                                new File("${cacheName}.mp4").delete()
+                                status.edit(':package: Unpacking to PCM...')
+                                spawn(fillCommandList(cliCommands.unpack, [
+                                    "{input}" : "${cacheName}_resample.m4a",
+                                    "{output}": "${cacheName}.pcm"
+                                ]), {
+                                    status.edit(':package: Re-Packing to OPUS...')
+                                    spawn(fillCommandList(cliCommands.repack, [
+                                        "{input}" : "${cacheName}.pcm",
+                                        "{output}": "${cacheName}.opus"
+                                    ]), {
+                                       [
+                                           "${cacheName}.mp4",
+                                           "${cacheName}_demux.mp4",
+                                           "${cacheName}_resample.mp4",
+                                           "${cacheName}.pcm",
+                                       ].each { new File(it).delete() }
 
-                                callback(false, cacheFile, false)
+                                        callback(false, cacheFile, false)
+                                    })
+                                })
                             })
                         })
                     }
@@ -410,7 +450,7 @@ class Music implements IAdvancedModule {
      * @param callback
      * @return
      */
-    private spawn(List<String> command, Closure callback) {
+    private static spawn(List<String> command, Closure callback) {
         Process p = new ProcessBuilder(command).start()
 
         String output = ""
@@ -435,7 +475,7 @@ class Music implements IAdvancedModule {
         if (p.waitFor(5, TimeUnit.MINUTES)) {
             if (p.exitValue() == 0) {
                 // Normal exit (success)
-                callback(false, output)
+                callback()
             } else {
                 throw new RuntimeException()
             }
@@ -445,7 +485,7 @@ class Music implements IAdvancedModule {
     }
 
     @CompileDynamic
-    private List<String> fillCommandList(List<String> commands, Map<String, String> replacements) {
+    private static List<String> fillCommandList(List<String> commands, Map<String, String> replacements) {
         List<String> commandList = commands
         commandList.each { String cmd ->
             replacements.any {
