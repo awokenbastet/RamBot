@@ -7,10 +7,7 @@ import moe.lukas.shiro.voice.events.MusicPauseStateChangeEvent
 import moe.lukas.shiro.voice.events.MusicStartEvent
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.handle.audio.IAudioProvider
-import sx.blah.discord.handle.audio.impl.AudioManager
 import sx.blah.discord.handle.obj.IGuild
-
-import java.nio.BufferUnderflowException
 
 @CompileStatic
 class MusicPlayer implements IAudioProvider, Closeable {
@@ -52,22 +49,14 @@ class MusicPlayer implements IAudioProvider, Closeable {
     @Override
     @CompileDynamic
     byte[] provide() {
-        try {
-            byte[] frame = currentAudioStream.readFrame()
+        byte[] frame = currentAudioStream.readFrame()
 
-            if(frame == null) {
-                currentAudioStream.close()
-                sourceFinished()
-            } else {
-                return frame
-            }
-        } catch (Exception e) {
-            e.printStackTrace()
-            currentAudioStream.close()
+        if (frame == null) {
             sourceFinished()
+            return new byte[0]
+        } else {
+            return frame
         }
-
-        return new byte[0]
     }
 
     @Override
@@ -205,6 +194,10 @@ class MusicPlayer implements IAudioProvider, Closeable {
     }
 
     protected void sourceFinished() {
+        if (currentAudioStream != null) {
+            currentAudioStream.close()
+        }
+
         if (autoContinue) {
             if (repeat) {
                 reload(true, false)
