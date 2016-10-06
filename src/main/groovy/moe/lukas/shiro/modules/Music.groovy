@@ -257,7 +257,7 @@ class Music implements IAdvancedModule {
 
                                         if (!cached) {
                                             storeTrackMeta(
-                                                file.name,
+                                                file.name.replace(".opus", ""),
                                                 url,
                                                 "${message.author.name}#${message.author.discriminator}",
                                                 channel.name,
