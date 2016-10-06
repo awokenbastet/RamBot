@@ -53,11 +53,18 @@ class MusicPlayer implements IAudioProvider, Closeable {
     @CompileDynamic
     byte[] provide() {
         try {
-            return currentAudioStream.readFrame(AudioManager.OPUS_FRAME_SIZE)
-        } catch (BufferUnderflowException e) {
+            byte[] frame = currentAudioStream.readFrame()
+
+            if(frame == null) {
+                currentAudioStream.close()
+                sourceFinished()
+            } else {
+                return frame
+            }
+        } catch (Exception e) {
             e.printStackTrace()
-            sourceFinished()
             currentAudioStream.close()
+            sourceFinished()
         }
 
         return new byte[0]

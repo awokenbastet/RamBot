@@ -1,31 +1,22 @@
 package moe.lukas.shiro.voice
 
 import groovy.transform.CompileStatic
-import org.apache.commons.io.FileUtils
-
-import java.nio.ByteBuffer
+import org.gagravarr.opus.OpusFile
 
 @CompileStatic
 class AudioStream implements Closeable {
-    private volatile ByteBuffer buffer
+    private volatile OpusFile opusFile
 
     AudioStream(File file) {
-        byte[] fileBytes = FileUtils.readFileToByteArray(file)
-
-        buffer = ByteBuffer.wrap(fileBytes)
-        buffer.flip()
-        buffer.rewind()
+        opusFile = new OpusFile(file)
     }
 
-    byte[] readFrame(int frameSize) {
-        byte[] data = new byte[frameSize]
-        buffer.get(data, buffer.position(), frameSize)
-
-        return data
+    byte[] readFrame() {
+        return opusFile.nextAudioPacket.data
     }
 
     @Override
     void close() {
-        buffer = null
+        opusFile.close()
     }
 }

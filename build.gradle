@@ -22,7 +22,7 @@ dependencies {
     compile "ch.qos.logback:logback-classic:1.1.7"
 
     // Music
-    compile 'net.sourceforge.jaadec:jaad:0.8.5'
+    compile 'org.gagravarr:vorbis-java-core:0.8'
 
     // Modules
     compile "ca.pjer:chatter-bot-api:1.4.2"

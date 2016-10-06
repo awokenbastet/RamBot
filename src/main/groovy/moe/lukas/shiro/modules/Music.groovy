@@ -1,6 +1,5 @@
 package moe.lukas.shiro.modules
 
-import com.google.common.io.Files
 import groovy.json.JsonSlurper
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -114,6 +113,16 @@ class Music implements IAdvancedModule {
             "opusenc",
             "--bitrate",
             "96",
+            "--framesize",
+            "20",
+            "--padding",
+            "0",
+            "--discard-comments",
+            "--discard-pictures",
+            "--raw-rate",
+            "48000",
+            "--raw-endianness",
+            "0",
             "--raw",
             "{input}",
             "{output}"
@@ -423,12 +432,12 @@ class Music implements IAdvancedModule {
                                         "{input}" : "${cacheName}.pcm",
                                         "{output}": "${cacheName}.opus"
                                     ]), {
-                                       [
-                                           "${cacheName}.mp4",
-                                           "${cacheName}_demux.mp4",
-                                           "${cacheName}_resample.mp4",
-                                           "${cacheName}.pcm",
-                                       ].each { new File(it).delete() }
+                                        [
+                                            "${cacheName}.mp4",
+                                            "${cacheName}_demux.m4a",
+                                            "${cacheName}_resample.m4a",
+                                            "${cacheName}.pcm",
+                                        ].each { new File(it).delete() }
 
                                         callback(false, cacheFile, false)
                                     })
