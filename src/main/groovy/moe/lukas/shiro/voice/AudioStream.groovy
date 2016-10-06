@@ -12,7 +12,7 @@ class AudioStream implements Closeable {
     }
 
     byte[] readFrame() {
-        return opusFile.nextAudioPacket.data
+        return opusFile.nextAudioPacket?.data
     }
 
     @Override

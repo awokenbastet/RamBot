@@ -32,7 +32,7 @@ import java.util.concurrent.TimeoutException
 @ShiroMeta(
     enabled = true,
     description = '''
-    Listen to Music :) [EXPERIMENTAL]
+    Listen to Music :) [EXPERIMENTAL V2 | NOW WITH NATIVE OPUS SUPPORT!]
     For a list of supported hosters visit https://rg3.github.io/youtube-dl/supportedsites.html
 ''',
     commands = [
