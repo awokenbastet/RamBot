@@ -4,12 +4,8 @@ group "moe.lukas"
 
 repositories {
     jcenter()
-
     mavenCentral()
-
-    maven {
-        url "https://jitpack.io"
-    }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -24,6 +20,9 @@ dependencies {
     // Discord
     compile "com.github.austinv11:Discord4j:2.6.1"
     compile "ch.qos.logback:logback-classic:1.1.7"
+
+    // Music
+    compile 'org.gagravarr:vorbis-java-core:0.8'
 
     // Modules
     compile "ca.pjer:chatter-bot-api:1.4.2"

@@ -1,16 +1,22 @@
 package moe.lukas.shiro.voice
 
 import groovy.transform.CompileStatic
-
-import java.util.regex.Pattern
+import org.gagravarr.opus.OpusFile
 
 @CompileStatic
-abstract class AudioStream extends BufferedInputStream {
-    static final Pattern TIME_PATTERN = Pattern.compile("(?<=time=).*?(?= bitrate)")
+class AudioStream implements Closeable {
+    private volatile OpusFile opusFile
 
-    AudioStream() {
-        super(null)
+    AudioStream(File file) {
+        opusFile = new OpusFile(file)
     }
 
-    abstract AudioTimestamp getCurrentTimestamp()
+    byte[] readFrame() {
+        return opusFile.nextAudioPacket.data
+    }
+
+    @Override
+    void close() {
+        opusFile.close()
+    }
 }

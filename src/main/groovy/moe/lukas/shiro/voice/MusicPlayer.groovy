@@ -10,13 +10,10 @@ import sx.blah.discord.handle.audio.IAudioProvider
 import sx.blah.discord.handle.audio.impl.AudioManager
 import sx.blah.discord.handle.obj.IGuild
 
+import java.nio.BufferUnderflowException
+
 @CompileStatic
-class MusicPlayer implements IAudioProvider {
-    static final int PCM_FRAME_SIZE = 4
-
-    private byte[] buffer = new byte[AudioManager.OPUS_FRAME_SIZE * PCM_FRAME_SIZE]
-    private byte[] noData = new byte[0]
-
+class MusicPlayer implements IAudioProvider, Closeable {
     protected EventDispatcher eventDispatcher = null
 
     protected LinkedList<AudioSource> audioQueue = []
@@ -48,49 +45,45 @@ class MusicPlayer implements IAudioProvider {
     }
 
     @Override
+    IAudioProvider.AudioEncodingType getAudioEncodingType() {
+        return IAudioProvider.AudioEncodingType.OPUS
+    }
+
+    @Override
     @CompileDynamic
     byte[] provide() {
         try {
-            int amountRead = currentAudioStream.read(buffer, 0, buffer.length)
-            if (amountRead > -1) {
-                if (amountRead < buffer.length) {
-                    Arrays.fill(buffer, amountRead, buffer.length - 1, (byte) 0)
-                }
+            byte[] frame = currentAudioStream.readFrame()
 
-                if (volume != 1) {
-                    short sample
-                    for (int i = 0; i < buffer.length; i += 2) {
-                        sample = (short) ((buffer[i + 1] & 0xff) | (buffer[i] << 8))
-                        sample = (short) (sample * volume)
-                        buffer[i + 1] = (byte) (sample & 0xff)
-                        buffer[i] = (byte) ((sample >> 8) & 0xff)
-                    }
-                }
-
-                return buffer
-            } else {
+            if(frame == null) {
+                currentAudioStream.close()
                 sourceFinished()
-                return noData
+            } else {
+                return frame
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace()
+            currentAudioStream.close()
             sourceFinished()
         }
 
-        return noData
+        return new byte[0]
+    }
+
+    @Override
+    void close() {
+        currentAudioStream.close()
+    }
+
+    protected void loadFromSource(AudioSource source) {
+        AudioStream stream = source.asStream()
+        currentAudioSource = source
+        currentAudioStream = stream
     }
 
     void skipToNext() {
         AudioSource skipped = currentAudioSource
         playNext(true)
-    }
-
-    AudioTimestamp getCurrentTimestamp() {
-        if (currentAudioStream != null) {
-            return currentAudioStream.getCurrentTimestamp()
-        } else {
-            return null
-        }
     }
 
     void play(boolean fireEvent = true) {
@@ -224,12 +217,6 @@ class MusicPlayer implements IAudioProvider {
         }
     }
 
-    protected void loadFromSource(AudioSource source) {
-        AudioStream stream = source.asStream()
-        currentAudioSource = source
-        currentAudioStream = stream
-    }
-
     void setRepeat(boolean repeat) {
         this.repeat = repeat
     }
@@ -271,8 +258,7 @@ class MusicPlayer implements IAudioProvider {
     }
 
     void add(File f) {
-        AudioSource source = new LocalSource(f)
-        AudioInfo info = source.getInfo()
+        AudioSource source = new AudioSource(f)
 
         audioQueue << source
 
