@@ -23,6 +23,7 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IVoiceChannel
 
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
@@ -382,46 +383,48 @@ class Music implements IAdvancedModule {
             if (cacheFile.exists()) {
                 callback(false, cacheFile, true)
             } else {
-                try {
-                    status.edit(':arrows_counterclockwise: Downloading...')
-                    spawn(fillCommandList(cliCommands.download, [
-                        "{filename}": cacheName,
-                        "{url}"     : url
-                    ]), {
-                        status.edit(':package: Demuxing...')
-                        spawn(fillCommandList(cliCommands.demux, [
-                            "{input}" : "${cacheName}.mp4",
-                            "{output}": "${cacheName}_demux.m4a"
-                        ]), {
-                            status.edit(':recycle: Resampling...')
-                            spawn(fillCommandList(cliCommands.resample, [
-                                "{input}" : "${cacheName}_demux.m4a",
-                                "{output}": "${cacheName}_resample.m4a"
-                            ]), {
-                                status.edit(':package: Unpacking to PCM...')
-                                spawn(fillCommandList(cliCommands.unpack, [
-                                    "{input}" : "${cacheName}_resample.m4a",
-                                    "{output}": "${cacheName}.pcm"
-                                ]), {
-                                    status.edit(':package: Re-Packing to OPUS...')
-                                    spawn(fillCommandList(cliCommands.repack, [
-                                        "{input}" : "${cacheName}.pcm",
-                                        "{output}": "${cacheName}.opus"
-                                    ]), {
-                                        [
-                                            "${cacheName}.mp4",
-                                            "${cacheName}_demux.m4a",
-                                            "${cacheName}_resample.m4a",
-                                            "${cacheName}.pcm",
-                                        ].each { new File(it).delete() }
+                List<Map<String, Object>> tasks = [
+                    [status : "arrows_counterclockwise: Downloading...",
+                     command: fillCommandList(cliCommands.download, [
+                         "{filename}": cacheName,
+                         "{url}"     : url
+                     ])],
+                    [status : ':package: Demuxing...',
+                     command: fillCommandList(cliCommands.demux, [
+                         "{input}" : "${cacheName}.mp4",
+                         "{output}": "${cacheName}_demux.m4a"
+                     ])],
+                    [status : ':recycle: Resampling...',
+                     command: fillCommandList(cliCommands.resample, [
+                         "{input}" : "${cacheName}_demux.m4a",
+                         "{output}": "${cacheName}_resample.m4a"
+                     ])],
+                    [status : ':package: Unpacking to PCM...',
+                     command: fillCommandList(cliCommands.unpack, [
+                         "{input}" : "${cacheName}_resample.m4a",
+                         "{output}": "${cacheName}.pcm"
+                     ])],
+                    [status : ':package: Re-Packing to OPUS...',
+                     command: fillCommandList(cliCommands.repack, [
+                         "{input}" : "${cacheName}.pcm",
+                         "{output}": "${cacheName}.opus"
+                     ])]
+                ]
 
-                                        callback(false, cacheFile, false)
-                                    })
-                                })
-                            })
-                        })
-                    }
-                    )
+                try {
+                    tasks.forEach({
+                        status.edit(it["status"] as String)
+                        spawn(it["command"] as List<String>)
+                    })
+
+                    [
+                        "${cacheName}.mp4",
+                        "${cacheName}_demux.m4a",
+                        "${cacheName}_resample.m4a",
+                        "${cacheName}.pcm",
+                    ].each { new File(it).delete() }
+
+                    callback(false, cacheFile, false)
                 } catch (TimeoutException | RuntimeException e) {
                     callback(true, null, false)
                 }
@@ -435,7 +438,7 @@ class Music implements IAdvancedModule {
      * @param callback
      * @return
      */
-    private static spawn(List<String> command, Closure callback) {
+    private static void spawn(List<String> command) {
         Process p = new ProcessBuilder(command).start()
 
         String output = ""
@@ -460,7 +463,6 @@ class Music implements IAdvancedModule {
         if (p.waitFor(5, TimeUnit.MINUTES)) {
             if (p.exitValue() == 0) {
                 // Normal exit (success)
-                callback()
             } else {
                 throw new RuntimeException()
             }
@@ -488,4 +490,5 @@ class Music implements IAdvancedModule {
 
         return commandList
     }
+
 }
