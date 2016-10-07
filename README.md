@@ -28,7 +28,7 @@ Go to [/issues](https://github.com/sn0w/shiro/issues)
 - About 32mb of free RAM
 - About 20mb of free HDD space [The docker image needs additional 250mb]
 - A MySQL server (anywhere. Maybe at bplaced? 😅)
-- FFMPEG/libav and youtube-dl if you want to use the Music module
+- FFMPEG/libav, youtube-dl and opusenc if you want to use the Music module
 - Internet connection, duh
 
 ### Docker? Docker!
