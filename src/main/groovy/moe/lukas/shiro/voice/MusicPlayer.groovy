@@ -177,7 +177,7 @@ class MusicPlayer implements IAudioProvider, Closeable {
             return
         }
 
-        eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, audioQueue.get(0)))
+        play(true)
     }
 
     protected void reload(boolean autoPlay, boolean fireEvent) {
@@ -255,7 +255,7 @@ class MusicPlayer implements IAudioProvider, Closeable {
 
         audioQueue << source
 
-        if (stopped) {
+        if (paused || stopped) {
             play(true)
         }
     }

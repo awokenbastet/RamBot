@@ -13,6 +13,7 @@ import moe.lukas.shiro.util.Timer
 import moe.lukas.shiro.voice.AudioSource
 import moe.lukas.shiro.voice.MusicPlayer
 import moe.lukas.shiro.voice.events.MusicStartEvent
+import org.apache.commons.lang3.ObjectUtils
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventDispatcher
 import sx.blah.discord.api.events.EventSubscriber
@@ -43,13 +44,9 @@ import java.util.concurrent.TimeoutException
         @ShiroCommand(command = "pause", usage = "Pause the playlist"),
         @ShiroCommand(command = "skip", usage = "Skip the current track"),
         @ShiroCommand(command = "clear", usage = "Clears the playlist", adminOnly = true),
-        //@ShiroCommand(command = "loop", usage = "Toggle looping the playlist", adminOnly = true),
-        //@ShiroCommand(command = "shuffle", usage = "Shuffle the playlist", adminOnly = true),
 
         @ShiroCommand(command = "add", usage = "<url> Add a youtube link you want to play"),
         @ShiroCommand(command = "list", usage = "Show the playlist"),
-
-        //@ShiroCommand(command = "vol", usage = "Change the volume", adminOnly = true),
 
         @ShiroCommand(command = "random", usage = "Adds up to 5 random songs from the bot's cache :)"),
 
@@ -227,15 +224,6 @@ class Music implements IAdvancedModule {
                             channel.sendMessage(":wastebasket: Cleared!")
                             break
 
-                        case "shuffle":
-                            player.setShuffle(!player.shuffle)
-                            channel.sendMessage(
-                                player.shuffle ?
-                                    ":twisted_rightwards_arrows: Shuffle enabled!" :
-                                    ":arrow_forward: Shuffle disabled!"
-                            )
-                            break
-
                         case "add":
                             String url = message.content.split(" ")[1]
 
@@ -253,19 +241,20 @@ class Music implements IAdvancedModule {
                                     if (!error) {
                                         Logger.info("Success!")
                                         status.edit(":white_check_mark: Added! (${cached ? "From Cache" : "From Web"})")
-                                        player.add(file)
 
                                         if (!cached) {
                                             storeTrackMeta(
-                                                file.name.replace(".opus", ""),
+                                                file.path.replace(".opus", ""),
                                                 url,
                                                 "${message.author.name}#${message.author.discriminator}",
                                                 channel.name,
                                                 channel.guild.name
                                             )
                                         }
-                                    } else {
 
+                                        player.add(file)
+                                    } else {
+                                        status.edit("Error :frowning:")
                                     }
                                 })
                             })
@@ -276,22 +265,11 @@ class Music implements IAdvancedModule {
 
                             int i = 1
                             player.audioQueue.each { AudioSource source ->
-                                msg += "**$i.** " + resolveTrackMeta(source.asFile().name) + "\n"
+                                msg += "$i. **${resolveTrackMeta(source.asFile().name)}**\n"
                                 i++
                             }
 
                             channel.sendMessage(msg)
-                            break
-
-                        case "vol":
-                            if (message.content.split(" ").size() == 1) {
-                                channel.sendMessage(":speaker: **${Math.round(player.volume * 100)}%**")
-                            } else {
-                                float vol = ((message.content.split(" ")[1] as float) / 100) as float
-
-                                player.setVolume(vol)
-                                channel.sendMessage(":speaker: **${Math.round(player.volume * 100)}%**")
-                            }
                             break
 
                         case "random":
@@ -352,14 +330,14 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private String resolveTrackMeta(String filename) {
-        filename = filename.replace("cache/", "").replace(".opus", "")
+        filename = filename.replaceAll(~/cache(\\|\/)/, "").replace(".opus", "")
 
         def result = Database.instance.query(
             "SELECT `title` FROM `music` WHERE `hash` = '${filename}'"
         )[0]
 
         if (result == null) {
-            return filename
+            return filename + " (meta missing)"
         } else {
             result["title"]
         }
@@ -367,10 +345,11 @@ class Music implements IAdvancedModule {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private void storeTrackMeta(String filename, String url, String author, String channel, String guild) {
-        File meta = new File(filename + ".info.json")
+        filename = filename.replaceAll(~/cache(\\|\/)/, "").replace(".opus", "")
+        File meta = new File("cache/" + filename + ".info.json")
 
         def insert = [
-            filename.replace("cache/", ""), //Hash
+            filename, //Hash
             null, // title
             url,  // source
             null, //extractor
@@ -397,60 +376,59 @@ class Music implements IAdvancedModule {
      * @param status
      * @param callback
      */
-    @CompileDynamic
     private void processURL(String url, IMessage status, Closure callback) {
-        Timer.setTimeout(500, {
-            String cacheName = "cache/" + Core.hash(url)
-            File cacheFile = new File(cacheName + ".opus")
+        String cacheName = "cache/" + Core.hash(url)
+        File cacheFile = new File(cacheName + ".opus")
 
-            if (cacheFile.exists()) {
-                callback(false, cacheFile, true)
-            } else {
-                try {
-                    status.edit(':arrows_counterclockwise: Downloading...')
-                    spawn(fillCommandList(cliCommands.download, [
-                        "{filename}": cacheName,
-                        "{url}"     : url
-                    ]), {
-                        status.edit(':package: Demuxing...')
-                        spawn(fillCommandList(cliCommands.demux, [
-                            "{input}" : "${cacheName}.mp4",
-                            "{output}": "${cacheName}_demux.m4a"
-                        ]), {
-                            status.edit(':recycle: Resampling...')
-                            spawn(fillCommandList(cliCommands.resample, [
-                                "{input}" : "${cacheName}_demux.m4a",
-                                "{output}": "${cacheName}_resample.m4a"
-                            ]), {
-                                status.edit(':package: Unpacking to PCM...')
-                                spawn(fillCommandList(cliCommands.unpack, [
-                                    "{input}" : "${cacheName}_resample.m4a",
-                                    "{output}": "${cacheName}.pcm"
-                                ]), {
-                                    status.edit(':package: Re-Packing to OPUS...')
-                                    spawn(fillCommandList(cliCommands.repack, [
-                                        "{input}" : "${cacheName}.pcm",
-                                        "{output}": "${cacheName}.opus"
-                                    ]), {
-                                        [
-                                            "${cacheName}.mp4",
-                                            "${cacheName}_demux.m4a",
-                                            "${cacheName}_resample.m4a",
-                                            "${cacheName}.pcm",
-                                        ].each { new File(it).delete() }
+        if (cacheFile.exists()) {
+            callback(false, cacheFile, true)
+        } else {
+            List<LinkedHashMap<String, Object>> tasks = [
+                [status : ":arrows_counterclockwise: Downloading...",
+                 command: fillCommandList(cliCommands.download, [
+                     "{filename}": cacheName,
+                     "{url}"     : url
+                 ])],
+                [status : ':package: Demuxing...',
+                 command: fillCommandList(cliCommands.demux, [
+                     "{input}" : cacheName + ".mp4",
+                     "{output}": cacheName + "_demux.m4a"
+                 ])],
+                [status : ':recycle: Resampling...',
+                 command: fillCommandList(cliCommands.resample, [
+                     "{input}" : cacheName + "_demux.m4a",
+                     "{output}": cacheName + "_resample.m4a"
+                 ])],
+                [status : ':package: Unpacking to PCM...',
+                 command: fillCommandList(cliCommands.unpack, [
+                     "{input}" : cacheName + "_resample.m4a",
+                     "{output}": cacheName + ".pcm"
+                 ])],
+                [status : ':package: Re-Packing to OPUS...',
+                 command: fillCommandList(cliCommands.repack, [
+                     "{input}" : cacheName + ".pcm",
+                     "{output}": cacheName + ".opus"
+                 ])]
+            ]
 
-                                        callback(false, cacheFile, false)
-                                    })
-                                })
-                            })
-                        })
-                    }
-                    )
-                } catch (TimeoutException | RuntimeException e) {
-                    callback(true, null, false)
-                }
+            try {
+                tasks.forEach({
+                    status.edit(it["status"] as String)
+                    spawn(it["command"] as List<String>)
+                })
+
+                [
+                    "${cacheName}.mp4",
+                    "${cacheName}_demux.m4a",
+                    "${cacheName}_resample.m4a",
+                    "${cacheName}.pcm",
+                ].each { new File(it).delete() }
+
+                callback(false, cacheFile, false)
+            } catch (TimeoutException | RuntimeException e) {
+                callback(true, null, false)
             }
-        })
+        }
     }
 
     /**
@@ -459,7 +437,8 @@ class Music implements IAdvancedModule {
      * @param callback
      * @return
      */
-    private static spawn(List<String> command, Closure callback) {
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private void spawn(List<String> command) {
         Process p = new ProcessBuilder(command).start()
 
         String output = ""
@@ -484,7 +463,6 @@ class Music implements IAdvancedModule {
         if (p.waitFor(5, TimeUnit.MINUTES)) {
             if (p.exitValue() == 0) {
                 // Normal exit (success)
-                callback()
             } else {
                 throw new RuntimeException()
             }
@@ -493,9 +471,10 @@ class Music implements IAdvancedModule {
         }
     }
 
-    @CompileDynamic
-    private static List<String> fillCommandList(List<String> commands, Map<String, String> replacements) {
-        List<String> commandList = commands
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private List<String> fillCommandList(List<String> commands, Map<String, String> replacements) {
+        List<String> commandList = ObjectUtils.clone(commands)
+
         commandList.each { String cmd ->
             replacements.any {
                 if (cmd.contains(it.key)) {
@@ -512,4 +491,5 @@ class Music implements IAdvancedModule {
 
         return commandList
     }
+
 }
