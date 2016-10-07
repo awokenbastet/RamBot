@@ -10,6 +10,10 @@ A design goal was to keep the experience with her non-intrusive.<br>
 That means there are currently neither modules for moderation/administration nor plans to make them.<br>
 However since Shiro supports modules you can extend her to infinity!
 
+Got any problems or just want to chat with me and other devs?<br>
+Join the Discord Server! :)<br>
+[![](https://discordapp.com/api/guilds/180818466847064065/widget.png)](https://discord.gg/5SjDr3G)
+
 ##### `> Java`
 ##### `> Efficient`
 ### Are you kidding?
