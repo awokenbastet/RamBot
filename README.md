@@ -4,22 +4,28 @@
 [![](https://images.microbadger.com/badges/version/sn0w/shiro.svg)](http://microbadger.com/images/sn0w/shiro) 
 [![](https://images.microbadger.com/badges/image/sn0w/shiro.svg)](https://microbadger.com/images/sn0w/shiro)
 
-Shiro is a multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).<br>
+Shiro is a hihgly efficient, multipurpose [Discord](https://discordapp.com/) bot written in [Groovy](http://groovy-lang.org/).<br>
 
 A design goal was to keep the experience with her non-intrusive.<br>
 That means there are currently neither modules for moderation/administration nor plans to make them.<br>
 However since Shiro supports modules you can extend her to infinity!
 
-### Can I see/suggest features/commands/...?
-YES!<br>
-Check [here](https://github.com/sn0w/shiro/issues) if anyone had the idea before or open a new issue :)
+##### `> Java`
+##### `> Efficient`
+### Are you kidding?
+I am not.
+While Playing music shiro consumes about 32mb RAM and 0-1% CPU.<br>
+That's less than one open tab in Google Chrome.<br>
+I archieved this by dumping runtime audio conversions.<br>
+Shiro utilizes FFMPEG/libav and opusenc to process your audio **before** sending it.<br>
 
-### Documentation and FAQ
-Go to [meetshiro.xyz](http://meetshiro.xyz)
+### Can I suggest features/commands/...?
+YES!<br>
+Go to [/issues](https://github.com/sn0w/shiro/issues)
 
 ### Requirements
 - Any OS and CPU that runs Java 8 [or Docker]
-- About 64mb of free RAM
+- About 32mb of free RAM
 - About 20mb of free HDD space [The docker image needs additional 250mb]
 - A MySQL server (anywhere. Maybe at bplaced? 😅)
 - FFMPEG/libav and youtube-dl if you want to use the Music module
@@ -28,7 +34,7 @@ Go to [meetshiro.xyz](http://meetshiro.xyz)
 ### Docker? Docker!
 Just do a 
 ```
-docker run -dv /docker/shiro:/data --link <mysql-container> sn0w/shiro:<full commit id or branch name>
+docker run -dv /docker/shiro:/data --link <mysql-container>:mysql sn0w/shiro:<full commit id or branch name>
 ```
 and everything is ready! :)
 
@@ -50,10 +56,12 @@ Shiro wouldn't exist without these awesome pieces of software!
 - [Reflections by Ronmamo](https://github.com/ronmamo/reflections)
 - [Unirest by Mashape](http://unirest.io)
 - [Chatter-Bot-Api by Pierre David Belanger](https://github.com/pierredavidbelanger/chatter-bot-api)
-- [LogBack](http://logback.qos.ch/)
 - [Youtube-DL by RG3](https://github.com/rg3/youtube-dl/)
 - [FFMPEG](http://ffmpeg.org/)
 - [libav](https://libav.org/)
+- [OPUS](https://opus-codec.org/)
+- [Minimal JSON by RalfSTX](https://github.com/ralfstx/minimal-json)
+- [VorbisJava by Gagravarr](https://github.com/Gagravarr/VorbisJava)
 
 ### Shiro's Friends :tada:
 Bots built by friends or awesome strangers
