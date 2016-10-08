@@ -1,8 +1,10 @@
 package moe.lukas.shiro.voice.events
 
+import groovy.transform.CompileStatic
 import moe.lukas.shiro.voice.AudioSource
 import moe.lukas.shiro.voice.MusicPlayer
 
+@CompileStatic
 class MusicFinishEvent extends MusicPlayerEvent {
     protected AudioSource oldTrack
     protected AudioSource newTrack
