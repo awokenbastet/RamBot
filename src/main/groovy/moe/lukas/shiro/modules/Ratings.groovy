@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser
     enabled = true,
     description = "Rate users up/down :)",
     commands = [
-        @ShiroCommand(command = "rate", usage = "<up|++|down|-->")
+        @ShiroCommand(command = "rate", usage = "<up|++|down|--> <@mention>")
     ]
 )
 class Ratings implements IModule {

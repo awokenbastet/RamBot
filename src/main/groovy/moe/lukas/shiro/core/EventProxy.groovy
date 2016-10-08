@@ -135,7 +135,7 @@ class EventProxy {
 
         Core.whileTyping(channel, {
             cleverbotSessions[id] = cleverbot.createSession(Locale.ENGLISH)
-            response = cleverbotSessions[id].think(e.message.getContent())
+            response = new String(cleverbotSessions[id].think(e.message.getContent()).getBytes("UTF-8"), "UTF-8")
         })
 
         channel.sendMessage(response == "" ? ":grey_question:" : response)

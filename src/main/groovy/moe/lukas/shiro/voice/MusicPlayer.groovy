@@ -20,10 +20,6 @@ class MusicPlayer implements IAudioProvider, Closeable {
 
     protected State state = State.STOPPED
     protected boolean autoContinue = true
-    protected boolean shuffle = false
-    protected boolean repeat = false
-
-    protected float volume = 1.0F
 
     protected IGuild guild
 
@@ -71,7 +67,6 @@ class MusicPlayer implements IAudioProvider, Closeable {
     }
 
     void skipToNext() {
-        AudioSource skipped = currentAudioSource
         playNext(true)
     }
 
@@ -161,16 +156,7 @@ class MusicPlayer implements IAudioProvider, Closeable {
             return
         }
 
-        AudioSource source
-
-        if (shuffle) {
-            Random rand = new Random()
-            source = audioQueue.remove(rand.nextInt(audioQueue.size()))
-        } else {
-            source = audioQueue.removeFirst()
-        }
-
-        loadFromSource(source)
+        loadFromSource(audioQueue.removeFirst())
 
         if (state == State.STOPPED) {
             eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, null))
@@ -180,16 +166,16 @@ class MusicPlayer implements IAudioProvider, Closeable {
         play(true)
     }
 
-    protected void reload(boolean autoPlay, boolean fireEvent) {
+    protected void reload(boolean autoPlay, boolean fireEvent = true) {
         if (previousAudioSource == null && currentAudioSource == null) {
             throw new IllegalStateException("Cannot restart or reload a player that has never been started!")
         }
 
-        stop(false)
+        stop(fireEvent)
         loadFromSource(previousAudioSource)
 
         if (autoPlay) {
-            play(false)
+            play(fireEvent)
         }
     }
 
@@ -198,40 +184,14 @@ class MusicPlayer implements IAudioProvider, Closeable {
             currentAudioStream.close()
         }
 
+        currentAudioSource = null
+        currentAudioStream = null
+
         if (autoContinue) {
-            if (repeat) {
-                reload(true, false)
-                eventDispatcher.dispatch(new MusicFinishEvent(this, currentAudioSource, currentAudioSource))
-            } else {
-                playNext(true)
-            }
+            playNext(true)
         } else {
             stop(true)
         }
-    }
-
-    void setRepeat(boolean repeat) {
-        this.repeat = repeat
-    }
-
-    boolean isRepeat() {
-        return repeat
-    }
-
-    float getVolume() {
-        return this.volume
-    }
-
-    void setVolume(float volume) {
-        this.volume = volume
-    }
-
-    void setShuffle(boolean shuffle) {
-        this.shuffle = shuffle
-    }
-
-    boolean isShuffle() {
-        return shuffle
     }
 
     LinkedList<AudioSource> getAudioQueue() {
