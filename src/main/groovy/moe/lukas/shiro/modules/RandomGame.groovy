@@ -62,7 +62,6 @@ class RandomGame implements IAdvancedModule {
     void init(IDiscordClient client) {
         Timer.setInterval(20 * 1000, {
             client.changeStatus(Status.game(games[new Random(System.nanoTime()).nextInt(games.size())]))
-            System.gc()
         })
     }
 
