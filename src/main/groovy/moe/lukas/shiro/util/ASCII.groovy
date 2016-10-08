@@ -1,6 +1,18 @@
 package moe.lukas.shiro.util
 
+/**
+ * Helper for ASCII-Art related stuff
+ */
 class ASCII {
+    /**
+     * Draws an ASCII table
+     * Full credit to @Kaaz who gracefully donated this piece of code to shiro.
+     *
+     * @link https://github.com/MaikWezinkhof/DiscordBot/blob/master/src/main/java/discordbot/util/Misc.java#L131
+     * @param headers Table headers
+     * @param rows Array of rows
+     * @return
+     */
     static String drawTable(List<String> headers, List<List<String>> rows) {
         String sb = ""
         int padding = 1
@@ -41,6 +53,16 @@ class ASCII {
         return sb
     }
 
+    /**
+     * Mini-helper to keep ASCII#drawTable() clean
+     *
+     * @param left
+     * @param middle
+     * @param right
+     * @param padding
+     * @param sizes
+     * @return
+     */
     private static String appendSeparatorLine(String left, String middle, String right, int padding, int ... sizes) {
         boolean first = true;
         String ret = ""
