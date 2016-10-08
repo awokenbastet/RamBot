@@ -30,7 +30,6 @@ class Minecraft implements IModule {
 
         if (stream.status == 200) {
             e.message.channel.sendFile(stream.body, "avatar.png")
-            System.gc()
             return
         }
 
