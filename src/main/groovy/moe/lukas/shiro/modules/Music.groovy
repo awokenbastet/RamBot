@@ -180,7 +180,6 @@ class Music implements IAdvancedModule {
 
             if (audioManager.audioProvider instanceof DefaultProvider) {
                 player = new MusicPlayer(e.client.dispatcher, channel.guild)
-                player.setVolume(0.1F)
                 audioManager.setAudioProvider(player)
             } else {
                 player = audioManager.audioProvider as MusicPlayer
@@ -306,8 +305,6 @@ class Music implements IAdvancedModule {
                         vc.join()
 
                         playerChannels[channel.guild.ID] = channel
-
-                        player.setVolume(0.1F)
 
                         status.edit("Joined! :smiley:")
                     } else {
