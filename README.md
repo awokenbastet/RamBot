@@ -78,7 +78,8 @@ Shiro wouldn't exist without these awesome pieces of software!
 ![](https://i.imgur.com/HTO4AYP.png)<br>
 ![](https://i.imgur.com/5CzH1yW.png)<br>
 ![](https://i.imgur.com/Xtu1uNF.png)<br>
-![](https://i.imgur.com/Id9rRzg.png)
+![](https://i.imgur.com/Id9rRzg.png)<br>
+![](https://i.imgur.com/dkwiRnK.png)
 
 ### UML Diagram? UML Diagram!
 (You might need to click the image. It's about 6000x2000 px big)
