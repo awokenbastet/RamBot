@@ -11,7 +11,9 @@ That means there are currently neither modules for moderation/administration nor
 However since Shiro supports modules you can extend her to infinity!
 
 <hr>
-~~>> Click here to invite her to your server <<~~ (Invite disabled until [#63](http://github.com/sn0w/shiro/issues/63) is resolved. Sorry 😔)
+~~>> Click here to invite her to your server <<~~ (Invite disabled until [#63](http://github.com/sn0w/shiro/issues/63) is resolved. Sorry 😔)<br>
+After inviting her set your prefix by sending `@Shiro SET PREFIX <your-prefix>`.<br>
+Example: `@Shiro SET PREFIX %`
 
 Got any problems or just want to chat with me and other devs?<br>
 Join the Discord Server! :)<br>
