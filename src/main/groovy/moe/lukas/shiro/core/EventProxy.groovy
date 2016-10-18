@@ -87,7 +87,7 @@ class EventProxy {
                             return
 
                         case ~/^SET PREFIX (.){0,5}$/:
-                            Core.ownerAction(e, {
+                            Core.adminAction(e, {
                                 Core.setPrefixForServer(
                                     e,
                                     e.message.content
