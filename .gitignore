@@ -3,7 +3,7 @@ build/
 brain.json
 config.json
 cache/
-
+#HELLO BOT!
 gradlew
 gradlew.bat
 gradle/
