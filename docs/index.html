@@ -1,77 +1,90 @@
-<!doctype html>
+<!--
+
+     Licensed to the Apache Software Foundation (ASF) under one
+     or more contributor license agreements.  See the NOTICE file
+     distributed with this work for additional information
+     regarding copyright ownership.  The ASF licenses this file
+     to you under the Apache License, Version 2.0 (the
+     "License"); you may not use this file except in compliance
+     with the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing,
+     software distributed under the License is distributed on an
+     "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+     specific language governing permissions and limitations
+     under the License.
+
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width">
-
-    <title>Shiro</title>
-
-    <!-- Flatdoc -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src='//cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/legacy.js'></script>
-    <script src='//cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/flatdoc.js'></script>
-
-    <!-- Flatdoc theme -->
-    <link href='//cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/style.css' rel='stylesheet'>
-    <script src='//cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/script.js'></script>
-
-    <!-- customizing -->
-    <link href='assets/theme.css' rel='stylesheet'>
-    <script src='assets/theme.js'></script>
-
-    <!-- Meta -->
-    <meta content="Shiro" property="og:title">
-    <meta content="A multipurpose Discord bot written in Groovy" name="description">
-
-    <!-- Initializer -->
-    <script>
-        Flatdoc.run({
-            fetcher: Flatdoc.github('sn0w/shiro', 'docs/index.md')
-        });
-    </script>
+<title>Index </title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="groovy.ico" type="image/x-icon" rel="shortcut icon">
+<link href="groovy.ico" type="image/x-icon" rel="icon">
+<script type="text/javascript">
+    targetPage = "" + window.location.search;
+    if (targetPage != "" && targetPage != "undefined")
+        targetPage = targetPage.substring(1);
+    if (targetPage.indexOf(":") != -1)
+        targetPage = "undefined";
+    if (targetPage != "" && !validURL(targetPage))
+        targetPage = "undefined";
+    function validURL(url) {
+        var pos = url.indexOf(".html");
+        if (pos == -1 || pos != url.length - 5)
+            return false;
+        var allowNumber = false;
+        var allowSep = false;
+        var seenDot = false;
+        for (var i = 0; i < url.length - 5; i++) {
+            var ch = url.charAt(i);
+            if ('a' <= ch && ch <= 'z' ||
+                    'A' <= ch && ch <= 'Z' ||
+                    ch == '$' ||
+                    ch == '_') {
+                allowNumber = true;
+                allowSep = true;
+            } else if ('0' <= ch && ch <= '9'
+                    || ch == '-') {
+                if (!allowNumber)
+                    return false;
+            } else if (ch == '/' || ch == '.') {
+                if (!allowSep)
+                    return false;
+                allowNumber = false;
+                allowSep = false;
+                if (ch == '.')
+                    seenDot = true;
+                if (ch == '/' && seenDot)
+                    return false;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    function loadFrames() {
+        if (targetPage != "" && targetPage != "undefined")
+            top.classFrame.location = top.targetPage;
+    }
+</script>
+<noscript></noscript>
 </head>
-<body role='flatdoc' class='big-h3 large-brief'>
-
-<div class='title-area title-card' id="large-header" style='background-image: url(assets/bg.jpg)'>
-    <div class='in'>
-        <div class='headline'>
-            <h1>Shiro</h1>
-            <p>A multipurpose Discord bot written in Groovy</p>
-        </div>
-    </div>
-</div>
-
-<div class='header'>
-    <div class='left'>
-        <h1><a href='.'>Shiro</a></h1>
-        <ul>
-            <li><a href='//github.com/sn0w/shiro'>View on GitHub</a></li>
-            <li><a href='//github.com/sn0w/shiro/issues'>Issues</a></li>
-        </ul>
-    </div>
-    <div class='right'>
-        <iframe src="//ghbtns.com/github-btn.html?user=sn0w&type=follow&count=true"
-                allowtransparency="true" frameborder="0" scrolling="0" width="170" height="20"></iframe>
-        <iframe src="//ghbtns.com/github-btn.html?user=sn0w&repo=shiro&type=watch&count=true"
-                allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-    </div>
-</div>
-
-<div class='content-root'>
-    <div class='menubar'>
-        <div class='section'>
-            <a class='big button' href='//github.com/sn0w/shiro' target='_blank'>Download</a>
-        </div>
-        <div class='menu section' role='flatdoc-menu'></div>
-        <div class='bottom section'>
-            <iframe src='//ghbtns.com/github-btn.html?user=sn0w&repo=shiro&type=watch&count=true'
-                    allowtransparency="true" frameborder="0" scrolling="0" width="170" height="20"></iframe>
-            <br>
-            <a href='//github.com/sn0w/shiro'>View on GitHub</a><br>
-        </div>
-    </div>
-    <div role='flatdoc-content' class='content'></div>
-</div>
-</body>
-</html>
+<frameset cols="20%,80%" title="Documentation frame" onload="top.loadFrames()">
+    <frameset rows="30%,70%" title="Left frames" onload="top.loadFrames()">
+        <frame src="overview-frame.html" name="packageListFrame" title="All Packages">
+        <frame src="allclasses-frame.html" name="packageFrame" title="All classes and interfaces (except non-static nested types)">
+    </frameset>
+    <frame src="overview-summary.html" name="classFrame" title="Package, class and interface descriptions" scrolling="yes">
+    <noframes>
+        <noscript>
+            <div>JavaScript is disabled on your browser.</div>
+        </noscript>
+        <h2>Frame Alert</h2>
+        <p>This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client. Link to <a href="overview-summary.html">Non-frame version</a>.</p>
+    </noframes>
+</frameset></html>
