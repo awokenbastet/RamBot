@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException
  * Experimental musicbot
  */
 @ShiroMeta(
-    enabled = true,
+    enabled = false,
     description = '''
     Listen to Music :) [EXPERIMENTAL V2 | NOW WITH NATIVE OPUS SUPPORT!]
     For a list of supported hosters visit https://rg3.github.io/youtube-dl/supportedsites.html
