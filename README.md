@@ -1,3 +1,6 @@
+Origin: https://git.lukas.moe/sn0w/shiro
+Mirror: https://github.com/sn0w/shiro
+
 ## SHIRO IS DEPRECATED AND NO LONGER MAINTAINED
 
 This repository will stay online for educational purposes only.<br>
