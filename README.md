@@ -1,4 +1,4 @@
-Origin: https://git.lukas.moe/sn0w/shiro
+Origin: https://git.lukas.moe/sn0w/shiro<br>
 Mirror: https://github.com/sn0w/shiro
 
 ## SHIRO IS DEPRECATED AND NO LONGER MAINTAINED
